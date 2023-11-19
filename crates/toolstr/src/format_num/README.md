@@ -1,6 +1,6 @@
-Dynamic formatting of numbers into human readable forms.
+**ADAPTED FROM https://github.com/askanium/format_num/**
 
-adapted from https://github.com/askanium/format_num/
+Dynamic formatting of numbers into human readable forms.
 
 Did you encounter cases where Rust doesn't represent numbers the way you expect?
 

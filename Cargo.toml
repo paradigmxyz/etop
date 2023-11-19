@@ -1,12 +1,14 @@
-[package]
-name = "ratatui-counter-async-app"
+
+[workspace]
+members = ["crates/toolstr", "crates/etop"]
+resolver = "2"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/paradigmxyz/etop"
+repository = "https://github.com/paradigmxyz/etop"
+exclude = [".github/"]
 
-[dependencies]
-color-eyre = "0.6.2"
-crossterm = { version = "0.27.0", features = ["event-stream"] }
-ratatui = "0.23.0"
-tokio = { version = "1.32.0", features = ["full"] }
-tokio-util = "0.7.9"
-futures = "0.3.28"
+[workspace.dependencies]
