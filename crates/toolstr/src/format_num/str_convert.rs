@@ -1,6 +1,5 @@
-use super::types::{Align, FormatError, FormatSpec, FormatType, Sign};
-use regex::Captures;
-use regex::Regex;
+use super::types::{Align, FormatError, FormatSpec, FormatType, Sign, DEFAULT_PRECISION};
+use regex::{Captures, Regex};
 use std::str::FromStr;
 
 impl FromStr for Align {
@@ -66,12 +65,15 @@ impl From<Captures<'_>> for FormatSpec {
         };
         let type_prefix = matches!(c.get(4).map(|m| m.as_str()), Some("#"));
         let zero_padding = c.get(5).is_some();
-        let width = c.get(6).map(|m| m.as_str().parse().unwrap()).or(Some(0));
+        let width = c
+            .get(6)
+            .map(|m| m.as_str().parse().unwrap_or(0))
+            .unwrap_or(0);
         let commas = matches!(c.get(7).map(|m| m.as_str()), Some(","));
         let precision = c
             .get(8)
-            .map(|m| m.as_str()[1..].parse().unwrap())
-            .or(Some(6));
+            .map(|m| m.as_str().get(1..).unwrap_or_default().parse().unwrap_or(DEFAULT_PRECISION))
+            .unwrap_or(DEFAULT_PRECISION);
         let format_type: FormatType = c
             .get(9)
             .and_then(|s| s.as_str().parse().ok())
@@ -98,7 +100,7 @@ impl From<Captures<'_>> for FormatSpec {
 
         // Ignore precision for decimal notation.
         if spec.format_type == FormatType::Decimal {
-            spec.precision = Some(0);
+            spec.precision = 0;
         };
 
         spec

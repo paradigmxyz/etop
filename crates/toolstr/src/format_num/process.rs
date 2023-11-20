@@ -1,6 +1,4 @@
-use super::types::Sign;
-use super::types::DECIMAL_CHAR;
-use super::types::GROUP_DELIMITER_CHAR;
+use super::types::{FormatError, Sign, DECIMAL_CHAR, GROUP_DELIMITER_CHAR};
 use std::cmp::{max, min};
 
 #[allow(dead_code)]
@@ -37,7 +35,7 @@ pub(crate) fn get_significant_digits(input: &str) -> usize {
 pub(crate) fn decompose_to_coefficient_and_exponent(
     value: f64,
     significant_digits: Option<usize>,
-) -> (String, isize) {
+) -> Result<(String, isize), FormatError> {
     // Use exponential formatting to get the expected number of significant digits.
     let formatted_value = if let Some(significant_digits) = significant_digits {
         let precision = if significant_digits == 0 {
@@ -51,72 +49,68 @@ pub(crate) fn decompose_to_coefficient_and_exponent(
     };
 
     let exp_tokens: Vec<&str> = formatted_value.split('e').collect::<Vec<&str>>();
-    let exponent = exp_tokens[1].parse().unwrap();
+    let exponent = exp_tokens[1]
+        .parse()
+        .map_err(|_| FormatError::CouldNotDecomposeCoefficientExponent)?;
 
     // The `formatted_num` can have 2 shapes: `1e2` and `1.2e2`. Remove the decimal character
     // in case it's in the latter form.
     if exp_tokens[0].len() == 1 {
-        (exp_tokens[0].to_owned(), exponent)
+        Ok((exp_tokens[0].to_owned(), exponent))
     } else {
         let dot_idx = exp_tokens[0]
             .chars()
             .position(|c| c == DECIMAL_CHAR)
-            .unwrap();
-        (
-            format!(
-                "{}{}",
-                &exp_tokens[0][..dot_idx],
-                &exp_tokens[0][dot_idx + 1..]
-            ),
-            exponent,
-        )
+            .ok_or(FormatError::CouldNotDecomposeCoefficientExponent)?;
+        let coefficient = format!(
+            "{}{}",
+            &exp_tokens[0][..dot_idx],
+            &exp_tokens[0][dot_idx + 1..]
+        );
+        Ok((coefficient, exponent))
     }
 }
 
 /// Compute the [SI prefix](https://en.wikipedia.org/wiki/Metric_prefix) of the number and scale it accordingly.
-pub(crate) fn format_si_prefix(value: f64, precision: Option<i32>) -> (String, isize) {
-    let (coefficient, exponent) =
-        decompose_to_coefficient_and_exponent(value, precision.map(|p| p as usize));
+pub(crate) fn format_si_prefix(
+    value: f64,
+    precision: Option<usize>,
+) -> Result<(String, isize), FormatError> {
+    let (coefficient, exponent) = decompose_to_coefficient_and_exponent(value, precision)?;
     let prefix_exponent = max(-8, min(8, (exponent as f32 / 3_f32).floor() as isize));
     let i: isize = exponent - prefix_exponent * 3 + 1;
     let n: isize = coefficient.len() as isize;
 
     if i == n {
-        (coefficient, prefix_exponent)
+        Ok((coefficient, prefix_exponent))
     } else if i > n {
-        (
-            format!("{}{}", coefficient, "0".repeat((i - n) as usize),),
-            prefix_exponent,
-        )
+        let coefficient = format!("{}{}", coefficient, "0".repeat((i - n) as usize),);
+        Ok((coefficient, prefix_exponent))
     } else if i > 0 {
-        (
-            format!(
-                "{}{}{}",
-                &coefficient[..i as usize],
-                DECIMAL_CHAR,
-                &coefficient[i as usize..]
-            ),
-            prefix_exponent,
-        )
+        let coefficient = format!(
+            "{}{}{}",
+            &coefficient[..i as usize],
+            DECIMAL_CHAR,
+            &coefficient[i as usize..]
+        );
+        Ok((coefficient, prefix_exponent))
     } else {
         // less than 1 yocto
         let inner_precision = precision
-            .map(|p| (p - i.abs() as i32 - 1) as usize)
-            .unwrap();
+            .map(|p| (p as i32 - i.abs() as i32 - 1) as usize)
+            .ok_or(FormatError::CouldNotDecomposeCoefficientExponent)?;
         let coefficient = decompose_to_coefficient_and_exponent(
             value,
             precision.and(Some(max(0, inner_precision))),
-        )
+        )?
         .0;
-        (
-            format!(
-                "0{}{}{}",
-                DECIMAL_CHAR,
-                "0".repeat(i.unsigned_abs()),
-                coefficient
-            ),
-            prefix_exponent,
-        )
+        let coefficient = format!(
+            "0{}{}{}",
+            DECIMAL_CHAR,
+            "0".repeat(i.unsigned_abs()),
+            coefficient
+        );
+        Ok((coefficient, prefix_exponent))
     }
 }
 

@@ -1,15 +1,13 @@
 use super::process;
-use super::types::Align;
-use super::types::FormatSpec;
-use super::types::FormatType;
-use super::types::Sign;
-use super::types::DECIMAL_CHAR;
-use super::types::PREFIXES;
+use super::types::{Align, FormatError, FormatSpec, FormatType, Sign, DECIMAL_CHAR, PREFIXES};
 
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation
 /// of the formatted number.
-pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String {
+pub fn format<P: Into<FormatSpec>, T: Into<f64>>(
+    pattern: P,
+    input: T,
+) -> Result<String, FormatError> {
     let format_spec: FormatSpec = pattern.into();
 
     let input_f64: f64 = input.into();
@@ -23,11 +21,9 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
     };
 
     let mut value = match format_spec.format_type {
-        FormatType::Percentage => format!(
-            "{:.1$}",
-            input_f64.abs() * 100_f64,
-            format_spec.precision.unwrap() as usize
-        ),
+        FormatType::Percentage => {
+            format!("{:.1$}", input_f64.abs() * 100_f64, format_spec.precision)
+        }
         FormatType::Binary => format!("{:#b}", input_f64.abs() as i64)[2..].into(),
         FormatType::Octal | FormatType::OctalUppercase => {
             format!("{:#o}", input_f64.abs() as i64)[2..].into()
@@ -35,7 +31,7 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
         FormatType::Hex => format!("{:#x}", input_f64.abs() as i64)[2..].into(),
         FormatType::HexUppercase => format!("{:#X}", input_f64.abs() as i64)[2..].into(),
         FormatType::FixedPoint if format_spec.type_prefix => {
-            let maybe_decimal = if format_spec.precision.unwrap() == 0 {
+            let maybe_decimal = if format_spec.precision == 0 {
                 DECIMAL_CHAR.to_string()
             } else {
                 "".to_string()
@@ -44,39 +40,35 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
                 "{:.2$}{}",
                 input_f64.abs(),
                 maybe_decimal,
-                format_spec.precision.unwrap() as usize
+                format_spec.precision
             )
         }
         FormatType::Exponent => process::get_formatted_exp_value(
             "e",
             input_f64.abs(),
-            format_spec.precision.unwrap() as usize,
+            format_spec.precision,
             format_spec.type_prefix,
         ),
         FormatType::ExponentUppercase => process::get_formatted_exp_value(
             "E",
             input_f64.abs(),
-            format_spec.precision.unwrap() as usize,
+            format_spec.precision,
             format_spec.type_prefix,
         ),
         FormatType::SI => {
             let (val, si_prefix) =
-                process::format_si_prefix(input_f64.abs(), format_spec.precision);
+                process::format_si_prefix(input_f64.abs(), Some(format_spec.precision))?;
             si_prefix_exponent = PREFIXES[(8 + si_prefix) as usize];
             val
         }
-        _ => format!(
-            "{:.1$}",
-            input_f64.abs(),
-            format_spec.precision.unwrap() as usize
-        ),
+        _ => format!("{:.1$}", input_f64.abs(), format_spec.precision),
     };
 
     // If a negative value rounds to zero after formatting, and no explicit positive sign is requested, hide the sign.
     if format_spec.format_type != FormatType::Hex
         && format_spec.format_type != FormatType::HexUppercase
         && value_is_negative
-        && value.parse::<f64>().unwrap() == 0_f64
+        && value.parse::<f64>() == Ok(0_f64)
         && (format_spec.sign != Sign::Always)
     {
         value_is_negative = false;
@@ -120,8 +112,8 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
 
     // Compute the padding.
     let length = prefix.len() + value.to_string().len() + suffix.len();
-    let mut padding = if length < format_spec.width.unwrap() {
-        vec![format_spec.fill.to_string(); format_spec.width.unwrap() - length].join("")
+    let mut padding = if length < format_spec.width {
+        vec![format_spec.fill.to_string(); format_spec.width - length].join("")
     } else {
         "".to_owned()
     };
@@ -131,7 +123,7 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
         value = process::group_value(
             format!("{}{}", &padding, value).as_str(),
             if !padding.is_empty() {
-                format_spec.width.unwrap() - suffix.len()
+                format_spec.width - suffix.len()
             } else {
                 0
             },
@@ -139,7 +131,7 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
         padding = "".to_owned();
     };
 
-    match format_spec.align {
+    let formatted = match format_spec.align {
         Align::Left => format!("{}{}{}{}", prefix, value, suffix, padding),
         Align::SignedRight => format!("{}{}{}{}", prefix, padding, value, suffix),
         Align::Right => format!("{}{}{}{}", padding, prefix, value, suffix),
@@ -151,5 +143,7 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String
             suffix,
             &padding[padding.len() / 2..]
         ),
-    }
+    };
+
+    Ok(formatted)
 }

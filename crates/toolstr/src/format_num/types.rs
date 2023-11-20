@@ -7,6 +7,7 @@ pub(crate) const PREFIXES: [&str; 17] = [
 ];
 pub(crate) const DECIMAL_CHAR: char = '.';
 pub(crate) const GROUP_DELIMITER_CHAR: char = ',';
+pub(crate) const DEFAULT_PRECISION: usize = 6;
 
 /// Represents a destructured specification of a provided format pattern string.
 #[derive(Debug)]
@@ -16,9 +17,9 @@ pub struct FormatSpec {
     pub align: Align,
     pub sign: Sign,
     pub type_prefix: bool,
-    pub width: Option<usize>,
+    pub width: usize,
     pub commas: bool,
-    pub precision: Option<i32>,
+    pub precision: usize,
     pub format_type: FormatType,
 }
 
@@ -57,6 +58,21 @@ pub enum FormatType {
     None,
 }
 
+#[derive(Debug)]
 pub enum FormatError {
     CouldNotParseFormatType,
+    CouldNotDecomposeCoefficientExponent,
+}
+use std::fmt;
+
+impl fmt::Display for FormatError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let message = match self {
+            FormatError::CouldNotParseFormatType => "could not parse format type",
+            FormatError::CouldNotDecomposeCoefficientExponent => {
+                "could not deomponse coefficient exponent"
+            }
+        };
+        write!(f, "{}", message)
+    }
 }

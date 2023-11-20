@@ -1,7 +1,7 @@
 /// public interface for formatting
 pub mod interface;
 mod process;
+mod str_convert;
 mod types;
-mod types_from_str;
 
 pub use interface::format;

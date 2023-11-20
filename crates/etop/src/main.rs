@@ -11,8 +11,10 @@ use toolstr::format;
 fn main() {
     // let as_str = format_num(".5", 6518);
     // let as_str = format_num(".2s", 0.012345);
-    let as_str = format("", 123);
-    println!("{}", as_str)
+    match format("", 123) {
+        Ok(as_str) => println!("{}", as_str),
+        Err(e) => println!("error {}", e),
+    }
 }
 
 // use clap::Parser;
