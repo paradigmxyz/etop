@@ -9,7 +9,7 @@ use super::types::Align;
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation
 /// of the formatted number.
-pub fn format<T: Into<f64>>(pattern: &str, input: T) -> String {
+pub fn format<P: Into<FormatSpec>, T: Into<f64>>(pattern: P, input: T) -> String {
     let format_spec: FormatSpec = pattern.into();
 
     let input_f64: f64 = input.into();
@@ -121,7 +121,7 @@ pub fn format<T: Into<f64>>(pattern: &str, input: T) -> String {
     // Compute the padding.
     let length = prefix.len() + value.to_string().len() + suffix.len();
     let mut padding = if length < format_spec.width.unwrap() {
-        vec![format_spec.fill.unwrap(); format_spec.width.unwrap() - length].join("")
+        vec![format_spec.fill.to_string(); format_spec.width.unwrap() - length].join("")
     } else {
         "".to_owned()
     };

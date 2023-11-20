@@ -1,0 +1,106 @@
+use regex::Captures;
+use regex::Regex;
+use super::types::{Align, Sign, FormatType, FormatSpec, FormatError};
+use std::str::FromStr;
+
+impl FromStr for Align {
+    type Err = FormatError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            ">" => Ok(Align::Right),
+            "<" => Ok(Align::Left),
+            "^" => Ok(Align::Center),
+            "=" => Ok(Align::SignedRight),
+            _ => Err(FormatError::CouldNotParseFormatType),
+        }
+    }
+}
+
+impl FromStr for FormatType {
+    type Err = FormatError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "e" => Ok(FormatType::Exponent),
+            "E" => Ok(FormatType::ExponentUppercase),
+            "f" => Ok(FormatType::FixedPoint),
+            "s" => Ok(FormatType::SI),
+            "%" => Ok(FormatType::Percentage),
+            "b" => Ok(FormatType::Binary),
+            "o" => Ok(FormatType::Octal),
+            "O" => Ok(FormatType::OctalUppercase),
+            "d" => Ok(FormatType::Decimal),
+            "x" => Ok(FormatType::Hex),
+            "X" => Ok(FormatType::HexUppercase),
+            _ => Err(FormatError::CouldNotParseFormatType),
+        }
+    }
+}
+
+impl From<&str> for FormatSpec {
+    fn from(pattern: &str) -> FormatSpec {
+        let re =
+            Regex::new(r"^(?:(.)?([<>=^]))?([+\- ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([A-Za-z%])?$")
+                .unwrap();
+        FormatSpec::from(re.captures(pattern).unwrap())
+    }
+}
+
+impl From<Captures<'_>> for FormatSpec {
+    /// Create a `FormatSpec` instance from a parsed format pattern string.
+    fn from(c: Captures<'_>) -> Self {
+        let fill = c
+            .get(1)
+            .and_then(|m| m.as_str().chars().next())
+            .unwrap_or(' ');
+        let align = c
+            .get(2)
+            .map(|s| s.as_str().parse().unwrap_or(Align::Right))
+            .unwrap_or(Align::Right);
+        let sign = match c.get(3).map(|m| m.as_str()) {
+            Some("-") => Sign::OnlyNegative,
+            Some("+") => Sign::Always,
+            Some(" ") => Sign::SpaceOrDash,
+            _ => Sign::OnlyNegative,
+        };
+        let type_prefix = matches!(c.get(4).map(|m| m.as_str()), Some("#"));
+        let zero_padding = c.get(5).is_some();
+        let width = c.get(6).map(|m| m.as_str().parse().unwrap()).or(Some(0));
+        let commas = matches!(c.get(7).map(|m| m.as_str()), Some(","));
+        let precision = c
+            .get(8)
+            .map(|m| m.as_str()[1..].parse().unwrap())
+            .or(Some(6));
+        let format_type: FormatType = c
+            .get(9)
+            .and_then(|s| s.as_str().parse().ok())
+            .unwrap_or(FormatType::None);
+
+        let mut spec = Self {
+            fill,
+            align,
+            sign,
+            type_prefix,
+            zero_padding,
+            width,
+            commas,
+            precision,
+            format_type,
+        };
+
+        // If zero fill is specified, padding goes after sign and before digits.
+        if spec.zero_padding || (spec.fill == '0' && spec.align == Align::SignedRight) {
+            spec.zero_padding = true;
+            spec.fill = '0';
+            spec.align = Align::SignedRight;
+        }
+
+        // Ignore precision for decimal notation.
+        if spec.format_type == FormatType::Decimal {
+            spec.precision = Some(0);
+        };
+
+        spec
+    }
+}
