@@ -1,6 +1,21 @@
-use super::types::{Align, FormatError, FormatSpec, FormatType, Sign, DEFAULT_PRECISION};
+use super::types::{
+    Align, FormatError, FormatType, NumberFormat, Sign, DEFAULT_PRECISION,
+};
 use regex::{Captures, Regex};
+use std::fmt;
 use std::str::FromStr;
+
+impl fmt::Display for FormatError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let message = match self {
+            FormatError::CouldNotParseFormatType => "could not parse format type",
+            FormatError::CouldNotDecomposeCoefficientExponent => {
+                "could not deomponse coefficient exponent"
+            }
+        };
+        write!(f, "{}", message)
+    }
+}
 
 impl FromStr for Align {
     type Err = FormatError;
@@ -37,17 +52,17 @@ impl FromStr for FormatType {
     }
 }
 
-impl From<&str> for FormatSpec {
-    fn from(pattern: &str) -> FormatSpec {
+impl From<&str> for NumberFormat {
+    fn from(pattern: &str) -> NumberFormat {
         let re =
             Regex::new(r"^(?:(.)?([<>=^]))?([+\- ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([A-Za-z%])?$")
                 .unwrap();
-        FormatSpec::from(re.captures(pattern).unwrap())
+        NumberFormat::from(re.captures(pattern).unwrap())
     }
 }
 
-impl From<Captures<'_>> for FormatSpec {
-    /// Create a `FormatSpec` instance from a parsed format pattern string.
+impl From<Captures<'_>> for NumberFormat {
+    /// Create a `NumberFormat` instance from a parsed format pattern string.
     fn from(c: Captures<'_>) -> Self {
         let fill = c
             .get(1)
@@ -72,7 +87,13 @@ impl From<Captures<'_>> for FormatSpec {
         let commas = matches!(c.get(7).map(|m| m.as_str()), Some(","));
         let precision = c
             .get(8)
-            .map(|m| m.as_str().get(1..).unwrap_or_default().parse().unwrap_or(DEFAULT_PRECISION))
+            .map(|m| {
+                m.as_str()
+                    .get(1..)
+                    .unwrap_or_default()
+                    .parse()
+                    .unwrap_or(DEFAULT_PRECISION)
+            })
             .unwrap_or(DEFAULT_PRECISION);
         let format_type: FormatType = c
             .get(9)

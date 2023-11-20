@@ -5,3 +5,4 @@ mod str_convert;
 mod types;
 
 pub use interface::format;
+pub use types::NumberFormat;

@@ -202,12 +202,12 @@ pub(crate) fn get_formatted_exp_value(
 ///   - " " a blank space, leave a blank space for positive numbers
 ///
 /// If the format_spec does not contain any info regarding the sign, use an empty string.
-pub(crate) fn get_sign_prefix(is_negative: bool, format_sign: Sign) -> &'static str {
+pub(crate) fn get_sign_prefix(is_negative: bool, format_sign: &Sign) -> &'static str {
     if is_negative {
         "-"
     } else if let Sign::Always = format_sign {
         "+"
-    } else if Sign::SpaceOrDash == format_sign {
+    } else if let Sign::SpaceOrDash = format_sign {
         " "
     } else {
         ""

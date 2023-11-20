@@ -1,14 +1,14 @@
 use super::process;
-use super::types::{Align, FormatError, FormatSpec, FormatType, Sign, DECIMAL_CHAR, PREFIXES};
+use super::types::{Align, FormatError, NumberFormat, FormatType, Sign, DECIMAL_CHAR, PREFIXES};
 
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation
 /// of the formatted number.
-pub fn format<P: Into<FormatSpec>, T: Into<f64>>(
+pub fn format<P: Into<NumberFormat>, T: Into<f64>>(
     pattern: P,
     input: T,
 ) -> Result<String, FormatError> {
-    let format_spec: FormatSpec = pattern.into();
+    let format_spec: NumberFormat = pattern.into();
 
     let input_f64: f64 = input.into();
     let mut value_is_negative: bool = input_f64.is_sign_negative();
@@ -74,7 +74,7 @@ pub fn format<P: Into<FormatSpec>, T: Into<f64>>(
         value_is_negative = false;
     }
 
-    let sign_prefix = process::get_sign_prefix(value_is_negative, format_spec.sign);
+    let sign_prefix = process::get_sign_prefix(value_is_negative, &format_spec.sign);
 
     let leading_part = match format_spec.type_prefix {
         true => match format_spec.format_type {

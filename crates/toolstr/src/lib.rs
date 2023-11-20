@@ -7,6 +7,6 @@
 ))]
 
 /// number formatting
-pub mod format_num;
+pub mod number_format;
 
-pub use format_num::format;
+pub use number_format::format;

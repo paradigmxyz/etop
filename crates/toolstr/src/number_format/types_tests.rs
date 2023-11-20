@@ -1,8 +1,7 @@
 #[cfg(test)]
 mod types_tests {
-    // use crate::format_num::types::NumberFormat;
-    use crate::format_num::format;
-    use crate::format_num::process;
+    use crate::number_format::format;
+    use crate::number_format::process;
 
     #[test]
     fn significant_digits() {
