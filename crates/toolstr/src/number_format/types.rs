@@ -43,12 +43,12 @@ pub struct NumberFormat {
     pub format_type: FormatType,
 }
 
-// impl NumberFormat {
-//     /// format number value
-//     pub fn format<T: Into<f64>>(&self, value: T) -> Result<String, FormatError> {
-//         super::interface::format(self, value)
-//     }
-// }
+impl NumberFormat {
+    /// format number value
+    pub fn format<T: Into<f64>>(&self, input: T) -> Result<String, FormatError> {
+        super::interface::number_format(self, input)
+    }
+}
 
 impl Default for NumberFormat {
     fn default() -> NumberFormat {
@@ -124,4 +124,3 @@ pub enum FormatError {
     CouldNotParseFormatType,
     CouldNotDecomposeCoefficientExponent,
 }
-

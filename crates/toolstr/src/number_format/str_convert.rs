@@ -1,6 +1,4 @@
-use super::types::{
-    Align, FormatError, FormatType, NumberFormat, Sign, DEFAULT_PRECISION,
-};
+use super::types::{Align, FormatError, FormatType, NumberFormat, Sign, DEFAULT_PRECISION};
 use regex::{Captures, Regex};
 use std::fmt;
 use std::str::FromStr;
