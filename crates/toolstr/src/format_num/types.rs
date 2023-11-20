@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 #[path = "types_tests.rs"]
 mod tests;
@@ -61,4 +60,3 @@ pub enum FormatType {
 pub enum FormatError {
     CouldNotParseFormatType,
 }
-

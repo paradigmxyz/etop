@@ -1,3 +1,4 @@
+/// public interface for formatting
 pub mod interface;
 mod process;
 mod types;

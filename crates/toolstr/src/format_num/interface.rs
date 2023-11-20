@@ -1,10 +1,10 @@
 use super::process;
+use super::types::Align;
 use super::types::FormatSpec;
 use super::types::FormatType;
+use super::types::Sign;
 use super::types::DECIMAL_CHAR;
 use super::types::PREFIXES;
-use super::types::Sign;
-use super::types::Align;
 
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation

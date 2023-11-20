@@ -1,6 +1,6 @@
+use super::types::Sign;
 use super::types::DECIMAL_CHAR;
 use super::types::GROUP_DELIMITER_CHAR;
-use super::types::Sign;
 use std::cmp::{max, min};
 
 #[allow(dead_code)]

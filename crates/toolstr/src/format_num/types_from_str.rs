@@ -1,6 +1,6 @@
+use super::types::{Align, FormatError, FormatSpec, FormatType, Sign};
 use regex::Captures;
 use regex::Regex;
-use super::types::{Align, Sign, FormatType, FormatSpec, FormatError};
 use std::str::FromStr;
 
 impl FromStr for Align {
