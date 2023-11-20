@@ -1,6 +1,6 @@
-use super::types::FormatSpec;
 use super::types::DECIMAL_CHAR;
 use super::types::GROUP_DELIMITER_CHAR;
+use super::types::Sign;
 use std::cmp::{max, min};
 
 #[allow(dead_code)]
@@ -100,21 +100,20 @@ pub(crate) fn format_si_prefix(value: f64, precision: Option<i32>) -> (String, i
         )
     } else {
         // less than 1 yocto
+        let inner_precision = precision
+            .map(|p| (p - i.abs() as i32 - 1) as usize)
+            .unwrap();
+        let coefficient = decompose_to_coefficient_and_exponent(
+            value,
+            precision.and(Some(max(0, inner_precision))),
+        )
+        .0;
         (
             format!(
                 "0{}{}{}",
                 DECIMAL_CHAR,
                 "0".repeat(i.unsigned_abs()),
-                decompose_to_coefficient_and_exponent(
-                    value,
-                    precision.and(Some(max(
-                        0,
-                        precision
-                            .map(|p| (p - i.abs() as i32 - 1) as usize)
-                            .unwrap()
-                    )))
-                )
-                .0
+                coefficient
             ),
             prefix_exponent,
         )
@@ -209,12 +208,12 @@ pub(crate) fn get_formatted_exp_value(
 ///   - " " a blank space, leave a blank space for positive numbers
 ///
 /// If the format_spec does not contain any info regarding the sign, use an empty string.
-pub(crate) fn get_sign_prefix(is_negative: bool, format_spec: &FormatSpec) -> &'static str {
+pub(crate) fn get_sign_prefix(is_negative: bool, format_sign: Sign) -> &'static str {
     if is_negative {
         "-"
-    } else if format_spec.sign.unwrap() == "+" {
+    } else if let Sign::Always = format_sign {
         "+"
-    } else if format_spec.sign.unwrap() == " " {
+    } else if Sign::SpaceOrDash == format_sign {
         " "
     } else {
         ""
