@@ -123,4 +123,6 @@ impl Default for FormatType {
 pub enum FormatError {
     CouldNotParseFormatType,
     CouldNotDecomposeCoefficientExponent,
+    CouldNotCreateRegex,
+    RegexCouldNotMatch,
 }

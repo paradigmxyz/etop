@@ -4,11 +4,11 @@ use super::types::{Align, FormatError, FormatType, NumberFormat, Sign, DECIMAL_C
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation
 /// of the formatted number.
-pub fn format<P: Into<NumberFormat>, T: Into<f64>>(
+pub fn format<P: TryInto<NumberFormat, Error = FormatError>, T: Into<f64>>(
     pattern: P,
     input: T,
 ) -> Result<String, FormatError> {
-    number_format(&pattern.into(), input)
+    number_format(&pattern.try_into()?, input)
 }
 
 pub(crate) fn number_format<T: Into<f64>>(
