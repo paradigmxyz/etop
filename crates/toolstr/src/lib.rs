@@ -9,4 +9,4 @@
 /// number formatting
 pub mod number_format;
 
-pub use number_format::format;
+pub use number_format::*;

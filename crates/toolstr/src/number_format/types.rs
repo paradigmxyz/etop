@@ -66,6 +66,7 @@ impl Default for NumberFormat {
     }
 }
 
+/// Alignment
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Align {
     /// left align
@@ -84,10 +85,14 @@ impl Default for Align {
     }
 }
 
+/// Whether to include sign
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Sign {
+    /// only show sign when negative
     OnlyNegative,
+    /// always show sign
     Always,
+    /// space or dash
     SpaceOrDash,
 }
 
@@ -97,20 +102,53 @@ impl Default for Sign {
     }
 }
 
+/// format type
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum FormatType {
+    /// exponent format
     Exponent,
+    /// exponent upper case format
     ExponentUppercase,
+    /// fixed point format
     FixedPoint,
+    /// SI prefix format
     SI,
+    /// percentage format
     Percentage,
+    /// binary format
     Binary,
+    /// octal format
     Octal,
+    /// octal upper case format
     OctalUppercase,
+    /// decimal format
     Decimal,
+    /// hex format
     Hex,
+    /// hex upper case format
     HexUppercase,
+    /// no format
     None,
+}
+
+impl FormatType {
+    /// list all FormatType variants
+    pub fn all_variants() -> Vec<FormatType> {
+        vec![
+            FormatType::Exponent,
+            FormatType::ExponentUppercase,
+            FormatType::FixedPoint,
+            FormatType::SI,
+            FormatType::Percentage,
+            FormatType::Binary,
+            FormatType::Octal,
+            FormatType::OctalUppercase,
+            FormatType::Decimal,
+            FormatType::Hex,
+            FormatType::HexUppercase,
+            FormatType::None,
+        ]
+    }
 }
 
 impl Default for FormatType {
@@ -119,10 +157,15 @@ impl Default for FormatType {
     }
 }
 
+/// format error
 #[derive(Debug)]
 pub enum FormatError {
+    /// could not parse format type
     CouldNotParseFormatType,
+    /// could not decompose coefficient exponent
     CouldNotDecomposeCoefficientExponent,
+    /// could not create regex
     CouldNotCreateRegex,
+    /// regex could not match
     RegexCouldNotMatch,
 }

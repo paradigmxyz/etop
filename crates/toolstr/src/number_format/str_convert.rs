@@ -9,7 +9,7 @@ impl fmt::Display for FormatError {
             FormatError::CouldNotParseFormatType => "could not parse format type",
             FormatError::CouldNotDecomposeCoefficientExponent => {
                 "could not deomponse coefficient exponent"
-            },
+            }
             FormatError::CouldNotCreateRegex => "could not create regex",
             FormatError::RegexCouldNotMatch => "regex could not match",
         };
@@ -59,7 +59,9 @@ impl TryFrom<&str> for NumberFormat {
         let re =
             Regex::new(r"^(?:(.)?([<>=^]))?([+\- ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([A-Za-z%])?$")
                 .map_err(|_| FormatError::CouldNotCreateRegex)?;
-        let captures = re.captures(pattern).ok_or(FormatError::RegexCouldNotMatch)?;
+        let captures = re
+            .captures(pattern)
+            .ok_or(FormatError::RegexCouldNotMatch)?;
         Ok(NumberFormat::from(captures))
     }
 }

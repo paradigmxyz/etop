@@ -170,8 +170,7 @@ pub(crate) fn get_formatted_exp_value(
     include_decimal_point: bool,
 ) -> String {
     let formatted = format!("{:.1$e}", value, precision);
-    let tokens = formatted.split(format_type).collect::<Vec<&str>>();
-
+    let tokens = formatted.split('e').collect::<Vec<&str>>();
     let exp_suffix = if &tokens[1][0..1] == "-" {
         if tokens[1].len() == 2 {
             format!("-0{}", &tokens[1][1..])
