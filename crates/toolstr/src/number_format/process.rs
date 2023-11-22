@@ -1,4 +1,5 @@
-use super::types::{FormatError, Sign, DECIMAL_CHAR, GROUP_DELIMITER_CHAR};
+use super::types::{Sign, DECIMAL_CHAR, GROUP_DELIMITER_CHAR};
+use crate::FormatError;
 use std::cmp::{max, min};
 
 #[allow(dead_code)]

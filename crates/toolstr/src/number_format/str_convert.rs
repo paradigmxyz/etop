@@ -1,4 +1,5 @@
-use super::types::{Align, FormatError, FormatType, NumberFormat, Sign, DEFAULT_PRECISION};
+use super::types::{FormatType, NumberAlign, NumberFormat, Sign, DEFAULT_PRECISION};
+use crate::FormatError;
 use regex::{Captures, Regex};
 use std::fmt;
 use std::str::FromStr;
@@ -11,21 +12,22 @@ impl fmt::Display for FormatError {
                 "could not deomponse coefficient exponent"
             }
             FormatError::CouldNotCreateRegex => "could not create regex",
-            FormatError::RegexCouldNotMatch => "regex could not match",
+            FormatError::CouldNotMatchRegex => "regex could not match",
+            FormatError::InvalidFormat(s) => s,
         };
         write!(f, "{}", message)
     }
 }
 
-impl FromStr for Align {
+impl FromStr for NumberAlign {
     type Err = FormatError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            ">" => Ok(Align::Right),
-            "<" => Ok(Align::Left),
-            "^" => Ok(Align::Center),
-            "=" => Ok(Align::SignedRight),
+            ">" => Ok(NumberAlign::Right),
+            "<" => Ok(NumberAlign::Left),
+            "^" => Ok(NumberAlign::Center),
+            "=" => Ok(NumberAlign::SignedRight),
             _ => Err(FormatError::CouldNotParseFormatType),
         }
     }
@@ -61,7 +63,7 @@ impl TryFrom<&str> for NumberFormat {
                 .map_err(|_| FormatError::CouldNotCreateRegex)?;
         let captures = re
             .captures(pattern)
-            .ok_or(FormatError::RegexCouldNotMatch)?;
+            .ok_or(FormatError::CouldNotMatchRegex)?;
         Ok(NumberFormat::from(captures))
     }
 }
@@ -75,8 +77,8 @@ impl From<Captures<'_>> for NumberFormat {
             .unwrap_or(' ');
         let align = c
             .get(2)
-            .map(|s| s.as_str().parse().unwrap_or(Align::Right))
-            .unwrap_or(Align::Right);
+            .map(|s| s.as_str().parse().unwrap_or(NumberAlign::Right))
+            .unwrap_or(NumberAlign::Right);
         let sign = match c.get(3).map(|m| m.as_str()) {
             Some("-") => Sign::OnlyNegative,
             Some("+") => Sign::Always,
@@ -118,10 +120,10 @@ impl From<Captures<'_>> for NumberFormat {
         };
 
         // If zero fill is specified, padding goes after sign and before digits.
-        if spec.zero_padding || (spec.fill == '0' && spec.align == Align::SignedRight) {
+        if spec.zero_padding || (spec.fill == '0' && spec.align == NumberAlign::SignedRight) {
             spec.zero_padding = true;
             spec.fill = '0';
-            spec.align = Align::SignedRight;
+            spec.align = NumberAlign::SignedRight;
         }
 
         // Ignore precision for decimal notation.

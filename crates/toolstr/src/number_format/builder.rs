@@ -1,4 +1,4 @@
-use super::types::{Align, FormatType, NumberFormat, Sign};
+use super::types::{FormatType, NumberAlign, NumberFormat, Sign};
 
 impl NumberFormat {
     /// create new number format
@@ -32,25 +32,25 @@ impl NumberFormat {
 
     /// left align
     pub fn left_align(mut self) -> NumberFormat {
-        self.align = Align::Left;
+        self.align = NumberAlign::Left;
         self
     }
 
     /// right align
     pub fn right_align(mut self) -> NumberFormat {
-        self.align = Align::Right;
+        self.align = NumberAlign::Right;
         self
     }
 
     /// center align
     pub fn center_align(mut self) -> NumberFormat {
-        self.align = Align::Center;
+        self.align = NumberAlign::Center;
         self
     }
 
     /// signed right align
     pub fn left_sign_right_align(mut self) -> NumberFormat {
-        self.align = Align::SignedRight;
+        self.align = NumberAlign::SignedRight;
         self
     }
 

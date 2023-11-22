@@ -2,6 +2,8 @@
 #[path = "types_tests.rs"]
 mod tests;
 
+use crate::FormatError;
+
 pub(crate) const PREFIXES: [&str; 17] = [
     "y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y",
 ];
@@ -12,7 +14,7 @@ pub(crate) const GROUP_DELIMITER_CHAR: char = ',';
 // default number format settings
 pub(crate) const DEFAULT_ZERO_PADDING: bool = true;
 pub(crate) const DEFAULT_FILL: char = ' ';
-pub(crate) const DEFAULT_ALIGN: Align = Align::Right;
+pub(crate) const DEFAULT_ALIGN: NumberAlign = NumberAlign::Right;
 pub(crate) const DEFAULT_SIGN: Sign = Sign::OnlyNegative;
 pub(crate) const DEFAULT_TYPE_PREFIX: bool = false;
 pub(crate) const DEFAULT_WIDTH: usize = 0;
@@ -28,7 +30,7 @@ pub struct NumberFormat {
     /// fill character
     pub fill: char,
     /// alignment
-    pub align: Align,
+    pub align: NumberAlign,
     /// sign
     pub sign: Sign,
     /// type prefix
@@ -55,7 +57,7 @@ impl Default for NumberFormat {
         NumberFormat {
             zero_padding: DEFAULT_ZERO_PADDING,
             fill: DEFAULT_FILL,
-            align: Align::default(),
+            align: NumberAlign::default(),
             sign: Sign::default(),
             type_prefix: DEFAULT_TYPE_PREFIX,
             width: DEFAULT_WIDTH,
@@ -66,9 +68,9 @@ impl Default for NumberFormat {
     }
 }
 
-/// Alignment
+/// NumberAlignment
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub enum Align {
+pub enum NumberAlign {
     /// left align
     Left,
     /// right align
@@ -79,8 +81,8 @@ pub enum Align {
     SignedRight,
 }
 
-impl Default for Align {
-    fn default() -> Align {
+impl Default for NumberAlign {
+    fn default() -> NumberAlign {
         DEFAULT_ALIGN
     }
 }
@@ -155,17 +157,4 @@ impl Default for FormatType {
     fn default() -> FormatType {
         DEFAULT_FORMAT_TYPE
     }
-}
-
-/// format error
-#[derive(Debug)]
-pub enum FormatError {
-    /// could not parse format type
-    CouldNotParseFormatType,
-    /// could not decompose coefficient exponent
-    CouldNotDecomposeCoefficientExponent,
-    /// could not create regex
-    CouldNotCreateRegex,
-    /// regex could not match
-    RegexCouldNotMatch,
 }

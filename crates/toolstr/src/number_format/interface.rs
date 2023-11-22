@@ -1,5 +1,6 @@
 use super::process;
-use super::types::{Align, FormatError, FormatType, NumberFormat, Sign, DECIMAL_CHAR, PREFIXES};
+use super::types::{FormatType, NumberAlign, NumberFormat, Sign, DECIMAL_CHAR, PREFIXES};
+use crate::FormatError;
 
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation
@@ -137,10 +138,10 @@ pub(crate) fn number_format<T: Into<f64>>(
     };
 
     let formatted = match number_format.align {
-        Align::Left => format!("{}{}{}{}", prefix, value, suffix, padding),
-        Align::SignedRight => format!("{}{}{}{}", prefix, padding, value, suffix),
-        Align::Right => format!("{}{}{}{}", padding, prefix, value, suffix),
-        Align::Center => format!(
+        NumberAlign::Left => format!("{}{}{}{}", prefix, value, suffix, padding),
+        NumberAlign::SignedRight => format!("{}{}{}{}", prefix, padding, value, suffix),
+        NumberAlign::Right => format!("{}{}{}{}", padding, prefix, value, suffix),
+        NumberAlign::Center => format!(
             "{}{}{}{}{}",
             &padding[..padding.len() / 2],
             prefix,

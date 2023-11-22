@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use polars::prelude::*;
 use toolstr::NumberFormat;
 
 /// Utility for creating and managing MESC RPC configurations
@@ -93,4 +94,30 @@ fn print_all_formats(number: f64) {
 fn dataframe_command(args: DataframeArgs) {
     println!("path: {}", args.path);
     println!("format: {:?}", args.format);
+    print_dataframe(args.path)
+}
+
+#[derive(Debug)]
+enum EtopError {
+    CouldNotOpenFile(String),
+    CouldNotReadFile(String),
+}
+
+fn print_dataframe(path: String) {
+    // read file
+    let df = read_parquet(path);
+
+    // print file
+    println!("{:?}", df);
+}
+
+fn read_parquet(path: String) -> Result<DataFrame, EtopError> {
+    // print number of rows
+    let file = std::fs::File::open(path.as_str())
+        .map_err(|_| EtopError::CouldNotOpenFile(path.clone()))?;
+
+    ParquetReader::new(file)
+        // .with_columns(Some(vec![column.to_string()]))
+        .finish()
+        .map_err(|_| EtopError::CouldNotReadFile(path.clone()))
 }

@@ -6,4 +6,4 @@ mod str_convert;
 mod types;
 
 pub use interface::format;
-pub use types::{Align, FormatError, FormatType, NumberFormat, Sign};
+pub use types::{NumberAlign, FormatType, NumberFormat, Sign};
