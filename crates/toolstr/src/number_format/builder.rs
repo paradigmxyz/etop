@@ -92,7 +92,20 @@ impl NumberFormat {
 
     /// set width
     pub fn width(mut self, width: usize) -> NumberFormat {
-        self.width = width;
+        self.min_width = width;
+        self.max_width = width;
+        self
+    }
+
+    /// set min_width
+    pub fn min_width(mut self, min_width: usize) -> NumberFormat {
+        self.min_width = min_width;
+        self
+    }
+
+    /// set max_width
+    pub fn max_width(mut self, max_width: usize) -> NumberFormat {
+        self.max_width = max_width;
         self
     }
 

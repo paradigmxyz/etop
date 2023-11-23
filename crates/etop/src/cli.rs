@@ -1,5 +1,5 @@
+use crate::dfs;
 use clap::{Parser, Subcommand};
-use polars::prelude::*;
 use toolstr::NumberFormat;
 
 /// Utility for creating and managing MESC RPC configurations
@@ -45,6 +45,10 @@ pub struct DataframeArgs {
     /// Number format
     #[clap(long)]
     pub format: Option<String>,
+
+    /// Columns to load
+    #[clap(long, num_args=1..)]
+    pub columns: Option<Vec<String>>,
 }
 
 pub(crate) fn run_cli() {
@@ -94,30 +98,12 @@ fn print_all_formats(number: f64) {
 fn dataframe_command(args: DataframeArgs) {
     println!("path: {}", args.path);
     println!("format: {:?}", args.format);
-    print_dataframe(args.path)
+    dfs::print_dataframe(args.path, args.columns).unwrap();
 }
 
 #[derive(Debug)]
-enum EtopError {
+pub enum EtopError {
     CouldNotOpenFile(String),
     CouldNotReadFile(String),
-}
-
-fn print_dataframe(path: String) {
-    // read file
-    let df = read_parquet(path);
-
-    // print file
-    println!("{:?}", df);
-}
-
-fn read_parquet(path: String) -> Result<DataFrame, EtopError> {
-    // print number of rows
-    let file = std::fs::File::open(path.as_str())
-        .map_err(|_| EtopError::CouldNotOpenFile(path.clone()))?;
-
-    ParquetReader::new(file)
-        // .with_columns(Some(vec![column.to_string()]))
-        .finish()
-        .map_err(|_| EtopError::CouldNotReadFile(path.clone()))
+    InvalidFormat(String),
 }

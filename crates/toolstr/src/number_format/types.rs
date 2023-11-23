@@ -17,7 +17,8 @@ pub(crate) const DEFAULT_FILL: char = ' ';
 pub(crate) const DEFAULT_ALIGN: NumberAlign = NumberAlign::Right;
 pub(crate) const DEFAULT_SIGN: Sign = Sign::OnlyNegative;
 pub(crate) const DEFAULT_TYPE_PREFIX: bool = false;
-pub(crate) const DEFAULT_WIDTH: usize = 0;
+pub(crate) const DEFAULT_MIN_WIDTH: usize = 0;
+pub(crate) const DEFAULT_MAX_WIDTH: usize = usize::MAX;
 pub(crate) const DEFAULT_COMMAS: bool = false;
 pub(crate) const DEFAULT_PRECISION: usize = 6;
 pub(crate) const DEFAULT_FORMAT_TYPE: FormatType = FormatType::None;
@@ -35,8 +36,10 @@ pub struct NumberFormat {
     pub sign: Sign,
     /// type prefix
     pub type_prefix: bool,
-    /// width
-    pub width: usize,
+    /// min_width
+    pub min_width: usize,
+    /// max_width
+    pub max_width: usize,
     /// commas
     pub commas: bool,
     /// decimals
@@ -60,7 +63,8 @@ impl Default for NumberFormat {
             align: NumberAlign::default(),
             sign: Sign::default(),
             type_prefix: DEFAULT_TYPE_PREFIX,
-            width: DEFAULT_WIDTH,
+            min_width: DEFAULT_MIN_WIDTH,
+            max_width: DEFAULT_MAX_WIDTH,
             commas: DEFAULT_COMMAS,
             precision: DEFAULT_PRECISION,
             format_type: FormatType::default(),

@@ -118,8 +118,8 @@ pub(crate) fn number_format<T: Into<f64>>(
 
     // Compute the padding.
     let length = prefix.len() + value.to_string().len() + suffix.len();
-    let mut padding = if length < number_format.width {
-        vec![number_format.fill.to_string(); number_format.width - length].join("")
+    let mut padding = if length < number_format.min_width {
+        vec![number_format.fill.to_string(); number_format.min_width - length].join("")
     } else {
         "".to_owned()
     };
@@ -129,7 +129,7 @@ pub(crate) fn number_format<T: Into<f64>>(
         value = process::group_value(
             format!("{}{}", &padding, value).as_str(),
             if !padding.is_empty() {
-                number_format.width - suffix.len()
+                number_format.min_width - suffix.len()
             } else {
                 0
             },
@@ -151,5 +151,20 @@ pub(crate) fn number_format<T: Into<f64>>(
         ),
     };
 
-    Ok(formatted)
+    if formatted.len() > number_format.max_width {
+        if number_format.max_width < 3 {
+            Err(FormatError::InvalidFormat(
+                "min_width too small for clipping".to_string(),
+            ))
+        } else {
+            match formatted.get(0..(number_format.max_width - 3)) {
+                Some(s) => Ok(format!("{}...", s)),
+                None => Err(FormatError::InvalidFormat(
+                    "could not take slice of string".to_string(),
+                )),
+            }
+        }
+    } else {
+        Ok(formatted)
+    }
 }

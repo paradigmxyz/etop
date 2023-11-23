@@ -24,21 +24,20 @@ impl BinaryFormat {
 
     /// set width
     pub fn width(mut self, width: usize) -> BinaryFormat {
-        self.width = width;
+        self.min_width = width;
+        self.max_width = width;
         self
     }
 
-    // clip
-
-    /// clip
-    pub fn clip(mut self) -> BinaryFormat {
-        self.clip = true;
+    /// set min_width
+    pub fn min_width(mut self, min_width: usize) -> BinaryFormat {
+        self.min_width = min_width;
         self
     }
 
-    /// no clip
-    pub fn no_clip(mut self) -> BinaryFormat {
-        self.clip = false;
+    /// set max_width
+    pub fn max_width(mut self, max_width: usize) -> BinaryFormat {
+        self.max_width = max_width;
         self
     }
 
@@ -56,17 +55,11 @@ impl BinaryFormat {
         self
     }
 
-    // zero padding
+    // fill char
 
-    /// add zero padding
-    pub fn zero_padding(mut self) -> BinaryFormat {
-        self.zero_padding = true;
-        self
-    }
-
-    /// remove zero padding
-    pub fn no_zero_padding(mut self) -> BinaryFormat {
-        self.zero_padding = false;
+    /// add fill char
+    pub fn fill_char(mut self, fill_char: char) -> BinaryFormat {
+        self.fill_char = fill_char;
         self
     }
 }

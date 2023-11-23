@@ -87,7 +87,7 @@ impl From<Captures<'_>> for NumberFormat {
         };
         let type_prefix = matches!(c.get(4).map(|m| m.as_str()), Some("#"));
         let zero_padding = c.get(5).is_some();
-        let width = c
+        let min_width = c
             .get(6)
             .map(|m| m.as_str().parse().unwrap_or(0))
             .unwrap_or(0);
@@ -107,13 +107,15 @@ impl From<Captures<'_>> for NumberFormat {
             .and_then(|s| s.as_str().parse().ok())
             .unwrap_or(FormatType::None);
 
+        let max_width = usize::MAX;
         let mut spec = Self {
             fill,
             align,
             sign,
             type_prefix,
             zero_padding,
-            width,
+            min_width,
+            max_width,
             commas,
             precision,
             format_type,

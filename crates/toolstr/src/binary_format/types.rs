@@ -8,24 +8,24 @@ use crate::FormatError;
 pub struct BinaryFormat {
     /// prefix of string
     pub prefix: bool,
-    /// width of string, for padding
-    pub width: usize,
-    /// clip string if longer than width
-    pub clip: bool,
+    /// min_width of string, for padding
+    pub min_width: usize,
+    /// max_width of string, for padding
+    pub max_width: usize,
     /// align binary to left or right
     pub align: BinaryAlign,
-    /// use zeros for padding
-    pub zero_padding: bool,
+    /// fill padding char
+    pub fill_char: char,
 }
 
 impl Default for BinaryFormat {
     fn default() -> BinaryFormat {
         BinaryFormat {
             prefix: true,
-            width: 0,
-            clip: false,
+            min_width: 0,
+            max_width: usize::MAX,
             align: BinaryAlign::Right,
-            zero_padding: false,
+            fill_char: ' ',
         }
     }
 }
@@ -50,24 +50,24 @@ impl BinaryFormat {
             (s.len(), "")
         };
 
-        if total_length < self.width {
-            let pad = if self.zero_padding {
-                "0".repeat(self.width - total_length)
-            } else {
-                " ".repeat(self.width - total_length)
-            };
-            match (&self.align, self.zero_padding) {
+        if total_length < self.min_width {
+            let pad = self
+                .fill_char
+                .to_string()
+                .repeat(self.min_width - total_length);
+            let zero_padding = self.fill_char == '0';
+            match (&self.align, zero_padding) {
                 (BinaryAlign::Left, _) => Ok(format!("{}{}{}", prefix, s, pad)),
                 (BinaryAlign::Right, true) => Ok(format!("{}{}{}", prefix, pad, s)),
                 (BinaryAlign::Right, false) => Ok(format!("{}{}{}", pad, prefix, s)),
             }
-        } else if self.clip {
-            if self.width < 3 {
+        } else if total_length > self.max_width {
+            if self.max_width < 3 {
                 return Err(FormatError::InvalidFormat(
-                    "width too small for clipping".to_string(),
+                    "min_width too small for clipping".to_string(),
                 ));
             };
-            match s.get(0..(self.width - 3 - prefix.len())) {
+            match s.get(0..(self.max_width - 3 - prefix.len())) {
                 Some(s) => Ok(format!("{}{}...", prefix, s)),
                 None => Err(FormatError::InvalidFormat(
                     "could not take slice of string".to_string(),
