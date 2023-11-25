@@ -1,3 +1,13 @@
+use polars::prelude::*;
+use crate::{ColumnFormat, EtopError};
+
+pub struct DataFrameFormat {
+    pub column_formats: Option<Vec<ColumnFormat>>,
+    pub column_delimiter: Option<String>,
+    pub header_separator: bool,
+    pub n_rows: Option<usize>,
+}
+
 // get number of lines in header
 // impl DataFrameFormat {
 //     fn n_header_lines(&self) -> usize {
@@ -5,71 +15,70 @@
 //     }
 // }
 
-use crate::dfs::types::{ColumnFormat, DataFrameFormat};
-use crate::EtopError;
-use polars::prelude::*;
+impl DataFrameFormat {
+    pub(crate) fn format(&self, df: DataFrame) -> Result<String, EtopError> {
+        // load columns
+        let columns: Vec<ColumnFormat> = match &self.column_formats {
+            Some(c) => c.to_owned(),
+            None => df
+                .schema()
+                .into_iter()
+                .map(|(name, _)| ColumnFormat {
+                    name: name.clone().into(),
+                    display_name: name.clone().into(),
+                    min_width: None,
+                    max_width: None,
+                    format: None,
+                })
+                .collect(),
+        };
 
-pub(crate) fn print_dataframe(df: DataFrame, format: DataFrameFormat) -> Result<(), EtopError> {
-    // load columns
-    let columns: Vec<ColumnFormat> = match &format.column_formats {
-        Some(c) => c.to_owned(),
-        None => df
-            .schema()
-            .into_iter()
-            .map(|(name, _)| ColumnFormat {
-                name: name.clone().into(),
-                display_name: name.clone().into(),
-                min_width: None,
-                max_width: None,
-                format: None,
-            })
-            .collect(),
-    };
-
-    // build header row
-    let n_rows = format.n_rows.unwrap_or_else(|| df.height().min(20));
-    let widths = determine_widths(&df, &columns)?;
-    let total_width = widths.iter().sum();
-    let mut header = String::with_capacity(total_width);
-    let column_delimiter = format.column_delimiter.unwrap_or(" ".to_string());
-    for (i, (column, width)) in columns.iter().zip(widths).enumerate() {
-        header.push_str(format!("{:>width$}", column.display_name, width = width).as_str());
-        if i != columns.len() - 1 {
-            header.push_str(column_delimiter.as_str());
-        }
-    };
-
-    // let header_separator = if format.header_separator {
-    // } else {
-    // };
-
-    // clip by number of rows
-    let mut df = df.clone().slice(0, n_rows);
-
-    // convert numeric fields to float64
-    for (name, dtype) in df.schema().iter() {
-        if dtype.is_numeric() {
-            df = df.clone().with_column(df.column(name)?.to_float()?)?.clone();
-        }
-    };
-
-    // print each row
-    println!("{}", header);
-    for r in 0..n_rows {
-        let mut row = String::new();
-        for (c, column_format) in columns.iter().enumerate() {
-            let df = df.clone();
-            let column = df.column(column_format.name.as_str())?;
-            let cell = format_cell(column, column_format, r)?;
-            row.push_str(cell.as_str());
-            if c != columns.len() - 1 {
-                row.push_str(column_delimiter.as_str());
+        // build header row
+        let n_rows = self.n_rows.unwrap_or_else(|| df.height().min(20));
+        let widths = determine_widths(&df, &columns)?;
+        let total_width = widths.iter().sum();
+        let mut header = String::with_capacity(total_width);
+        let column_delimiter = self.column_delimiter.clone().unwrap_or(" ".to_string());
+        for (i, (column, width)) in columns.iter().zip(widths).enumerate() {
+            header.push_str(format!("{:>width$}", column.display_name, width = width).as_str());
+            if i != columns.len() - 1 {
+                header.push_str(column_delimiter.as_str());
             }
-        }
-        println!("{}", row);
-    };
+        };
 
-    Ok(())
+        // let header_separator = if format.header_separator {
+        // } else {
+        // };
+
+        // clip by number of rows
+        let mut df = df.clone().slice(0, n_rows);
+
+        // convert numeric fields to float64
+        for (name, dtype) in df.schema().iter() {
+            if dtype.is_numeric() {
+                df = df.clone().with_column(df.column(name)?.to_float()?)?.clone();
+            }
+        };
+
+        // print each row
+        let mut rows = vec![];
+        rows.push(header);
+        for r in 0..n_rows {
+            let mut row = String::new();
+            for (c, column_format) in columns.iter().enumerate() {
+                let df = df.clone();
+                let column = df.column(column_format.name.as_str())?;
+                let cell = format_cell(column, column_format, r)?;
+                row.push_str(cell.as_str());
+                if c != columns.len() - 1 {
+                    row.push_str(column_delimiter.as_str());
+                }
+            }
+            rows.push(row);
+        };
+
+        Ok(rows.join("\n"))
+    }
 }
 
 fn format_cell(column: &Series, column_format: &ColumnFormat, r: usize) -> Result<String, EtopError> {

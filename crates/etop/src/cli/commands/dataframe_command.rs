@@ -1,9 +1,4 @@
-use crate::cli::args::DataframeArgs;
-use crate::dfs;
-use crate::ColumnFormat;
-use crate::EtopError;
-use crate::dfs::io;
-use crate::DataFrameFormat;
+use crate::{DataframeArgs, ColumnFormat, EtopError, DataFrameFormat};
 
 /// print dataframe command
 pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
@@ -11,14 +6,14 @@ pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
     let column_names: Option<Vec<String>> = columns
         .as_ref()
         .map(|cols| cols.iter().map(|c| c.name.clone()).collect());
-    let df = io::read_parquet(args.path, column_names)?;
-    let format = DataFrameFormat {
+    let df = crate::types::read_parquet(args.path, column_names)?;
+    let fmt = DataFrameFormat {
         column_formats: columns,
         column_delimiter: Some("  │  ".to_string()),
         header_separator: true,
         n_rows: args.rows,
     };
-    dfs::print_dataframe(df, format).unwrap();
+    println!("{}", fmt.format(df)?);
     Ok(())
 }
 

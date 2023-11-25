@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use super::{number_command, dataframe_command, dataset_command};
+use super::commands::{number_command, dataframe_command, dataset_command};
 use crate::EtopError;
 
 /// Utility for creating and managing MESC RPC configurations
@@ -81,6 +81,6 @@ pub(crate) fn run_cli() -> Result<(), EtopError> {
     match Cli::parse().command {
         Commands::Number(args) => number_command::number_command(args),
         Commands::Dataframe(args) => dataframe_command::dataframe_command(args),
-        Commands::Dataset(args) => dataset_command::dataset_command(args.template, args.path),
+        Commands::Dataset(args) => dataset_command::dataset_command(args),
     }
 }

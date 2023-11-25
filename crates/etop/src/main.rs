@@ -1,10 +1,9 @@
 mod cli;
-mod dfs;
-mod exceptions;
-mod pipeline;
+mod datasets;
+mod types;
 
-pub use exceptions::EtopError;
-pub use dfs::{ColumnFormat, DataFrameFormat, Dataset};
+pub(crate) use cli::*;
+pub use types::{ColumnFormat, DataFrameFormat, Dataset, EtopError};
 
 fn main() {
     match cli::run_cli() {

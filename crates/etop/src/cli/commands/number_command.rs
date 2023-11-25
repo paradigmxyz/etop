@@ -1,4 +1,4 @@
-use super::args::NumberArgs;
+use crate::cli::NumberArgs;
 use crate::EtopError;
 use toolstr::NumberFormat;
 

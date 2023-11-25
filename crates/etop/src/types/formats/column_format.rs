@@ -1,35 +1,5 @@
 use crate::EtopError;
-use cryo_freeze::Datatype;
-use polars::prelude::*;
-use std::collections::HashMap;
 use toolstr::{BinaryFormat, NumberFormat, StringFormat};
-
-pub trait Dataset {
-    /// name of dataset
-    fn name(&self) -> String;
-
-    /// plural noun of what the rows are
-    fn row_noun(&self) -> String;
-
-    /// which datasets the view is constructed from
-    fn inputs(&self) -> Vec<Datatype>;
-
-    /// transform inputs into the data needed for a view
-    fn transform(&self, dfs: HashMap<Datatype, DataFrame>) -> Result<DataFrame, EtopError>;
-
-    /// default columns
-    fn default_columns(&self) -> Vec<String>;
-
-    /// default format for each column
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormat>;
-}
-
-pub struct DataFrameFormat {
-    pub column_formats: Option<Vec<ColumnFormat>>,
-    pub column_delimiter: Option<String>,
-    pub header_separator: bool,
-    pub n_rows: Option<usize>,
-}
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
@@ -38,11 +8,11 @@ pub struct ColumnFormat {
     pub display_name: String,
     pub min_width: Option<usize>,
     pub max_width: Option<usize>,
-    pub format: Option<Format>,
+    pub format: Option<CellFormat>,
 }
 
 #[derive(Debug, Clone)]
-pub enum Format {
+pub enum CellFormat {
     Number(NumberFormat),
     Binary(BinaryFormat),
     String(StringFormat),
@@ -64,7 +34,7 @@ impl Default for ColumnFormat {
 impl ColumnFormat {
     pub fn number_format(&self) -> Result<NumberFormat, EtopError> {
         match self.format.as_ref() {
-            Some(Format::Number(format)) => Ok(format.clone()),
+            Some(CellFormat::Number(format)) => Ok(format.clone()),
             None => {
                 let mut fmt = NumberFormat::new();
                 if let Some(min_width) = self.min_width {
@@ -84,7 +54,7 @@ impl ColumnFormat {
 
     pub fn binary_format(&self) -> Result<BinaryFormat, EtopError> {
         match self.format.as_ref() {
-            Some(Format::Binary(format)) => Ok(format.clone()),
+            Some(CellFormat::Binary(format)) => Ok(format.clone()),
             None => {
                 let mut fmt = BinaryFormat::new();
                 if let Some(min_width) = self.min_width {

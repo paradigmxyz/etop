@@ -1,6 +1,5 @@
 mod args;
-mod dataset_command;
-mod dataframe_command;
-mod number_command;
+mod commands;
 
 pub(crate) use args::run_cli;
+pub(crate) use args::{NumberArgs, DataframeArgs, DatasetArgs};

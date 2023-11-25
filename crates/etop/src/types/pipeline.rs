@@ -1,12 +1,12 @@
 use cryo_freeze::BlockChunk;
 use crate::Dataset;
 
-struct Pipeline {
+pub struct Pipeline {
     collected: DataRange,
     window: DataRange,
     datasets: Vec<Box<dyn Dataset>>,
 }
 
-struct DataRange {
+pub struct DataRange {
     blocks: Vec<BlockChunk>,
 }
