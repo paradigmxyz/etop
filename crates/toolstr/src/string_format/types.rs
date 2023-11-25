@@ -5,6 +5,7 @@ mod tests;
 use crate::FormatError;
 
 /// string format specification
+#[derive(Debug, Clone)]
 pub struct StringFormat {
     /// min_width of string, for padding
     pub min_width: usize,

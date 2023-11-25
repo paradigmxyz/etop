@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.4.8", features = ["derive"] }
 color-eyre = "0.6.2"
+cryo_freeze = { path = "/Users/stormslivkoff/repos/cryo/crates/freeze" }
 crossterm = { version = "0.27.0", features = ["event-stream"] }
 futures = "0.3.28"
 polars = { workspace = true }

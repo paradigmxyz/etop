@@ -1,8 +1,13 @@
 mod cli;
 mod dfs;
+mod exceptions;
 
-pub use cli::EtopError;
+pub use exceptions::EtopError;
+pub use dfs::ColumnFormat;
 
 fn main() {
-    cli::run_cli()
+    match cli::run_cli() {
+        Ok(_) => {},
+        Err(e) => eprintln!("ERROR: {:?}", e),
+    }
 }

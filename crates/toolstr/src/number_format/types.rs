@@ -24,7 +24,7 @@ pub(crate) const DEFAULT_PRECISION: usize = 6;
 pub(crate) const DEFAULT_FORMAT_TYPE: FormatType = FormatType::None;
 
 /// Represents a destructured specification of a provided format pattern string.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct NumberFormat {
     /// zero padding
     pub zero_padding: bool,

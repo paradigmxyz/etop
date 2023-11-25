@@ -5,6 +5,7 @@ mod tests;
 use crate::FormatError;
 
 /// binary format specification
+#[derive(Debug, Clone)]
 pub struct BinaryFormat {
     /// prefix of string
     pub prefix: bool,
