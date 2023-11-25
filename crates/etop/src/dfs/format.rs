@@ -1,23 +1,24 @@
-use super::io;
+// get number of lines in header
+// impl DataFrameFormat {
+//     fn n_header_lines(&self) -> usize {
+//         self.column_formats.map(|f| f.chars().filter(|&c| c == '\n').count())
+//     }
+// }
+
 use crate::dfs::types::ColumnFormat;
 use crate::EtopError;
 use polars::prelude::*;
-// use polars_core::prelude::*;
 
-pub(crate) fn print_dataframe(
-    path: String,
-    columns: Option<Vec<ColumnFormat>>,
-    n_rows: Option<usize>,
-) -> Result<(), EtopError> {
+pub struct DataFrameFormat {
+    pub column_formats: Option<Vec<ColumnFormat>>,
+    pub column_delimiter: Option<String>,
+    pub header_separator: bool,
+    pub n_rows: Option<usize>,
+}
 
-    // read file
-    let column_names: Option<Vec<String>> = columns
-        .as_ref()
-        .map(|cols| cols.iter().map(|c| c.name.clone()).collect());
-    let mut df = io::read_parquet(path, column_names)?;
-
+pub(crate) fn print_dataframe(df: DataFrame, format: DataFrameFormat) -> Result<(), EtopError> {
     // load columns
-    let columns: Vec<ColumnFormat> = match &columns {
+    let columns: Vec<ColumnFormat> = match &format.column_formats {
         Some(c) => c.to_owned(),
         None => df
             .schema()
@@ -33,21 +34,24 @@ pub(crate) fn print_dataframe(
     };
 
     // build header row
-    let n_rows = n_rows.unwrap_or_else(|| df.height().min(20));
+    let n_rows = format.n_rows.unwrap_or_else(|| df.height().min(20));
     let widths = determine_widths(&df, &columns)?;
     let total_width = widths.iter().sum();
     let mut header = String::with_capacity(total_width);
-    for (column, width) in columns.iter().zip(widths) {
-        header = format!("{}{:>width$}", header, column.display_name, width = width);
-    }
+    let column_delimiter = format.column_delimiter.unwrap_or(" ".to_string());
+    for (i, (column, width)) in columns.iter().zip(widths).enumerate() {
+        header.push_str(format!("{:>width$}", column.display_name, width = width).as_str());
+        if i != columns.len() - 1 {
+            header.push_str(column_delimiter.as_str());
+        }
+    };
 
-    // print file
-    println!("{:?}", df);
-    println!();
-    println!("{}", header);
+    // let header_separator = if format.header_separator {
+    // } else {
+    // };
 
     // clip by number of rows
-    df = df.slice(0, n_rows);
+    let mut df = df.clone().slice(0, n_rows);
 
     // convert numeric fields to float64
     for (name, dtype) in df.schema().iter() {
@@ -57,13 +61,17 @@ pub(crate) fn print_dataframe(
     };
 
     // print each row
+    println!("{}", header);
     for r in 0..n_rows {
         let mut row = String::new();
-        for column_format in columns.iter() {
+        for (c, column_format) in columns.iter().enumerate() {
             let df = df.clone();
             let column = df.column(column_format.name.as_str())?;
             let cell = format_cell(column, column_format, r)?;
-            row = format!("{} {}", row, cell);
+            row.push_str(cell.as_str());
+            if c != columns.len() - 1 {
+                row.push_str(column_delimiter.as_str());
+            }
         }
         println!("{}", row);
     };
@@ -71,18 +79,21 @@ pub(crate) fn print_dataframe(
     Ok(())
 }
 
-// use to_float() to convert all numeric types to f64
 fn format_cell(column: &Series, column_format: &ColumnFormat, r: usize) -> Result<String, EtopError> {
     match column.dtype() {
-        DataType::Binary => Ok("BINARY".to_string()),
-            // match column.binary()?.get(r) {
-            // Some(number) => Ok(column_format.number_format()?.format(number)?),
-            // None => Ok("-".into()),
-        // },
+        DataType::Binary => match column.binary()?.get(r) {
+            Some(binary) => Ok(column_format.binary_format()?.format(binary)?),
+            None => Ok("-".into()),
+        },
         DataType::Utf8 => Ok(column.str_value(r)?.to_string()),
         DataType::Float64 => match column.f64()?.get(r) {
             Some(number) => Ok(column_format.number_format()?.format(number)?),
             None => Ok("-".into()),
+        },
+        DataType::Boolean => match column.bool()?.get(r) {
+            Some(true) => Ok("yes".to_string()),
+            Some(false) => Ok("no".to_string()),
+            None => Ok("-".to_string()),
         },
         dtype => Err(EtopError::UnsupportedDatatype(dtype.to_string())),
     }

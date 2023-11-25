@@ -48,7 +48,7 @@ pub struct DataframeArgs {
     #[clap(long)]
     pub format: Option<String>,
 
-    /// Columns to load
+    /// Columns to load, COLUMN_NAME[=NEW_NAME][:WIDTH]
     #[clap(long, num_args=1..)]
     pub columns: Option<Vec<String>>,
 

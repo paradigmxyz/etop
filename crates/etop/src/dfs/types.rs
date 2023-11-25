@@ -47,12 +47,33 @@ impl Default for ColumnFormat {
     }
 }
 
+// extract formats
 impl ColumnFormat {
     pub fn number_format(&self) -> Result<NumberFormat, EtopError> {
         match self.format.as_ref() {
             Some(Format::Number(format)) => Ok(format.clone()),
             None => {
                 let mut fmt = NumberFormat::new();
+                if let Some(min_width) = self.min_width {
+                    fmt.min_width = min_width
+                };
+                if let Some(max_width) = self.max_width {
+                    fmt.max_width = max_width
+                };
+                Ok(fmt)
+            },
+            _ => {
+                let msg = format!("column {} requires NumberFormat", self.name);
+                Err(EtopError::MismatchedFormatType(msg))
+            }
+        }
+    }
+
+    pub fn binary_format(&self) -> Result<BinaryFormat, EtopError> {
+        match self.format.as_ref() {
+            Some(Format::Binary(format)) => Ok(format.clone()),
+            None => {
+                let mut fmt = BinaryFormat::new();
                 if let Some(min_width) = self.min_width {
                     fmt.min_width = min_width
                 };
@@ -114,12 +135,3 @@ impl ColumnFormat {
         self
     }
 }
-// struct DataFrameFormat {
-//     column_formats: Vec<ColumnFormat>,
-// }
-
-// impl DataFrameFormat {
-//     fn n_header_lines(&self) -> usize {
-//         self.column_formats.map(|f| f.chars().filter(|&c| c == '\n').count())
-//     }
-// }
