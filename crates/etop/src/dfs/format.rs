@@ -5,16 +5,9 @@
 //     }
 // }
 
-use crate::dfs::types::ColumnFormat;
+use crate::dfs::types::{ColumnFormat, DataFrameFormat};
 use crate::EtopError;
 use polars::prelude::*;
-
-pub struct DataFrameFormat {
-    pub column_formats: Option<Vec<ColumnFormat>>,
-    pub column_delimiter: Option<String>,
-    pub header_separator: bool,
-    pub n_rows: Option<usize>,
-}
 
 pub(crate) fn print_dataframe(df: DataFrame, format: DataFrameFormat) -> Result<(), EtopError> {
     // load columns

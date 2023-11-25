@@ -5,8 +5,14 @@ use std::collections::HashMap;
 use toolstr::{BinaryFormat, NumberFormat, StringFormat};
 
 pub trait Dataset {
+    /// name of dataset
+    fn name(&self) -> String;
+
+    /// plural noun of what the rows are
+    fn row_noun(&self) -> String;
+
     /// which datasets the view is constructed from
-    fn inputs() -> Vec<Datatype>;
+    fn inputs(&self) -> Vec<Datatype>;
 
     /// transform inputs into the data needed for a view
     fn transform(&self, dfs: HashMap<Datatype, DataFrame>) -> Result<DataFrame, EtopError>;
@@ -16,6 +22,13 @@ pub trait Dataset {
 
     /// default format for each column
     fn default_column_formats(&self) -> HashMap<String, ColumnFormat>;
+}
+
+pub struct DataFrameFormat {
+    pub column_formats: Option<Vec<ColumnFormat>>,
+    pub column_delimiter: Option<String>,
+    pub header_separator: bool,
+    pub n_rows: Option<usize>,
 }
 
 #[derive(Debug, Clone)]

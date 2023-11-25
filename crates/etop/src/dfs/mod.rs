@@ -4,4 +4,4 @@ pub(crate) mod io;
 mod types;
 
 pub(crate) use format::print_dataframe;
-pub use types::ColumnFormat;
+pub use types::{ColumnFormat, DataFrameFormat, Dataset};

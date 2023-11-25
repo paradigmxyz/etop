@@ -3,7 +3,7 @@ use crate::dfs;
 use crate::ColumnFormat;
 use crate::EtopError;
 use crate::dfs::io;
-use crate::dfs::format::DataFrameFormat;
+use crate::DataFrameFormat;
 
 /// print dataframe command
 pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
