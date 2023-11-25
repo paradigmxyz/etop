@@ -1,5 +1,4 @@
 use crate::{EtopError, ColumnFormat};
-use cryo_freeze::Datatype;
 use polars::prelude::*;
 use std::collections::HashMap;
 
@@ -11,10 +10,10 @@ pub trait Dataset {
     fn row_noun(&self) -> String;
 
     /// which datasets the view is constructed from
-    fn inputs(&self) -> Vec<Datatype>;
+    fn inputs(&self) -> Vec<String>;
 
     /// transform inputs into the data needed for a view
-    fn transform(&self, dfs: HashMap<Datatype, DataFrame>) -> Result<DataFrame, EtopError>;
+    fn transform(&self, dfs: HashMap<String, DataFrame>) -> Result<DataFrame, EtopError>;
 
     /// default columns
     fn default_columns(&self) -> Vec<String>;

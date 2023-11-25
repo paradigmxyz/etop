@@ -93,6 +93,12 @@ impl ColumnFormat {
         self
     }
 
+    pub fn width(mut self, width: usize) -> ColumnFormat {
+        self.min_width = Some(width);
+        self.max_width = Some(width);
+        self
+    }
+
     pub fn newline_underscores(mut self) -> ColumnFormat {
         self.display_name = self.display_name.replace('_', "\n");
         self
