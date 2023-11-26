@@ -1,4 +1,4 @@
-use crate::{DataframeArgs, ColumnFormat, EtopError, DataFrameFormat};
+use crate::{ColumnFormat, DataFrameFormat, DataframeArgs, EtopError};
 
 /// print dataframe command
 pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
@@ -17,7 +17,9 @@ pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
     Ok(())
 }
 
-pub(crate) fn parse_columns(columns: Option<Vec<String>>) -> Result<Option<Vec<ColumnFormat>>, EtopError> {
+pub(crate) fn parse_columns(
+    columns: Option<Vec<String>>,
+) -> Result<Option<Vec<ColumnFormat>>, EtopError> {
     match columns {
         None => Ok(None),
         Some(columns) => columns

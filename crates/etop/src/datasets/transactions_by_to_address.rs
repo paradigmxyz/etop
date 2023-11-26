@@ -1,10 +1,10 @@
-use crate::{ColumnFormat, Dataset, EtopError};
+use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
-struct TransactionsByToAddress;
+pub struct TransactionsByToAddress;
 
-impl Dataset for TransactionsByToAddress {
+impl DataSpec for TransactionsByToAddress {
     fn name(&self) -> String {
         "transactions_by_to_address".into()
     }
@@ -17,18 +17,15 @@ impl Dataset for TransactionsByToAddress {
         vec!["transactions".to_string()]
     }
 
-    fn transform(&self, inputs: HashMap<String, DataFrame>) -> Result<DataFrame, EtopError> {
-        if let Some(txs) = inputs.get("transactions") {
-            let df = txs
-                .clone()
-                .lazy()
-                .group_by(["to_address"])
-                .agg([count(), col("value_f64").sum()])
-                .collect();
-            df.map_err(EtopError::PolarsError)
-        } else {
-            Err(EtopError::TransformError("df missing for txs".to_string()))
-        }
+    fn transform(&self, inputs: DataWarehouse) -> Result<DataFrame, EtopError> {
+        let txs = inputs.get_dataset("transactions")?;
+        let df = txs
+            .clone()
+            .lazy()
+            .group_by(["to_address"])
+            .agg([count(), col("value_f64").sum()])
+            .collect();
+        df.map_err(EtopError::PolarsError)
     }
 
     fn default_columns(&self) -> Vec<String> {

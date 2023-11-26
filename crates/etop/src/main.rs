@@ -3,11 +3,11 @@ mod datasets;
 mod types;
 
 pub(crate) use cli::*;
-pub use types::{ColumnFormat, DataFrameFormat, Dataset, EtopError};
+pub use types::*;
 
 fn main() {
     match cli::run_cli() {
-        Ok(_) => {},
+        Ok(_) => {}
         Err(e) => eprintln!("ERROR: {:?}", e),
     }
 }

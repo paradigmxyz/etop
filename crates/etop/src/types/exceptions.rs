@@ -1,12 +1,14 @@
 #[derive(Debug)]
 pub enum EtopError {
+    ArgumentError(String),
     ParseError(String),
     CouldNotOpenFile(String),
     CouldNotReadFile(String),
     InvalidFormat(String),
-    TransformError(String),
     PolarsError(polars::prelude::PolarsError),
     ColumnMissing(String),
+    MissingData(String),
+    UnknownData(String),
     UnsupportedDatatype(String),
     MismatchedFormatType(String),
     FormatError(toolstr::FormatError),

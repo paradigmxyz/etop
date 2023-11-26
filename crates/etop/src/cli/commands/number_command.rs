@@ -10,7 +10,9 @@ pub fn number_command(args: NumberArgs) -> Result<(), EtopError> {
             (Some(format), _) => print_format(number, format),
             (None, true) => print_all_formats(number),
             (None, false) => {
-                return Err(EtopError::InvalidFormat("provide --format or --all-formats".to_string()))
+                return Err(EtopError::InvalidFormat(
+                    "provide --format or --all-formats".to_string(),
+                ))
             }
         },
         Err(_) => {

@@ -1,12 +1,13 @@
 mod dataframes;
-mod datasets;
+mod dataspecs;
 mod exceptions;
 mod formats;
-mod pipeline;
+mod ui;
+mod warehouse;
 
 pub(crate) use dataframes::read_parquet;
-pub use datasets::*;
+pub use dataspecs::*;
 pub use exceptions::*;
 pub use formats::*;
-pub use pipeline::*;
-
+pub use ui::*;
+pub use warehouse::*;

@@ -44,7 +44,7 @@ impl ColumnFormat {
                     fmt.max_width = max_width
                 };
                 Ok(fmt)
-            },
+            }
             _ => {
                 let msg = format!("column {} requires NumberFormat", self.name);
                 Err(EtopError::MismatchedFormatType(msg))
@@ -64,7 +64,7 @@ impl ColumnFormat {
                     fmt.max_width = max_width
                 };
                 Ok(fmt)
-            },
+            }
             _ => {
                 let msg = format!("column {} requires NumberFormat", self.name);
                 Err(EtopError::MismatchedFormatType(msg))

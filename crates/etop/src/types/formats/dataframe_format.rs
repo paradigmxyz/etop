@@ -1,5 +1,5 @@
-use polars::prelude::*;
 use crate::{ColumnFormat, EtopError};
+use polars::prelude::*;
 
 pub struct DataFrameFormat {
     pub column_formats: Option<Vec<ColumnFormat>>,
@@ -44,7 +44,7 @@ impl DataFrameFormat {
             if i != columns.len() - 1 {
                 header.push_str(column_delimiter.as_str());
             }
-        };
+        }
 
         // let header_separator = if format.header_separator {
         // } else {
@@ -56,9 +56,12 @@ impl DataFrameFormat {
         // convert numeric fields to float64
         for (name, dtype) in df.schema().iter() {
             if dtype.is_numeric() {
-                df = df.clone().with_column(df.column(name)?.to_float()?)?.clone();
+                df = df
+                    .clone()
+                    .with_column(df.column(name)?.to_float()?)?
+                    .clone();
             }
-        };
+        }
 
         // print each row
         let mut rows = vec![];
@@ -75,13 +78,17 @@ impl DataFrameFormat {
                 }
             }
             rows.push(row);
-        };
+        }
 
         Ok(rows.join("\n"))
     }
 }
 
-fn format_cell(column: &Series, column_format: &ColumnFormat, r: usize) -> Result<String, EtopError> {
+fn format_cell(
+    column: &Series,
+    column_format: &ColumnFormat,
+    r: usize,
+) -> Result<String, EtopError> {
     match column.dtype() {
         DataType::Binary => match column.binary()?.get(r) {
             Some(binary) => Ok(column_format.binary_format()?.format(binary)?),

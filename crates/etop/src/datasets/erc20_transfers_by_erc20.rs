@@ -1,10 +1,10 @@
-use crate::{EtopError, ColumnFormat, Dataset};
+use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
-struct Erc20TransfersByErc20s;
+pub struct Erc20TransfersByErc20;
 
-impl Dataset for Erc20TransfersByErc20s {
+impl DataSpec for Erc20TransfersByErc20 {
     /// name of dataset
     fn name(&self) -> String {
         "erc20_transfers_by_erc20".to_string()
@@ -21,27 +21,25 @@ impl Dataset for Erc20TransfersByErc20s {
     }
 
     /// transform inputs into the data needed for a view
-    fn transform(&self, _dfs: HashMap<String, DataFrame>) -> Result<DataFrame, EtopError> {
+    fn transform(&self, _dfs: DataWarehouse) -> Result<DataFrame, EtopError> {
         todo!();
     }
 
     /// default columns
     fn default_columns(&self) -> Vec<String> {
-        vec![
-            "erc20",
-            "n_transfers",
-            "n_senders",
-            "n_receivers",
-        ]
-        .into_iter()
-        .map(|column| column.to_string())
-        .collect()
+        ["erc20", "n_transfers", "n_senders", "n_receivers"]
+            .into_iter()
+            .map(|column| column.to_string())
+            .collect()
     }
 
     /// default format for each column
     fn default_column_formats(&self) -> HashMap<String, ColumnFormat> {
         vec![
-            ColumnFormat::new().name("erc20").display_name("erc20").width(10),
+            ColumnFormat::new()
+                .name("erc20")
+                .display_name("erc20")
+                .width(10),
             ColumnFormat::new().name("n_transfers").width(10),
             ColumnFormat::new().name("n_senders").width(10),
             ColumnFormat::new().name("n_receivers").width(10),
@@ -51,4 +49,3 @@ impl Dataset for Erc20TransfersByErc20s {
         .collect()
     }
 }
-

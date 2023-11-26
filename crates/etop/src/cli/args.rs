@@ -1,6 +1,6 @@
-use clap::{Parser, Subcommand};
-use super::commands::{number_command, dataframe_command, dataset_command};
+use super::commands::{dataframe_command, dataset_command, number_command};
 use crate::EtopError;
+use clap::{Parser, Subcommand};
 
 /// Utility for creating and managing MESC RPC configurations
 #[derive(Parser)]
@@ -64,17 +64,20 @@ pub struct DataframeArgs {
 /// Arguments for the `dataframe` subcommand
 #[derive(Parser)]
 pub struct DatasetArgs {
-    /// Template
+    /// Dataset to load
     #[clap()]
-    pub template: String,
+    pub dataset: String,
 
     /// Number to format
     #[clap(long)]
-    pub path: Option<String>,
+    pub data_dir: Option<String>,
 
     /// Columns to load
     #[clap(long, num_args=1..)]
     pub columns: Option<Vec<String>>,
+
+    /// Window size
+    pub window: Option<u64>,
 }
 
 pub(crate) fn run_cli() -> Result<(), EtopError> {
