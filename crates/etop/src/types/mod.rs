@@ -5,7 +5,7 @@ mod formats;
 mod ui;
 mod warehouse;
 
-pub(crate) use dataframes::read_parquet;
+pub(crate) use dataframes::*;
 pub use dataspecs::*;
 pub use exceptions::*;
 pub use formats::*;

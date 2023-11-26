@@ -27,6 +27,6 @@ pub fn load_dataspec(name: String) -> Result<Box<dyn DataSpec>, EtopError> {
         "blocks" => Ok(Box::new(datasets::Blocks)),
         "erc20_transfers_by_erc20" => Ok(Box::new(datasets::Erc20TransfersByErc20)),
         "transactions_by_to_address" => Ok(Box::new(datasets::TransactionsByToAddress)),
-        _ => Err(EtopError::UnknownData(format!("unknown dataset: {}", name))),
+        _ => Err(EtopError::UnknownData(format!("invalid dataset: {}", name))),
     }
 }

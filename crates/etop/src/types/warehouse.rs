@@ -27,6 +27,27 @@ impl DataWarehouse {
             .ok_or(EtopError::MissingData(name.into()))
     }
 
+    /// add dataset
+    pub fn add_dataset(&mut self, name: String, data: DataFrame) -> Result<(), EtopError> {
+        self.data.insert(name.clone(), data.clone());
+
+        // load index
+        let blocks = data.column("block_number")?.u32()?;
+        let chunk = match (blocks.min(), blocks.max()) {
+            (Some(start_block), Some(end_block)) => {
+                BlockChunk::Range(start_block as u64, end_block as u64)
+            }
+            _ => {
+                let message = format!("no blocks loaded for: {}", name);
+                return Err(EtopError::MissingData(message));
+            }
+        };
+        let range = vec![DataRange::Block(chunk)];
+        self.index.insert(name, range);
+
+        Ok(())
+    }
+
     pub fn min_collected_block(&self) -> Option<u64> {
         self.index
             .values()

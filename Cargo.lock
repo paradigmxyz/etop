@@ -1472,6 +1472,7 @@ dependencies = [
  "crossterm",
  "cryo_freeze",
  "futures",
+ "glob",
  "polars",
  "ratatui",
  "tokio",
