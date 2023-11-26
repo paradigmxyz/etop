@@ -34,7 +34,7 @@ fn load_dataset_from_files(name: &str, data_dir: &str) -> Result<Vec<DataFrame>,
     let pattern = format!("{}/{}/*__{}__*", data_dir, name, name);
     let paths = glob::glob(&pattern)?;
     let paths: Vec<_> = paths.collect();
-    println!("for {}, {} files being loaded", name, paths.len());
+    // println!("for {}, {} files being loaded", name, paths.len());
     let mut dfs: Vec<DataFrame> = vec![];
     for path in paths.into_iter() {
         dfs.push(read_parquet(path?, None)?)

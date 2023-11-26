@@ -2,30 +2,44 @@ use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct Erc20TransfersByErc20;
 
 impl DataSpec for Erc20TransfersByErc20 {
-    /// name of dataset
     fn name(&self) -> String {
         "erc20_transfers_by_erc20".to_string()
     }
 
-    /// plural noun of what the rows are
     fn row_noun(&self) -> String {
         "erc20s".into()
     }
 
-    /// which datasets the view is constructed from
     fn inputs(&self) -> Vec<String> {
         vec!["erc20_transfers".to_string()]
     }
 
-    /// transform inputs into the data needed for a view
-    fn transform(&self, _dfs: DataWarehouse) -> Result<DataFrame, EtopError> {
-        todo!();
+    fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError> {
+        let erc20_transfers = warehouse.get_dataset("erc20_transfers")?;
+        let sort = SortOptions {
+            descending: true,
+            nulls_last: true,
+            multithreaded: true,
+            maintain_order: true,
+        };
+        let df = erc20_transfers
+            .clone()
+            .lazy()
+            .group_by(["erc20"])
+            .agg([
+                count().alias("n_transfers"),
+                col("from_address").n_unique().alias("n_senders"),
+                col("to_address").n_unique().alias("n_receivers"),
+            ])
+            .sort("n_transfers", sort)
+            .collect();
+        df.map_err(EtopError::PolarsError)
     }
 
-    /// default columns
     fn default_columns(&self) -> Vec<String> {
         ["erc20", "n_transfers", "n_senders", "n_receivers"]
             .into_iter()
@@ -33,7 +47,6 @@ impl DataSpec for Erc20TransfersByErc20 {
             .collect()
     }
 
-    /// default format for each column
     fn default_column_formats(&self) -> HashMap<String, ColumnFormat> {
         vec![
             ColumnFormat::new()

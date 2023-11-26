@@ -104,7 +104,10 @@ fn format_cell(
             Some(false) => Ok("no".to_string()),
             None => Ok("-".to_string()),
         },
-        dtype => Err(EtopError::UnsupportedDatatype(dtype.to_string())),
+        dtype => {
+            let message = format!("column {} has type {}", column.name(), dtype);
+            Err(EtopError::UnsupportedDatatype(message))
+        }
     }
 }
 

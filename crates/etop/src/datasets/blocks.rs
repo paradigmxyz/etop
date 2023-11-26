@@ -2,6 +2,7 @@ use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct Blocks;
 
 impl DataSpec for Blocks {
@@ -17,7 +18,7 @@ impl DataSpec for Blocks {
         vec!["blocks".to_string()]
     }
 
-    fn transform(&self, warehouse: DataWarehouse) -> Result<DataFrame, EtopError> {
+    fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError> {
         warehouse.get_dataset("blocks")
     }
 

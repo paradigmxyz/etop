@@ -12,7 +12,7 @@ repository = "https://github.com/paradigmxyz/etop"
 exclude = [".github/"]
 
 [workspace.dependencies]
-polars = { version = "0.35.0", features = [
+polars = { version = "0.35.4", features = [
     "parquet",
     "string_encoding",
     "polars-lazy",

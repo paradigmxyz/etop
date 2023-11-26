@@ -2,6 +2,7 @@ use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
+#[derive(Clone)]
 pub struct TransactionsByToAddress;
 
 impl DataSpec for TransactionsByToAddress {
@@ -17,13 +18,20 @@ impl DataSpec for TransactionsByToAddress {
         vec!["transactions".to_string()]
     }
 
-    fn transform(&self, inputs: DataWarehouse) -> Result<DataFrame, EtopError> {
+    fn transform(&self, inputs: &DataWarehouse) -> Result<DataFrame, EtopError> {
         let txs = inputs.get_dataset("transactions")?;
+        let sort = SortOptions {
+            descending: true,
+            nulls_last: true,
+            multithreaded: true,
+            maintain_order: true,
+        };
         let df = txs
             .clone()
             .lazy()
             .group_by(["to_address"])
             .agg([count(), col("value_f64").sum()])
+            .sort("count", sort)
             .collect();
         df.map_err(EtopError::PolarsError)
     }

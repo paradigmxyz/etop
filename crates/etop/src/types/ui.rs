@@ -1,12 +1,10 @@
-use crate::DataSpec;
-
 pub struct UI {
     /// window
     pub window: Window,
     /// other window, for comparison to main window
     pub other_window: Option<Window>,
     /// dataset being displayed
-    pub dataset: Box<dyn DataSpec>,
+    pub dataspec: String,
     /// data source
     pub source: DataSource,
 }
