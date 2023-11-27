@@ -1,6 +1,5 @@
-use crate::{ColumnFormat, DataFrameFormat, DataframeArgs, EtopError};
+use crate::{CellFormat, ColumnFormat, DataFrameFormat, DataframeArgs, EtopError, UnknownFormat};
 
-/// print dataframe command
 pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
     let columns = parse_columns(args.columns)?;
     let column_names: Option<Vec<String>> = columns
@@ -9,9 +8,8 @@ pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
     let df = crate::types::read_parquet(args.path, column_names)?;
     let fmt = DataFrameFormat {
         column_formats: columns,
-        column_delimiter: Some("  │  ".to_string()),
-        header_separator: true,
-        n_rows: args.rows,
+        render_height: args.rows,
+        ..Default::default()
     };
     println!("{}", fmt.format(df)?);
     Ok(())
@@ -30,6 +28,7 @@ pub(crate) fn parse_columns(
     }
 }
 
+/// syntax "$COLUMN_NAME=[$DISPLAY_NAME][:$WIDTH]"
 fn parse_column(column: String) -> Result<ColumnFormat, EtopError> {
     let parts: Vec<&str> = column.split(':').collect();
     let column_part = parts[0];
@@ -48,11 +47,14 @@ fn parse_column(column: String) -> Result<ColumnFormat, EtopError> {
         None
     };
 
+    let format = UnknownFormat {
+        min_width: width,
+        max_width: width,
+    };
+
     Ok(ColumnFormat {
         name,
         display_name,
-        min_width: width,
-        max_width: width,
-        format: None,
+        format: CellFormat::Unknown(format),
     })
 }

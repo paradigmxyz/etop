@@ -6,11 +6,14 @@
     attr(deny(warnings, rust_2018_idioms), allow(dead_code, unused_variables))
 ))]
 
-/// number formatting
-pub mod number_format;
+/// bool formatting
+pub mod bool_format;
 
 /// binary formatting
 pub mod binary_format;
+
+/// number formatting
+pub mod number_format;
 
 /// string formatting
 pub mod string_format;
@@ -19,6 +22,7 @@ pub mod string_format;
 pub mod exceptions;
 
 pub use binary_format::*;
+pub use bool_format::*;
 pub use exceptions::*;
 pub use number_format::*;
 pub use string_format::*;

@@ -41,6 +41,18 @@ pub enum BinaryAlign {
 }
 
 impl BinaryFormat {
+    /// format option of binary data
+    pub fn format_option<T: AsRef<[u8]>, S: AsRef<str>>(
+        &self,
+        data: Option<T>,
+        none_str: S,
+    ) -> Result<String, FormatError> {
+        match data {
+            Some(data) => self.format(data),
+            None => Ok(none_str.as_ref().to_string()),
+        }
+    }
+
     /// format binary data
     pub fn format<T: AsRef<[u8]>>(&self, data: T) -> Result<String, FormatError> {
         let s = bytes_to_hex(data);

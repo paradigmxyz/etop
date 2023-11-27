@@ -53,6 +53,18 @@ impl NumberFormat {
     pub fn format<T: Into<f64>>(&self, input: T) -> Result<String, FormatError> {
         super::interface::number_format(self, input)
     }
+
+    /// format option of binary data
+    pub fn format_option<T: Into<f64>, S: AsRef<str>>(
+        &self,
+        input: Option<T>,
+        none_str: S,
+    ) -> Result<String, FormatError> {
+        match input {
+            Some(data) => self.format(data),
+            None => Ok(none_str.as_ref().to_string()),
+        }
+    }
 }
 
 impl Default for NumberFormat {

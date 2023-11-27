@@ -27,6 +27,33 @@ impl StringFormat {
         self
     }
 
+    /// set width
+    pub fn width_option(self, width: Option<usize>) -> StringFormat {
+        self.min_width_option(width).max_width_option(width)
+    }
+
+    /// set min_width
+    pub fn min_width_option(mut self, width: Option<usize>) -> StringFormat {
+        match width {
+            Some(width) => {
+                self.min_width = width;
+                self
+            }
+            None => self,
+        }
+    }
+
+    /// set max_width
+    pub fn max_width_option(mut self, width: Option<usize>) -> StringFormat {
+        match width {
+            Some(width) => {
+                self.max_width = width;
+                self
+            }
+            None => self,
+        }
+    }
+
     // align
 
     /// left align

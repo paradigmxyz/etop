@@ -14,33 +14,35 @@ pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
         Some(data_dir) => load_warehouse_from_filesystem(&*dataspec, data_dir)?,
         None => return Err(EtopError::ArgumentError("specify --data-dir".to_string())),
     };
-    // let window_size = args.window.unwrap_or(100);
-    // let start_block = warehouse
-    //     .min_collected_block()
-    //     .ok_or(EtopError::MissingData("no blocks collected".to_string()))?;
-    // let end_block = start_block + window_size;
-    // let window = Window {
-    //     start_block,
-    //     end_block,
-    //     live: false,
-    //     size: WindowSize::Block(window_size),
-    // };
-    // let _ui = UI {
-    //     window,
-    //     other_window: None,
-    //     dataspec: dataspec,
-    //     source: DataSource::File(FileSource {}),
-    // };
-    // println!("{:?}", warehouse);
 
     let df = dataspec.transform(&warehouse)?;
     let fmt = DataFrameFormat {
         column_formats: None,
-        column_delimiter: Some("  │  ".to_string()),
-        header_separator: true,
-        n_rows: Some(20),
+        render_height: Some(20),
+        ..Default::default()
     };
     println!("{}", fmt.format(df)?);
 
     Ok(())
 }
+
+// fn create_ui() {
+//     // let window_size = args.window.unwrap_or(100);
+//     // let start_block = warehouse
+//     //     .min_collected_block()
+//     //     .ok_or(EtopError::MissingData("no blocks collected".to_string()))?;
+//     // let end_block = start_block + window_size;
+//     // let window = Window {
+//     //     start_block,
+//     //     end_block,
+//     //     live: false,
+//     //     size: WindowSize::Block(window_size),
+//     // };
+//     // let _ui = UI {
+//     //     window,
+//     //     other_window: None,
+//     //     dataspec: dataspec,
+//     //     source: DataSource::File(FileSource {}),
+//     // };
+//     // println!("{:?}", warehouse);
+// }

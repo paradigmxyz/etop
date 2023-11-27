@@ -4,44 +4,50 @@ mod tests;
 
 use crate::FormatError;
 
-/// string format specification
+/// bool format specification
 #[derive(Debug, Clone)]
-pub struct StringFormat {
-    /// min_width of string, for padding
+pub struct BoolFormat {
+    /// min_width of bool, for padding
     pub min_width: usize,
-    /// max_width of string, for padding
+    /// max_width of bool, for padding
     pub max_width: usize,
-    /// align string to left or right
-    pub align: StringAlign,
+    /// align bool to left or right
+    pub align: BoolAlign,
     /// fill padding char
     pub fill_char: char,
+    /// true string
+    pub true_text: String,
+    /// false string
+    pub false_text: String,
 }
 
-impl Default for StringFormat {
-    fn default() -> StringFormat {
-        StringFormat {
+impl Default for BoolFormat {
+    fn default() -> BoolFormat {
+        BoolFormat {
             min_width: 0,
             max_width: usize::MAX,
-            align: StringAlign::Right,
+            align: BoolAlign::Right,
             fill_char: ' ',
+            true_text: "true".to_string(),
+            false_text: "false".to_string(),
         }
     }
 }
 
-/// alignment of string data
+/// alignment of bool data
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub enum StringAlign {
+pub enum BoolAlign {
     /// left align
     Left,
     /// right align
     Right,
 }
 
-impl StringFormat {
-    /// format string data
-    pub fn format_option<T: AsRef<str>, S: AsRef<str>>(
+impl BoolFormat {
+    /// format bool data
+    pub fn format_option<S: AsRef<str>>(
         &self,
-        s: Option<T>,
+        s: Option<bool>,
         none_str: S,
     ) -> Result<String, FormatError> {
         match s {
@@ -50,14 +56,17 @@ impl StringFormat {
         }
     }
 
-    /// format string data
-    pub fn format<T: AsRef<str>>(&self, s: T) -> Result<String, FormatError> {
-        let s = s.as_ref();
+    /// format bool data
+    pub fn format(&self, s: bool) -> Result<String, FormatError> {
+        let s = match s {
+            true => self.true_text.clone(),
+            false => self.false_text.clone(),
+        };
         if s.len() < self.min_width {
             let pad = self.fill_char.to_string().repeat(self.min_width - s.len());
             match &self.align {
-                StringAlign::Left => Ok(format!("{}{}", s, pad)),
-                StringAlign::Right => Ok(format!("{}{}", pad, s)),
+                BoolAlign::Left => Ok(format!("{}{}", s, pad)),
+                BoolAlign::Right => Ok(format!("{}{}", pad, s)),
             }
         } else if s.len() > self.max_width {
             if self.max_width < 3 {
@@ -68,7 +77,7 @@ impl StringFormat {
             match s.get(0..(self.max_width - 3)) {
                 Some(s) => Ok(format!("{}...", s)),
                 None => Err(FormatError::InvalidFormat(
-                    "could not take slice of string".to_string(),
+                    "could not take slice of bool".to_string(),
                 )),
             }
         } else {

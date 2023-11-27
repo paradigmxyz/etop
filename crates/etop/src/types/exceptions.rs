@@ -9,6 +9,7 @@ pub enum EtopError {
     ColumnMissing(String),
     MissingData(String),
     UnknownData(String),
+    EmptyData(String),
     UnsupportedDatatype(String),
     MismatchedFormatType(String),
     FormatError(toolstr::FormatError),
