@@ -22,6 +22,7 @@ pub(crate) const DEFAULT_MAX_WIDTH: usize = usize::MAX;
 pub(crate) const DEFAULT_COMMAS: bool = false;
 pub(crate) const DEFAULT_PRECISION: usize = 6;
 pub(crate) const DEFAULT_FORMAT_TYPE: FormatType = FormatType::None;
+pub(crate) const DEFAULT_TIMEZONE: Timezone = Timezone::Utc;
 
 /// Represents a destructured specification of a provided format pattern string.
 #[derive(Debug, Clone)]
@@ -46,6 +47,14 @@ pub struct NumberFormat {
     pub precision: usize,
     /// format type
     pub format_type: FormatType,
+    /// timezone
+    pub timezone: Timezone,
+}
+
+#[derive(Debug, Clone)]
+pub enum Timezone {
+    Local,
+    Utc,
 }
 
 impl NumberFormat {
@@ -80,6 +89,7 @@ impl Default for NumberFormat {
             commas: DEFAULT_COMMAS,
             precision: DEFAULT_PRECISION,
             format_type: FormatType::default(),
+            timezone: DEFAULT_TIMEZONE,
         }
     }
 }
@@ -145,6 +155,12 @@ pub enum FormatType {
     Hex,
     /// hex upper case format
     HexUppercase,
+    /// integer order of magnitude (display integer when <1000)
+    IntegerOrderOfMagnitude,
+    /// float order of magnitude (display as float when <1000)
+    FloatOrderOfMagnitude,
+    /// timestamp pretty
+    TimestampPretty,
     /// no format
     None,
 }
@@ -164,6 +180,9 @@ impl FormatType {
             FormatType::Decimal,
             FormatType::Hex,
             FormatType::HexUppercase,
+            FormatType::IntegerOrderOfMagnitude,
+            FormatType::FloatOrderOfMagnitude,
+            FormatType::TimestampPretty,
             FormatType::None,
         ]
     }

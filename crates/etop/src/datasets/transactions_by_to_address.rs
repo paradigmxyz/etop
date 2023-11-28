@@ -34,7 +34,7 @@ impl DataSpec for TransactionsByToAddress {
             .agg([
                 count().alias("n_txs"),
                 col("value_f64").sum().alias("eth_sent") / lit(1e18),
-                col("gas_price").mean().alias("mean_gas_price") / lit(1e18),
+                col("gas_price").mean().alias("mean_gas_price") / lit(1e9),
                 col("gas_used").mean().alias("mean_gas_used"),
             ])
             .sort("n_txs", sort)
@@ -56,26 +56,29 @@ impl DataSpec for TransactionsByToAddress {
     }
 
     fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
-        let float_format = NumberFormat::new().si().precision(4);
+        let float_format = NumberFormat::new().si().precision(3);
+        let oom_integer_format = NumberFormat::new().integer_oom().precision(0);
+        let oom_float_format = NumberFormat::new().float_oom().precision(1);
         vec![
             ColumnFormatShorthand::new()
                 .name("to_address")
                 .newline_underscores(),
             ColumnFormatShorthand::new()
                 .name("n_txs")
-                .newline_underscores(),
+                .newline_underscores()
+                .set_format(oom_integer_format.clone()),
             ColumnFormatShorthand::new()
                 .name("eth_sent")
                 .newline_underscores()
-                .set_format(float_format.clone()),
+                .set_format(oom_float_format.clone()),
             ColumnFormatShorthand::new()
                 .name("mean_gas_price")
                 .newline_underscores()
-                .set_format(float_format.clone()),
+                .set_format(float_format),
             ColumnFormatShorthand::new()
                 .name("mean_gas_used")
                 .newline_underscores()
-                .set_format(float_format),
+                .set_format(oom_float_format.clone()),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

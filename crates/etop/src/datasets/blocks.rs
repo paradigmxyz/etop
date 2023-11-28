@@ -19,37 +19,57 @@ impl DataSpec for Blocks {
     }
 
     fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError> {
+        let sort = SortOptions {
+            descending: true,
+            nulls_last: true,
+            multithreaded: true,
+            maintain_order: true,
+        };
         warehouse
             .get_dataset("blocks")?
             .clone()
             .lazy()
             .with_column(col("base_fee_per_gas") / lit(1e9))
+            .sort("block_number", sort)
             .collect()
             .map_err(EtopError::PolarsError)
     }
 
     fn default_columns(&self) -> Vec<String> {
-        ["block_number", "timestamp", "gas_used", "base_fee_per_gas", "author"]
-            .iter()
-            .map(|s| s.to_string())
-            .collect()
+        [
+            "block_number",
+            "timestamp",
+            "gas_used",
+            "base_fee_per_gas",
+            "author",
+        ]
+        .iter()
+        .map(|s| s.to_string())
+        .collect()
     }
 
     fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
+        let integer_oom = toolstr::NumberFormat::new().integer_oom().precision(1);
+        let float_oom = toolstr::NumberFormat::new().float_oom().precision(1);
+        let timestamp_fmt = toolstr::NumberFormat::new().timestamp();
+
         vec![
             ColumnFormatShorthand::new()
                 .name("block_number")
                 .newline_underscores(),
-            ColumnFormatShorthand::new().name("timestamp"),
+            ColumnFormatShorthand::new()
+                .name("timestamp")
+                .set_format(timestamp_fmt),
             ColumnFormatShorthand::new()
                 .name("gas_used")
+                .set_format(integer_oom)
                 .newline_underscores(),
             ColumnFormatShorthand::new()
                 .name("base_fee_per_gas")
                 .display_name("base_fee")
+                .set_format(float_oom)
                 .newline_underscores(),
-            ColumnFormatShorthand::new()
-                .name("author"),
+            ColumnFormatShorthand::new().name("author"),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

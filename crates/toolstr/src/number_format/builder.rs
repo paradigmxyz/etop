@@ -1,4 +1,4 @@
-use super::types::{FormatType, NumberAlign, NumberFormat, Sign};
+use super::types::{FormatType, NumberAlign, NumberFormat, Sign, Timezone};
 
 impl NumberFormat {
     /// create new number format
@@ -158,6 +158,20 @@ impl NumberFormat {
         self
     }
 
+    // timezone
+
+    /// use local timezone
+    pub fn timezone_local(mut self) -> NumberFormat {
+        self.timezone = Timezone::Local;
+        self
+    }
+
+    /// use utc timezone
+    pub fn timezone_utc(mut self) -> NumberFormat {
+        self.timezone = Timezone::Utc;
+        self
+    }
+
     // format_type
 
     /// format as scientific notation
@@ -193,6 +207,24 @@ impl NumberFormat {
     /// format as hex
     pub fn hex(mut self) -> NumberFormat {
         self.format_type = FormatType::Octal;
+        self
+    }
+
+    /// format as integer order of magnitude
+    pub fn integer_oom(mut self) -> NumberFormat {
+        self.format_type = FormatType::IntegerOrderOfMagnitude;
+        self
+    }
+
+    /// format as float order of magnitude
+    pub fn float_oom(mut self) -> NumberFormat {
+        self.format_type = FormatType::FloatOrderOfMagnitude;
+        self
+    }
+
+    /// format as float order of magnitude
+    pub fn timestamp(mut self) -> NumberFormat {
+        self.format_type = FormatType::TimestampPretty;
         self
     }
 

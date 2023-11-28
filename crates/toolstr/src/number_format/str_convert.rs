@@ -1,4 +1,6 @@
-use super::types::{FormatType, NumberAlign, NumberFormat, Sign, DEFAULT_PRECISION};
+use super::types::{
+    FormatType, NumberAlign, NumberFormat, Sign, DEFAULT_PRECISION, DEFAULT_TIMEZONE,
+};
 use crate::FormatError;
 use regex::{Captures, Regex};
 use std::fmt;
@@ -107,6 +109,8 @@ impl From<Captures<'_>> for NumberFormat {
             .and_then(|s| s.as_str().parse().ok())
             .unwrap_or(FormatType::None);
 
+        let timezone = DEFAULT_TIMEZONE;
+
         let max_width = usize::MAX;
         let mut spec = Self {
             fill,
@@ -119,6 +123,7 @@ impl From<Captures<'_>> for NumberFormat {
             commas,
             precision,
             format_type,
+            timezone,
         };
 
         // If zero fill is specified, padding goes after sign and before digits.

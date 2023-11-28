@@ -3,8 +3,8 @@ use super::unknown_format::UnknownFormat;
 use crate::EtopError;
 use polars::prelude::*;
 use toolstr::{BinaryFormat, BoolFormat, NumberFormat, StringFormat};
-use unicode_truncate::UnicodeTruncateStr;
 use unicode_truncate::Alignment;
+use unicode_truncate::UnicodeTruncateStr;
 
 #[derive(Debug, Clone)]
 pub struct ColumnFormatShorthand {
@@ -122,7 +122,6 @@ impl ColumnFormat {
             .map(|s| s.chars().count())
             .max()
             .unwrap_or(0);
-
 
         let formatted = if self.align == ColumnAlign::Right {
             formatted

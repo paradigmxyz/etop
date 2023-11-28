@@ -1,6 +1,7 @@
 use super::process;
-use super::types::{FormatType, NumberAlign, NumberFormat, Sign, DECIMAL_CHAR, PREFIXES};
+use super::types::{FormatType, NumberAlign, NumberFormat, Sign, Timezone, DECIMAL_CHAR, PREFIXES};
 use crate::FormatError;
+use chrono::{Local, NaiveDateTime, TimeZone, Utc};
 
 /// Format a number to a specific human readable form defined by the format spec pattern.
 /// The method takes in a string specifier and a number and returns the string representation
@@ -66,6 +67,95 @@ pub(crate) fn number_format<T: Into<f64>>(
                 process::format_si_prefix(input_f64.abs(), Some(number_format.precision))?;
             si_prefix_exponent = PREFIXES[(8 + si_prefix) as usize];
             val
+        }
+        FormatType::IntegerOrderOfMagnitude => {
+            if input_f64 < -1.0 {
+                return Ok("neg".to_string());
+            } else if input_f64 > 900_000_000_000_000_000.0 {
+                return Ok("big".to_string());
+            } else {
+                let (prefix, prevalue) = match input_f64 {
+                    value if value <= 1_000.0 => ("", value),
+                    value if value <= 9_999.0 => ("", value),
+                    value if value < 1_000_000.0 => ("K", value / 1_000.0),
+                    value if value < 1_000_000_000.0 => ("M", value / 1_000_000.0),
+                    value if value < 1_000_000_000_000.0 => ("B", value / 1_000_000_000.0),
+                    value if value < 1_000_000_000_000_000.0 => ("T", value / 1_000_000_000_000.0),
+                    value if value < 1_000_000_000_000_000_000.0 => {
+                        ("Q", value / 1_000_000_000_000_000.0)
+                    }
+                    _ => return Err(FormatError::InvalidFormat("number too big".to_string())),
+                };
+
+                let result = match number_format.precision {
+                    0 => format!("{:.0}{}", prevalue, prefix),
+                    1 => format!("{:.1}{}", prevalue, prefix),
+                    2 => format!("{:.2}{}", prevalue, prefix),
+                    3 => format!("{:.3}{}", prevalue, prefix),
+                    4 => format!("{:.4}{}", prevalue, prefix),
+                    5 => format!("{:.5}{}", prevalue, prefix),
+                    6 => format!("{:.6}{}", prevalue, prefix),
+                    7 => format!("{:.7}{}", prevalue, prefix),
+                    8 => format!("{:.8}{}", prevalue, prefix),
+                    9 => format!("{:.9}{}", prevalue, prefix),
+                    10 => format!("{:.10}{}", prevalue, prefix),
+                    _ => return Err(FormatError::InvalidFormat("invalid precision".to_string())),
+                };
+
+                return Ok(result);
+            }
+        }
+        FormatType::FloatOrderOfMagnitude => {
+            if input_f64 < -1.0 {
+                return Ok("neg".to_string());
+            } else if input_f64 > 900_000_000_000_000_000.0 {
+                return Ok("big".to_string());
+            } else {
+                let (prefix, prevalue) = match input_f64 {
+                    value if value <= 1_000.0 => ("", value),
+                    value if value <= 9_999.0 => ("", value),
+                    value if value < 1_000_000.0 => ("K", value / 1_000.0),
+                    value if value < 1_000_000_000.0 => ("M", value / 1_000_000.0),
+                    value if value < 1_000_000_000_000.0 => ("B", value / 1_000_000_000.0),
+                    value if value < 1_000_000_000_000_000.0 => ("T", value / 1_000_000_000_000.0),
+                    value if value < 1_000_000_000_000_000_000.0 => {
+                        ("Q", value / 1_000_000_000_000_000.0)
+                    }
+                    _ => return Err(FormatError::InvalidFormat("number too big".to_string())),
+                };
+
+                let result = match number_format.precision {
+                    0 => format!("{:.0}{}", prevalue, prefix),
+                    1 => format!("{:.1}{}", prevalue, prefix),
+                    2 => format!("{:.2}{}", prevalue, prefix),
+                    3 => format!("{:.3}{}", prevalue, prefix),
+                    4 => format!("{:.4}{}", prevalue, prefix),
+                    5 => format!("{:.5}{}", prevalue, prefix),
+                    6 => format!("{:.6}{}", prevalue, prefix),
+                    7 => format!("{:.7}{}", prevalue, prefix),
+                    8 => format!("{:.8}{}", prevalue, prefix),
+                    9 => format!("{:.9}{}", prevalue, prefix),
+                    10 => format!("{:.10}{}", prevalue, prefix),
+                    _ => return Err(FormatError::InvalidFormat("invalid precision".to_string())),
+                };
+
+                return Ok(result);
+            }
+        }
+        FormatType::TimestampPretty => {
+            let datetime = NaiveDateTime::from_timestamp_opt(input_f64 as i64, 0).ok_or(
+                FormatError::InvalidFormat("could not get timestamp".to_string()),
+            )?;
+            return match number_format.timezone {
+                Timezone::Utc => Ok(Utc
+                    .from_utc_datetime(&datetime)
+                    .format("%Y-%m-%d %H:%M:%S")
+                    .to_string()),
+                Timezone::Local => Ok(Local
+                    .from_utc_datetime(&datetime)
+                    .format("%Y-%m-%d %H:%M:%S")
+                    .to_string()),
+            };
         }
         _ => format!("{:.1$}", input_f64.abs(), number_format.precision),
     };

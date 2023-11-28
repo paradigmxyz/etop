@@ -69,10 +69,18 @@ impl DataSpec for Erc20TransfersByErc20 {
     fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
         vec![
             ColumnFormatShorthand::new().name("symbol").max_width(9),
-            ColumnFormatShorthand::new().name("n_transfers").newline_underscores(),
-            ColumnFormatShorthand::new().name("n_senders").newline_underscores(),
-            ColumnFormatShorthand::new().name("n_receivers").newline_underscores(),
-            ColumnFormatShorthand::new().name("erc20").display_name("address"),
+            ColumnFormatShorthand::new()
+                .name("n_transfers")
+                .newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("n_senders")
+                .newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("n_receivers")
+                .newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("erc20")
+                .display_name("address"),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))
