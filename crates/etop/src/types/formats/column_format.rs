@@ -56,7 +56,7 @@ impl ColumnFormat {
     pub fn header_width(&self) -> usize {
         self.display_name
             .split('\n')
-            .map(|s| s.len())
+            .map(|s| s.chars().count())
             .max()
             .unwrap_or(0)
     }
@@ -111,7 +111,11 @@ impl ColumnFormat {
         };
         let formatted = formatted.map_err(EtopError::FormatError)?;
 
-        let max_width = formatted.iter().map(|s| s.len()).max().unwrap_or(0);
+        let max_width = formatted
+            .iter()
+            .map(|s| s.chars().count())
+            .max()
+            .unwrap_or(0);
         let formatted = if self.align == ColumnAlign::Right {
             formatted
                 .into_iter()

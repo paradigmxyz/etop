@@ -242,7 +242,7 @@ impl DataFrameFormatFinal {
                 .format(df.column(column_format.name.as_str())?)?;
             let used_width = column
                 .iter()
-                .map(|s| s.len())
+                .map(|s| s.chars().count())
                 .max()
                 .ok_or(EtopError::EmptyData(format!(
                     "empty column: {}",
