@@ -1,29 +1,55 @@
-use super::cell_format::CellFormat;
+use super::cell_format::{CellFormat, CellFormatShorthand};
 use super::unknown_format::UnknownFormat;
 use crate::EtopError;
 use polars::prelude::*;
 use toolstr::{BinaryFormat, BoolFormat, NumberFormat, StringFormat};
 
 #[derive(Debug, Clone)]
-#[allow(dead_code)]
-pub struct ColumnFormat {
+pub struct ColumnFormatShorthand {
     pub name: String,
     pub display_name: String,
-    pub format: CellFormat,
+    pub format: CellFormatShorthand,
+    pub align: ColumnAlign,
 }
 
-impl Default for ColumnFormat {
-    fn default() -> ColumnFormat {
+impl ColumnFormatShorthand {
+    pub fn finalize(self, dtype: &DataType) -> Result<ColumnFormat, EtopError> {
+        Ok(ColumnFormat {
+            name: self.name,
+            display_name: self.display_name,
+            format: self.format.finalize(dtype)?,
+            align: self.align,
+        })
+    }
+}
+
+impl Default for ColumnFormatShorthand {
+    fn default() -> ColumnFormatShorthand {
         let format = UnknownFormat {
             min_width: None,
             max_width: None,
         };
-        ColumnFormat {
+        ColumnFormatShorthand {
             name: "".to_string(),
             display_name: "".to_string(),
-            format: CellFormat::Unknown(format),
+            format: CellFormatShorthand::Unknown(format),
+            align: ColumnAlign::Right,
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct ColumnFormat {
+    pub name: String,
+    pub display_name: String,
+    pub format: CellFormat,
+    pub align: ColumnAlign,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ColumnAlign {
+    Left,
+    Right,
 }
 
 impl ColumnFormat {
@@ -83,16 +109,27 @@ impl ColumnFormat {
                 return Err(EtopError::UnsupportedDatatype(message));
             }
         };
-        formatted.map_err(EtopError::FormatError)
+        let formatted = formatted.map_err(EtopError::FormatError)?;
+
+        let max_width = formatted.iter().map(|s| s.len()).max().unwrap_or(0);
+        let formatted = if self.align == ColumnAlign::Right {
+            formatted
+                .into_iter()
+                .map(|s| format!("{:>width$}", s, width = max_width))
+                .collect()
+        } else {
+            formatted
+                .into_iter()
+                .map(|s| format!("{:<width$}", s, width = max_width))
+                .collect()
+        };
+
+        Ok(formatted)
     }
 }
 
 // builder
 impl ColumnFormat {
-    pub fn new() -> ColumnFormat {
-        ColumnFormat::default()
-    }
-
     pub fn name<T: AsRef<str>>(mut self, name: T) -> ColumnFormat {
         let name = name.as_ref().to_string();
         self.name = name.clone();
@@ -123,6 +160,51 @@ impl ColumnFormat {
 
     pub fn max_width(mut self, width: usize) -> ColumnFormat {
         self.format = self.format.max_width(width);
+        self
+    }
+}
+
+// builder
+impl ColumnFormatShorthand {
+    pub fn new() -> ColumnFormatShorthand {
+        ColumnFormatShorthand::default()
+    }
+
+    pub fn name<T: AsRef<str>>(mut self, name: T) -> ColumnFormatShorthand {
+        let name = name.as_ref().to_string();
+        self.name = name.clone();
+        if self.display_name.is_empty() {
+            self.display_name = name
+        };
+        self
+    }
+
+    pub fn display_name<T: AsRef<str>>(mut self, display_name: T) -> ColumnFormatShorthand {
+        self.display_name = display_name.as_ref().to_string();
+        self
+    }
+
+    pub fn newline_underscores(mut self) -> ColumnFormatShorthand {
+        self.display_name = self.display_name.replace('_', "\n");
+        self
+    }
+
+    pub fn width(self, width: usize) -> ColumnFormatShorthand {
+        self.min_width(width).max_width(width)
+    }
+
+    pub fn min_width(mut self, width: usize) -> ColumnFormatShorthand {
+        self.format = self.format.min_width(width);
+        self
+    }
+
+    pub fn max_width(mut self, width: usize) -> ColumnFormatShorthand {
+        self.format = self.format.max_width(width);
+        self
+    }
+
+    pub fn set_format<T: Into<CellFormatShorthand>>(mut self, format: T) -> ColumnFormatShorthand {
+        self.format = format.into();
         self
     }
 }

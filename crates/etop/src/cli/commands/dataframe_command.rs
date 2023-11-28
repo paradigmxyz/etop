@@ -1,4 +1,7 @@
-use crate::{CellFormat, ColumnFormat, DataFrameFormat, DataframeArgs, EtopError, UnknownFormat};
+use crate::{
+    CellFormatShorthand, ColumnFormatShorthand, DataFrameFormat, DataframeArgs, EtopError,
+    UnknownFormat,
+};
 
 pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
     let columns = parse_columns(args.columns)?;
@@ -17,19 +20,19 @@ pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
 
 pub(crate) fn parse_columns(
     columns: Option<Vec<String>>,
-) -> Result<Option<Vec<ColumnFormat>>, EtopError> {
+) -> Result<Option<Vec<ColumnFormatShorthand>>, EtopError> {
     match columns {
         None => Ok(None),
         Some(columns) => columns
             .into_iter()
             .map(parse_column)
-            .collect::<Result<Vec<ColumnFormat>, EtopError>>()
+            .collect::<Result<Vec<ColumnFormatShorthand>, EtopError>>()
             .map(Some),
     }
 }
 
 /// syntax "$COLUMN_NAME=[$DISPLAY_NAME][:$WIDTH]"
-fn parse_column(column: String) -> Result<ColumnFormat, EtopError> {
+fn parse_column(column: String) -> Result<ColumnFormatShorthand, EtopError> {
     let parts: Vec<&str> = column.split(':').collect();
     let column_part = parts[0];
 
@@ -52,9 +55,10 @@ fn parse_column(column: String) -> Result<ColumnFormat, EtopError> {
         max_width: width,
     };
 
-    Ok(ColumnFormat {
+    Ok(ColumnFormatShorthand {
         name,
         display_name,
-        format: CellFormat::Unknown(format),
+        format: CellFormatShorthand::Unknown(format),
+        ..Default::default()
     })
 }

@@ -1,6 +1,7 @@
-use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
+use crate::{ColumnFormatShorthand, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
+use toolstr::NumberFormat;
 
 #[derive(Clone)]
 pub struct TransactionsByToAddress;
@@ -30,8 +31,13 @@ impl DataSpec for TransactionsByToAddress {
             .clone()
             .lazy()
             .group_by(["to_address"])
-            .agg([count(), col("value_f64").sum()])
-            .sort("count", sort)
+            .agg([
+                count().alias("n_txs"),
+                col("value_f64").sum().alias("eth_sent") / lit(1e18),
+                col("gas_price").mean().alias("mean_gas_price") / lit(1e18),
+                col("gas_used").mean().alias("mean_gas_used"),
+            ])
+            .sort("n_txs", sort)
             .collect();
         df.map_err(EtopError::PolarsError)
     }
@@ -41,26 +47,35 @@ impl DataSpec for TransactionsByToAddress {
             "to_address",
             "n_txs",
             "eth_sent",
-            "mean_priority_fee",
-            "gas_used",
+            "mean_gas_price",
+            "mean_gas_used",
         ]
         .iter()
         .map(|s| s.to_string())
         .collect()
     }
 
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormat> {
+    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
+        let float_format = NumberFormat::new().si().precision(4);
         vec![
-            ColumnFormat::new()
+            ColumnFormatShorthand::new()
                 .name("to_address")
-                .min_width(6)
-                .max_width(42),
-            ColumnFormat::new().name("n_txs").newline_underscores(),
-            ColumnFormat::new().name("eth_sent").newline_underscores(),
-            ColumnFormat::new()
-                .name("mean_priority_fee")
-                .display_name("mean\nprio\nfee"),
-            ColumnFormat::new().name("gas_used").newline_underscores(),
+                .newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("n_txs")
+                .newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("eth_sent")
+                .newline_underscores()
+                .set_format(float_format.clone()),
+            ColumnFormatShorthand::new()
+                .name("mean_gas_price")
+                .newline_underscores()
+                .set_format(float_format.clone()),
+            ColumnFormatShorthand::new()
+                .name("mean_gas_used")
+                .newline_underscores()
+                .set_format(float_format),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

@@ -1,6 +1,7 @@
 use crate::{
     load_dataspec,
     load_warehouse_from_filesystem,
+    ColumnFormatShorthand,
     DataFrameFormat,
     // FileSource, Window, WindowSize,
     DatasetArgs,
@@ -9,16 +10,31 @@ use crate::{
 
 pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
     let dataspec = load_dataspec(args.dataset)?;
-    println!("{:?}", dataspec.name());
     let warehouse = match args.data_dir {
         Some(data_dir) => load_warehouse_from_filesystem(&*dataspec, data_dir)?,
         None => return Err(EtopError::ArgumentError("specify --data-dir".to_string())),
     };
 
+    let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
+
+    let columns = dataspec.default_columns();
+    let column_formats = dataspec.default_column_formats();
+    let columns: Result<Vec<ColumnFormatShorthand>, EtopError> = columns
+        .iter()
+        .map(|name| {
+            column_formats
+                .get(name)
+                .ok_or(EtopError::ColumnMissing(name.to_string()))
+                .cloned()
+        })
+        .collect::<Result<Vec<_>, _>>();
+    let columns = columns?;
+
     let df = dataspec.transform(&warehouse)?;
     let fmt = DataFrameFormat {
-        column_formats: None,
-        render_height: Some(20),
+        column_formats: Some(columns),
+        render_height: Some(render_height - 1),
+        max_render_width: Some(render_width),
         ..Default::default()
     };
     println!("{}", fmt.format(df)?);

@@ -68,7 +68,6 @@ impl BinaryFormat {
         }
     }
 
-
     // align
 
     /// left align

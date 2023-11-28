@@ -1,4 +1,4 @@
-use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
+use crate::{ColumnFormatShorthand, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
@@ -55,6 +55,7 @@ impl DataSpec for Erc20TransfersByErc20 {
                 join_args,
             )
             .collect();
+        println!("{:?}", df);
         df.map_err(EtopError::PolarsError)
     }
 
@@ -65,15 +66,12 @@ impl DataSpec for Erc20TransfersByErc20 {
             .collect()
     }
 
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormat> {
+    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
         vec![
-            ColumnFormat::new()
-                .name("erc20")
-                .display_name("erc20")
-                .width(10),
-            ColumnFormat::new().name("n_transfers").width(10),
-            ColumnFormat::new().name("n_senders").width(10),
-            ColumnFormat::new().name("n_receivers").width(10),
+            ColumnFormatShorthand::new().name("erc20"),
+            ColumnFormatShorthand::new().name("n_transfers").width(11),
+            ColumnFormatShorthand::new().name("n_senders").width(9),
+            ColumnFormatShorthand::new().name("n_receivers").width(11),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

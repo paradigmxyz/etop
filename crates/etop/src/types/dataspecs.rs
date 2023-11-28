@@ -1,4 +1,4 @@
-use crate::{datasets, ColumnFormat, DataWarehouse, EtopError};
+use crate::{datasets, ColumnFormatShorthand, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
@@ -19,7 +19,7 @@ pub trait DataSpec {
     fn default_columns(&self) -> Vec<String>;
 
     /// default format for each column
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormat>;
+    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand>;
 }
 
 pub fn load_dataspec(name: String) -> Result<Box<dyn DataSpec>, EtopError> {

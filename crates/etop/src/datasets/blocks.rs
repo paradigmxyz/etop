@@ -1,4 +1,4 @@
-use crate::{ColumnFormat, DataSpec, DataWarehouse, EtopError};
+use crate::{ColumnFormatShorthand, DataSpec, DataWarehouse, EtopError};
 use polars::prelude::*;
 use std::collections::HashMap;
 
@@ -29,15 +29,19 @@ impl DataSpec for Blocks {
             .collect()
     }
 
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormat> {
+    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
         vec![
-            ColumnFormat::new()
+            ColumnFormatShorthand::new()
                 .name("block_number")
                 .min_width(12)
                 .max_width(12)
                 .newline_underscores(),
-            ColumnFormat::new().name("gas_used").newline_underscores(),
-            ColumnFormat::new().name("base_fee").newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("gas_used")
+                .newline_underscores(),
+            ColumnFormatShorthand::new()
+                .name("base_fee")
+                .newline_underscores(),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))
