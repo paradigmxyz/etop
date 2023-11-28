@@ -3,6 +3,8 @@ use super::unknown_format::UnknownFormat;
 use crate::EtopError;
 use polars::prelude::*;
 use toolstr::{BinaryFormat, BoolFormat, NumberFormat, StringFormat};
+use unicode_truncate::UnicodeTruncateStr;
+use unicode_truncate::Alignment;
 
 #[derive(Debug, Clone)]
 pub struct ColumnFormatShorthand {
@@ -56,6 +58,8 @@ impl ColumnFormat {
     pub fn header_width(&self) -> usize {
         self.display_name
             .split('\n')
+            // .map(unicode_width::UnicodeWidthStr::width)
+            // .map(unicode_width::UnicodeWidthStr::width_cjk)
             .map(|s| s.chars().count())
             .max()
             .unwrap_or(0)
@@ -113,18 +117,22 @@ impl ColumnFormat {
 
         let max_width = formatted
             .iter()
+            // .map(|s| unicode_width::UnicodeWidthStr::width(s.as_str()))
+            // .map(|s| unicode_width::UnicodeWidthStr::width_cjk(s.as_str()))
             .map(|s| s.chars().count())
             .max()
             .unwrap_or(0);
+
+
         let formatted = if self.align == ColumnAlign::Right {
             formatted
                 .into_iter()
-                .map(|s| format!("{:>width$}", s, width = max_width))
+                .map(|s| s.unicode_pad(max_width, Alignment::Right, true).to_string())
                 .collect()
         } else {
             formatted
                 .into_iter()
-                .map(|s| format!("{:<width$}", s, width = max_width))
+                .map(|s| s.unicode_pad(max_width, Alignment::Left, true).to_string())
                 .collect()
         };
 

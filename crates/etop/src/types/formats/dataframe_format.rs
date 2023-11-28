@@ -243,6 +243,8 @@ impl DataFrameFormatFinal {
             let used_width = column
                 .iter()
                 .map(|s| s.chars().count())
+                // .map(|s| unicode_width::UnicodeWidthStr::width_cjk(s.as_str()))
+                // .map(|s| unicode_width::UnicodeWidthStr::width(s.as_str()))
                 .max()
                 .ok_or(EtopError::EmptyData(format!(
                     "empty column: {}",
