@@ -1,16 +1,10 @@
-use etop_core::{
-    load_dataspec,
-    load_warehouse_from_filesystem,
-};
 use crate::{
     // FileSource, Window, WindowSize,
     DatasetArgs,
     EtopError,
 };
-use etop_format::{
-    ColumnFormatShorthand,
-    DataFrameFormat,
-};
+use etop_core::{load_dataspec, load_warehouse_from_filesystem};
+use etop_format::{ColumnFormatShorthand, DataFrameFormat};
 
 pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
     let dataspec = load_dataspec(args.dataset)?;
@@ -26,10 +20,7 @@ pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
     let columns: Result<Vec<ColumnFormatShorthand>, EtopError> = columns
         .iter()
         .map(|name| {
-            column_formats
-                .get(name)
-                .ok_or(EtopError::ColumnMissing(name.to_string()))
-                .cloned()
+            column_formats.get(name).ok_or(EtopError::ColumnMissing(name.to_string())).cloned()
         })
         .collect::<Result<Vec<_>, _>>();
     let columns = columns?;

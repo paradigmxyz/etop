@@ -52,9 +52,7 @@ mod types_tests {
 
     #[test]
     fn alternative_text() {
-        let b = BoolFormat::new()
-            .true_text("y".into())
-            .false_text("NO".into());
+        let b = BoolFormat::new().true_text("y".into()).false_text("NO".into());
         assert_eq!(b.format(true).unwrap(), "y");
         assert_eq!(b.format(false).unwrap(), "NO");
     }

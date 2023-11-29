@@ -44,16 +44,10 @@ impl DataSpec for TransactionsByToAddress {
     }
 
     fn default_columns(&self) -> Vec<String> {
-        [
-            "to_address",
-            "n_txs",
-            "eth_sent",
-            "mean_gas_price",
-            "mean_gas_used",
-        ]
-        .iter()
-        .map(|s| s.to_string())
-        .collect()
+        ["to_address", "n_txs", "eth_sent", "mean_gas_price", "mean_gas_used"]
+            .iter()
+            .map(|s| s.to_string())
+            .collect()
     }
 
     fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
@@ -61,9 +55,7 @@ impl DataSpec for TransactionsByToAddress {
         let oom_integer_format = NumberFormat::new().integer_oom().precision(0);
         let oom_float_format = NumberFormat::new().float_oom().precision(1);
         vec![
-            ColumnFormatShorthand::new()
-                .name("to_address")
-                .newline_underscores(),
+            ColumnFormatShorthand::new().name("to_address").newline_underscores(),
             ColumnFormatShorthand::new()
                 .name("n_txs")
                 .newline_underscores()

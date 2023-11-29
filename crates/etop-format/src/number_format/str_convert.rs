@@ -3,8 +3,7 @@ use super::types::{
 };
 use crate::FormatError;
 use regex::{Captures, Regex};
-use std::fmt;
-use std::str::FromStr;
+use std::{fmt, str::FromStr};
 
 impl fmt::Display for FormatError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -64,9 +63,7 @@ impl TryFrom<&str> for NumberFormat {
         let re =
             Regex::new(r"^(?:(.)?([<>=^]))?([+\- ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([A-Za-z%])?$")
                 .map_err(|_| FormatError::CouldNotCreateRegex)?;
-        let captures = re
-            .captures(pattern)
-            .ok_or(FormatError::CouldNotMatchRegex)?;
+        let captures = re.captures(pattern).ok_or(FormatError::CouldNotMatchRegex)?;
         Ok(NumberFormat::from(captures))
     }
 }
@@ -74,10 +71,7 @@ impl TryFrom<&str> for NumberFormat {
 impl From<Captures<'_>> for NumberFormat {
     /// Create a `NumberFormat` instance from a parsed format pattern string.
     fn from(c: Captures<'_>) -> Self {
-        let fill = c
-            .get(1)
-            .and_then(|m| m.as_str().chars().next())
-            .unwrap_or(' ');
+        let fill = c.get(1).and_then(|m| m.as_str().chars().next()).unwrap_or(' ');
         let align = c
             .get(2)
             .map(|s| s.as_str().parse().unwrap_or(NumberAlign::Right))
@@ -90,25 +84,14 @@ impl From<Captures<'_>> for NumberFormat {
         };
         let type_prefix = matches!(c.get(4).map(|m| m.as_str()), Some("#"));
         let zero_padding = c.get(5).is_some();
-        let min_width = c
-            .get(6)
-            .map(|m| m.as_str().parse().unwrap_or(0))
-            .unwrap_or(0);
+        let min_width = c.get(6).map(|m| m.as_str().parse().unwrap_or(0)).unwrap_or(0);
         let commas = matches!(c.get(7).map(|m| m.as_str()), Some(","));
         let precision = c
             .get(8)
-            .map(|m| {
-                m.as_str()
-                    .get(1..)
-                    .unwrap_or_default()
-                    .parse()
-                    .unwrap_or(DEFAULT_PRECISION)
-            })
+            .map(|m| m.as_str().get(1..).unwrap_or_default().parse().unwrap_or(DEFAULT_PRECISION))
             .unwrap_or(DEFAULT_PRECISION);
-        let format_type: FormatType = c
-            .get(9)
-            .and_then(|s| s.as_str().parse().ok())
-            .unwrap_or(FormatType::None);
+        let format_type: FormatType =
+            c.get(9).and_then(|s| s.as_str().parse().ok()).unwrap_or(FormatType::None);
 
         let timezone = DEFAULT_TIMEZONE;
 

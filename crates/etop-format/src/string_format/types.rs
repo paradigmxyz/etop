@@ -67,9 +67,9 @@ impl StringFormat {
             };
             match s.get(0..(self.max_width - 3)) {
                 Some(s) => Ok(format!("{}...", s)),
-                None => Err(FormatError::InvalidFormat(
-                    "could not take slice of string".to_string(),
-                )),
+                None => {
+                    Err(FormatError::InvalidFormat("could not take slice of string".to_string()))
+                }
             }
         } else {
             Ok(s.to_string())

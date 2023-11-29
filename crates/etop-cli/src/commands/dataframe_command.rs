@@ -1,20 +1,14 @@
 use crate::DataframeArgs;
 use etop_core::EtopError;
-use etop_format::{
-    CellFormatShorthand, ColumnFormatShorthand, DataFrameFormat, UnknownFormat,
-};
+use etop_format::{CellFormatShorthand, ColumnFormatShorthand, DataFrameFormat, UnknownFormat};
 
 pub(crate) fn dataframe_command(args: DataframeArgs) -> Result<(), EtopError> {
     let columns = parse_columns(args.columns)?;
-    let column_names: Option<Vec<String>> = columns
-        .as_ref()
-        .map(|cols| cols.iter().map(|c| c.name.clone()).collect());
+    let column_names: Option<Vec<String>> =
+        columns.as_ref().map(|cols| cols.iter().map(|c| c.name.clone()).collect());
     let df = etop_core::read_parquet(args.path, column_names)?;
-    let fmt = DataFrameFormat {
-        column_formats: columns,
-        render_height: args.rows,
-        ..Default::default()
-    };
+    let fmt =
+        DataFrameFormat { column_formats: columns, render_height: args.rows, ..Default::default() };
     println!("{}", fmt.format(df)?);
     Ok(())
 }
@@ -51,10 +45,7 @@ fn parse_column(column: String) -> Result<ColumnFormatShorthand, EtopError> {
         None
     };
 
-    let format = UnknownFormat {
-        min_width: width,
-        max_width: width,
-    };
+    let format = UnknownFormat { min_width: width, max_width: width };
 
     Ok(ColumnFormatShorthand {
         name,

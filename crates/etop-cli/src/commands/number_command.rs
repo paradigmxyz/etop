@@ -1,5 +1,4 @@
-use crate::NumberArgs;
-use crate::EtopError;
+use crate::{EtopError, NumberArgs};
 use etop_format::NumberFormat;
 
 /// print formatted number
@@ -16,10 +15,7 @@ pub(crate) fn number_command(args: NumberArgs) -> Result<(), EtopError> {
             }
         },
         Err(_) => {
-            return Err(EtopError::ParseError(format!(
-                "could not parse number: {}",
-                args.number
-            )))
+            return Err(EtopError::ParseError(format!("could not parse number: {}", args.number)))
         }
     }
     Ok(())

@@ -175,9 +175,7 @@ impl TryInto<NumberFormat> for CellFormat {
     fn try_into(self) -> Result<NumberFormat, FormatError> {
         match self {
             CellFormat::Number(format) => Ok(format),
-            _ => Err(FormatError::MismatchedFormatType(
-                "not a NumberFormat".to_string(),
-            )),
+            _ => Err(FormatError::MismatchedFormatType("not a NumberFormat".to_string())),
         }
     }
 }
@@ -188,9 +186,7 @@ impl TryInto<StringFormat> for CellFormat {
     fn try_into(self) -> Result<StringFormat, FormatError> {
         match self {
             CellFormat::String(format) => Ok(format),
-            _ => Err(FormatError::MismatchedFormatType(
-                "not a StringFormat".to_string(),
-            )),
+            _ => Err(FormatError::MismatchedFormatType("not a StringFormat".to_string())),
         }
     }
 }
@@ -201,9 +197,7 @@ impl TryInto<BinaryFormat> for CellFormat {
     fn try_into(self) -> Result<BinaryFormat, FormatError> {
         match self {
             CellFormat::Binary(format) => Ok(format),
-            _ => Err(FormatError::MismatchedFormatType(
-                "not a BinaryFormat".to_string(),
-            )),
+            _ => Err(FormatError::MismatchedFormatType("not a BinaryFormat".to_string())),
         }
     }
 }
@@ -214,9 +208,7 @@ impl TryInto<BoolFormat> for CellFormat {
     fn try_into(self) -> Result<BoolFormat, FormatError> {
         match self {
             CellFormat::Bool(format) => Ok(format),
-            _ => Err(FormatError::MismatchedFormatType(
-                "not a BoolFormat".to_string(),
-            )),
+            _ => Err(FormatError::MismatchedFormatType("not a BoolFormat".to_string())),
         }
     }
 }

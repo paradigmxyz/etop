@@ -46,10 +46,7 @@ mod types_tests {
 
     #[test]
     fn prefix_right_align_zero_padding() {
-        let b = BinaryFormat::new()
-            .min_width(6)
-            .right_align()
-            .fill_char('0');
+        let b = BinaryFormat::new().min_width(6).right_align().fill_char('0');
         assert_eq!(b.format(vec![]).unwrap(), "0x0000");
         assert_eq!(b.format(vec![2]).unwrap(), "0x0002");
         assert_eq!(b.format(vec![2, 4, 6, 8]).unwrap(), "0x02040608");
@@ -75,11 +72,7 @@ mod types_tests {
 
     #[test]
     fn no_prefix_left_align_zero_padding() {
-        let b = BinaryFormat::new()
-            .min_width(6)
-            .left_align()
-            .fill_char('0')
-            .no_prefix();
+        let b = BinaryFormat::new().min_width(6).left_align().fill_char('0').no_prefix();
         assert_eq!(b.format(vec![]).unwrap(), "000000");
         assert_eq!(b.format(vec![2]).unwrap(), "020000");
         assert_eq!(b.format(vec![2, 4, 6, 8]).unwrap(), "02040608");
@@ -87,11 +80,7 @@ mod types_tests {
 
     #[test]
     fn no_prefix_right_align_zero_padding() {
-        let b = BinaryFormat::new()
-            .min_width(6)
-            .right_align()
-            .fill_char('0')
-            .no_prefix();
+        let b = BinaryFormat::new().min_width(6).right_align().fill_char('0').no_prefix();
         assert_eq!(b.format(vec![]).unwrap(), "000000");
         assert_eq!(b.format(vec![2]).unwrap(), "000002");
         assert_eq!(b.format(vec![2, 4, 6, 8]).unwrap(), "02040608");

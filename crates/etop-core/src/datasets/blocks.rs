@@ -52,28 +52,16 @@ impl DataSpec for Blocks {
         blocks
             .clone()
             .lazy()
-            .join(
-                txs.lazy(),
-                [col("block_number")],
-                [col("block_number")],
-                join_args,
-            )
+            .join(txs.lazy(), [col("block_number")], [col("block_number")], join_args)
             .collect()
             .map_err(EtopError::PolarsError)
     }
 
     fn default_columns(&self) -> Vec<String> {
-        [
-            "block_number",
-            "timestamp",
-            "n_txs",
-            "gas_used",
-            "base_fee_per_gas",
-            "author",
-        ]
-        .iter()
-        .map(|s| s.to_string())
-        .collect()
+        ["block_number", "timestamp", "n_txs", "gas_used", "base_fee_per_gas", "author"]
+            .iter()
+            .map(|s| s.to_string())
+            .collect()
     }
 
     fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
@@ -82,15 +70,9 @@ impl DataSpec for Blocks {
         let timestamp_fmt = etop_format::NumberFormat::new().timestamp();
 
         vec![
-            ColumnFormatShorthand::new()
-                .name("block_number")
-                .newline_underscores(),
-            ColumnFormatShorthand::new()
-                .name("timestamp")
-                .set_format(timestamp_fmt),
-            ColumnFormatShorthand::new()
-                .name("n_txs")
-                .set_format(integer_oom.clone()),
+            ColumnFormatShorthand::new().name("block_number").newline_underscores(),
+            ColumnFormatShorthand::new().name("timestamp").set_format(timestamp_fmt),
+            ColumnFormatShorthand::new().name("n_txs").set_format(integer_oom.clone()),
             ColumnFormatShorthand::new()
                 .name("gas_used")
                 .set_format(integer_oom)

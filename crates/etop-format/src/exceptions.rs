@@ -28,4 +28,3 @@ impl From<polars::prelude::PolarsError> for FormatError {
         FormatError::PolarsError(err)
     }
 }
-

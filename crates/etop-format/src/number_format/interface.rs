@@ -1,5 +1,7 @@
-use super::process;
-use super::types::{FormatType, NumberAlign, NumberFormat, Sign, Timezone, DECIMAL_CHAR, PREFIXES};
+use super::{
+    process,
+    types::{FormatType, NumberAlign, NumberFormat, Sign, Timezone, DECIMAL_CHAR, PREFIXES},
+};
 use crate::FormatError;
 use chrono::{Local, NaiveDateTime, TimeZone, Utc};
 
@@ -43,12 +45,7 @@ pub(crate) fn number_format<T: Into<f64>>(
             } else {
                 "".to_string()
             };
-            format!(
-                "{:.2$}{}",
-                input_f64.abs(),
-                maybe_decimal,
-                number_format.precision
-            )
+            format!("{:.2$}{}", input_f64.abs(), maybe_decimal, number_format.precision)
         }
         FormatType::Exponent => process::get_formatted_exp_value(
             "e",
@@ -143,29 +140,27 @@ pub(crate) fn number_format<T: Into<f64>>(
             }
         }
         FormatType::TimestampPretty => {
-            let datetime = NaiveDateTime::from_timestamp_opt(input_f64 as i64, 0).ok_or(
-                FormatError::InvalidFormat("could not get timestamp".to_string()),
-            )?;
+            let datetime = NaiveDateTime::from_timestamp_opt(input_f64 as i64, 0)
+                .ok_or(FormatError::InvalidFormat("could not get timestamp".to_string()))?;
             return match number_format.timezone {
-                Timezone::Utc => Ok(Utc
-                    .from_utc_datetime(&datetime)
-                    .format("%Y-%m-%d %H:%M:%S")
-                    .to_string()),
-                Timezone::Local => Ok(Local
-                    .from_utc_datetime(&datetime)
-                    .format("%Y-%m-%d %H:%M:%S")
-                    .to_string()),
+                Timezone::Utc => {
+                    Ok(Utc.from_utc_datetime(&datetime).format("%Y-%m-%d %H:%M:%S").to_string())
+                }
+                Timezone::Local => {
+                    Ok(Local.from_utc_datetime(&datetime).format("%Y-%m-%d %H:%M:%S").to_string())
+                }
             };
         }
         _ => format!("{:.1$}", input_f64.abs(), number_format.precision),
     };
 
-    // If a negative value rounds to zero after formatting, and no explicit positive sign is requested, hide the sign.
-    if number_format.format_type != FormatType::Hex
-        && number_format.format_type != FormatType::HexUppercase
-        && value_is_negative
-        && value.parse::<f64>() == Ok(0_f64)
-        && (number_format.sign != Sign::Always)
+    // If a negative value rounds to zero after formatting, and no explicit positive sign is
+    // requested, hide the sign.
+    if number_format.format_type != FormatType::Hex &&
+        number_format.format_type != FormatType::HexUppercase &&
+        value_is_negative &&
+        value.parse::<f64>() == Ok(0_f64) &&
+        (number_format.sign != Sign::Always)
     {
         value_is_negative = false;
     }
@@ -184,7 +179,8 @@ pub(crate) fn number_format<T: Into<f64>>(
         false => "",
     };
 
-    // Split the integer part of the value for grouping purposes and attach the decimal part as suffix.
+    // Split the integer part of the value for grouping purposes and attach the decimal part as
+    // suffix.
     for (i, c) in value.chars().enumerate() {
         if "0123456789".find(c).is_none() {
             decimal_part = value[i..].to_owned();
@@ -195,10 +191,7 @@ pub(crate) fn number_format<T: Into<f64>>(
 
     // Compute the prefix and suffix.
     let prefix = format!("{}{}", sign_prefix, leading_part);
-    let suffix = format!(
-        "{}{}{}",
-        decimal_part, si_prefix_exponent, unit_of_measurement
-    );
+    let suffix = format!("{}{}{}", decimal_part, si_prefix_exponent, unit_of_measurement);
 
     // If should group and filling character is different than "0",
     // group digits before applying padding.
@@ -218,11 +211,7 @@ pub(crate) fn number_format<T: Into<f64>>(
     if number_format.commas && number_format.zero_padding {
         value = process::group_value(
             format!("{}{}", &padding, value).as_str(),
-            if !padding.is_empty() {
-                number_format.min_width - suffix.len()
-            } else {
-                0
-            },
+            if !padding.is_empty() { number_format.min_width - suffix.len() } else { 0 },
         );
         padding = "".to_owned();
     };
@@ -243,15 +232,13 @@ pub(crate) fn number_format<T: Into<f64>>(
 
     if formatted.len() > number_format.max_width {
         if number_format.max_width < 3 {
-            Err(FormatError::InvalidFormat(
-                "min_width too small for clipping".to_string(),
-            ))
+            Err(FormatError::InvalidFormat("min_width too small for clipping".to_string()))
         } else {
             match formatted.get(0..(number_format.max_width - 3)) {
                 Some(s) => Ok(format!("{}...", s)),
-                None => Err(FormatError::InvalidFormat(
-                    "could not take slice of string".to_string(),
-                )),
+                None => {
+                    Err(FormatError::InvalidFormat("could not take slice of string".to_string()))
+                }
             }
         }
     } else {

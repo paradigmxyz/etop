@@ -157,24 +157,23 @@ impl DataFrameFormatFinal {
     }
 
     fn n_data_rows(&self) -> usize {
-        self.render_height
-            - (self.include_header_row as usize)
-                * (self.n_header_lines() + (self.include_header_separator_row as usize))
-            - (self.include_summary_row as usize)
-                * (1 + (self.include_summary_separator_row as usize))
+        self.render_height -
+            (self.include_header_row as usize) *
+                (self.n_header_lines() + (self.include_header_separator_row as usize)) -
+            (self.include_summary_row as usize) *
+                (1 + (self.include_summary_separator_row as usize))
     }
 
     fn total_rendered_width(&self, used_widths: &Vec<usize>) -> usize {
-        used_widths.iter().sum::<usize>()
-            + ((used_widths.len() as i64 - 1).max(0) as usize)
-                * self.column_delimiter.chars().count()
+        used_widths.iter().sum::<usize>() +
+            ((used_widths.len() as i64 - 1).max(0) as usize) *
+                self.column_delimiter.chars().count()
     }
 
     fn render_header_rows(&self, used_widths: &[usize], total_width: usize) -> Vec<String> {
         let n_header_lines = self.n_header_lines();
-        let mut rows: Vec<String> = (0..n_header_lines)
-            .map(|_| String::with_capacity(total_width))
-            .collect();
+        let mut rows: Vec<String> =
+            (0..n_header_lines).map(|_| String::with_capacity(total_width)).collect();
         for (c, width) in used_widths.iter().enumerate() {
             if c != 0 {
                 for row in rows.iter_mut() {
@@ -222,8 +221,8 @@ impl DataFrameFormatFinal {
             column_max_widths.push(max_width);
         }
 
-        let total_min_width = column_min_widths.iter().sum::<usize>()
-            + self.column_delimiter.chars().count() * (self.column_formats.len() - 1);
+        let total_min_width = column_min_widths.iter().sum::<usize>() +
+            self.column_delimiter.chars().count() * (self.column_formats.len() - 1);
         // let total_max_width = column_max_widths.iter().sum::<usize>();
 
         // compute how many columns to include
@@ -251,11 +250,12 @@ impl DataFrameFormatFinal {
         // compute used widths
         let mut columns = Vec::with_capacity(n_used_columns);
         let mut used_widths = Vec::with_capacity(n_used_columns);
-        let mut spare_room: usize = self.max_render_width
-            - column_min_widths.iter().take(n_used_columns).sum::<usize>()
-            - self.column_delimiter.chars().count() * ((n_used_columns as i64 - 1).max(0) as usize);
+        let mut spare_room: usize = self.max_render_width -
+            column_min_widths.iter().take(n_used_columns).sum::<usize>() -
+            self.column_delimiter.chars().count() * ((n_used_columns as i64 - 1).max(0) as usize);
         // println!("COLUMN_MIN_WIDTHS {:?}", column_min_widths);
-        // println!("TOTAL_MIN_WIDTHS {}", column_min_widths.iter().take(n_used_columns).sum::<usize>());
+        // println!("TOTAL_MIN_WIDTHS {}",
+        // column_min_widths.iter().take(n_used_columns).sum::<usize>());
         // println!("SPARE_ROOM {}", spare_room);
         // println!("MAX_RENDER_WIDTH {:?}", self.max_render_width);
         // println!(
@@ -279,10 +279,7 @@ impl DataFrameFormatFinal {
                 // .map(|s| unicode_width::UnicodeWidthStr::width_cjk(s.as_str()))
                 // .map(|s| unicode_width::UnicodeWidthStr::width(s.as_str()))
                 .max()
-                .ok_or(FormatError::EmptyData(format!(
-                    "empty column: {}",
-                    column_format.name
-                )))?;
+                .ok_or(FormatError::EmptyData(format!("empty column: {}", column_format.name)))?;
             columns.push(column);
             // println!("NAME {}", column_format.name);
             // println!("MAX_WIDTH {}", max_width);

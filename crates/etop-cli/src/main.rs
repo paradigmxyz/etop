@@ -9,10 +9,10 @@
 mod args;
 mod commands;
 
-use commands::{dataframe_command, dataset_command, number_command, tui_command};
-pub use args::{DataframeArgs, DatasetArgs, TuiArgs, NumberArgs, Cli, Commands};
-pub use etop_core::EtopError;
+pub use args::{Cli, Commands, DataframeArgs, DatasetArgs, NumberArgs, TuiArgs};
 use clap::Parser;
+use commands::{dataframe_command, dataset_command, number_command, tui_command};
+pub use etop_core::EtopError;
 
 #[tokio::main]
 async fn main() -> Result<(), EtopError> {

@@ -9,5 +9,5 @@
 mod datasets;
 mod types;
 
-pub use types::*;
 pub use datasets::*;
+pub use types::*;

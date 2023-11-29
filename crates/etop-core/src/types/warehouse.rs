@@ -25,10 +25,7 @@ pub enum DataRange {
 impl DataWarehouse {
     /// get dataset
     pub fn get_dataset(&self, name: &str) -> Result<DataFrame, EtopError> {
-        self.data
-            .get(name)
-            .cloned()
-            .ok_or(EtopError::MissingData(name.into()))
+        self.data.get(name).cloned().ok_or(EtopError::MissingData(name.into()))
     }
 
     /// add dataset

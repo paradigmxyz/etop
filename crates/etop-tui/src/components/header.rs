@@ -13,7 +13,7 @@ pub enum Ticker {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct FpsCounter {
+pub struct Header {
     app_start_time: Instant,
     app_frames: u32,
     app_fps: f64,
@@ -23,13 +23,13 @@ pub struct FpsCounter {
     render_fps: f64,
 }
 
-impl Default for FpsCounter {
+impl Default for Header {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl FpsCounter {
+impl Header {
     pub fn new() -> Self {
         Self {
             app_start_time: Instant::now(),
@@ -66,7 +66,7 @@ impl FpsCounter {
     }
 }
 
-impl Component for FpsCounter {
+impl Component for Header {
     fn update(&mut self, action: Action) -> Result<Option<Action>> {
         if let Action::Tick = action {
             self.app_tick()?
@@ -89,7 +89,7 @@ impl Component for FpsCounter {
         let rect = rects[0];
 
         let s = format!("{:.2} fps (app) {:.2} fps (render)", self.app_fps, self.render_fps);
-        let block = Block::default().title(block::Title::from(s.dim()).alignment(Alignment::Right));
+        let block = Block::default().title(block::Title::from(s.dim()).alignment(Alignment::Left));
         f.render_widget(block, rect);
         Ok(())
     }

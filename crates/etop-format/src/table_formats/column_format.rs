@@ -3,8 +3,7 @@ use crate::{
     StringFormat, UnknownFormat,
 };
 use polars::prelude::*;
-use unicode_truncate::Alignment;
-use unicode_truncate::UnicodeTruncateStr;
+use unicode_truncate::{Alignment, UnicodeTruncateStr};
 
 /// column format shorthand
 #[derive(Debug, Clone)]
@@ -33,10 +32,7 @@ impl ColumnFormatShorthand {
 
 impl Default for ColumnFormatShorthand {
     fn default() -> ColumnFormatShorthand {
-        let format = UnknownFormat {
-            min_width: None,
-            max_width: None,
-        };
+        let format = UnknownFormat { min_width: None, max_width: None };
         ColumnFormatShorthand {
             name: "".to_string(),
             display_name: "".to_string(),
@@ -95,36 +91,19 @@ impl ColumnFormat {
         let formatted: Result<Vec<String>, FormatError> = match series.dtype() {
             DataType::Binary => {
                 let fmt: BinaryFormat = self.format.clone().try_into()?;
-                series
-                    .binary()?
-                    .into_iter()
-                    .map(|v| fmt.format_option(v, ""))
-                    .collect()
+                series.binary()?.into_iter().map(|v| fmt.format_option(v, "")).collect()
             }
             DataType::Utf8 => {
                 let fmt: StringFormat = self.format.clone().try_into()?;
-                series
-                    .utf8()?
-                    .into_iter()
-                    .map(|v| fmt.format_option(v, ""))
-                    .collect()
+                series.utf8()?.into_iter().map(|v| fmt.format_option(v, "")).collect()
             }
             dtype if dtype.is_numeric() => {
                 let fmt: NumberFormat = self.format.clone().try_into()?;
-                series
-                    .to_float()?
-                    .f64()?
-                    .into_iter()
-                    .map(|v| fmt.format_option(v, ""))
-                    .collect()
+                series.to_float()?.f64()?.into_iter().map(|v| fmt.format_option(v, "")).collect()
             }
             DataType::Boolean => {
                 let fmt: BoolFormat = self.format.clone().try_into()?;
-                series
-                    .bool()?
-                    .into_iter()
-                    .map(|v| fmt.format_option(v, ""))
-                    .collect()
+                series.bool()?.into_iter().map(|v| fmt.format_option(v, "")).collect()
             }
             dtype => {
                 let message = format!("column {} has type {}", series.name(), dtype);

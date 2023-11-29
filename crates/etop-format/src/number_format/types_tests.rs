@@ -1,13 +1,10 @@
 #[cfg(test)]
 mod types_tests {
-    use crate::number_format::format;
-    use crate::number_format::process;
+    use crate::number_format::{format, process};
 
     #[test]
     fn integer_oom() {
-        let fmt = crate::number_format::NumberFormat::new()
-            .integer_oom()
-            .precision(0);
+        let fmt = crate::number_format::NumberFormat::new().integer_oom().precision(0);
 
         // should be non-negative
 
@@ -48,9 +45,7 @@ mod types_tests {
 
     #[test]
     fn float_oom() {
-        let fmt = crate::number_format::NumberFormat::new()
-            .float_oom()
-            .precision(1);
+        let fmt = crate::number_format::NumberFormat::new().float_oom().precision(1);
 
         // should be <= 6 characters
         let pairs: Vec<(f64, &str)> = vec![

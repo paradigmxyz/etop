@@ -4,9 +4,8 @@ mod tests;
 
 use crate::FormatError;
 
-pub(crate) const PREFIXES: [&str; 17] = [
-    "y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y",
-];
+pub(crate) const PREFIXES: [&str; 17] =
+    ["y", "z", "a", "f", "p", "n", "µ", "m", "", "k", "M", "G", "T", "P", "E", "Z", "Y"];
 
 pub(crate) const DECIMAL_CHAR: char = '.';
 pub(crate) const GROUP_DELIMITER_CHAR: char = ',';

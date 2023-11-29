@@ -31,28 +31,23 @@ pub(crate) fn get_significant_digits(input: &str) -> usize {
 }
 
 /// Computes the decimal coefficient and exponent of the specified number `value` with supplied
-/// amount of significant digits. For example, decompose_to_coefficient_and_exponent(1.23, Option<2>)
-/// returns ("12", 0).
+/// amount of significant digits. For example, decompose_to_coefficient_and_exponent(1.23,
+/// Option<2>) returns ("12", 0).
 pub(crate) fn decompose_to_coefficient_and_exponent(
     value: f64,
     significant_digits: Option<usize>,
 ) -> Result<(String, isize), FormatError> {
     // Use exponential formatting to get the expected number of significant digits.
     let formatted_value = if let Some(significant_digits) = significant_digits {
-        let precision = if significant_digits == 0 {
-            0
-        } else {
-            significant_digits - 1
-        };
+        let precision = if significant_digits == 0 { 0 } else { significant_digits - 1 };
         format!("{:.1$e}", value, precision)
     } else {
         format!("{:e}", value)
     };
 
     let exp_tokens: Vec<&str> = formatted_value.split('e').collect::<Vec<&str>>();
-    let exponent = exp_tokens[1]
-        .parse()
-        .map_err(|_| FormatError::CouldNotDecomposeCoefficientExponent)?;
+    let exponent =
+        exp_tokens[1].parse().map_err(|_| FormatError::CouldNotDecomposeCoefficientExponent)?;
 
     // The `formatted_num` can have 2 shapes: `1e2` and `1.2e2`. Remove the decimal character
     // in case it's in the latter form.
@@ -63,11 +58,7 @@ pub(crate) fn decompose_to_coefficient_and_exponent(
             .chars()
             .position(|c| c == DECIMAL_CHAR)
             .ok_or(FormatError::CouldNotDecomposeCoefficientExponent)?;
-        let coefficient = format!(
-            "{}{}",
-            &exp_tokens[0][..dot_idx],
-            &exp_tokens[0][dot_idx + 1..]
-        );
+        let coefficient = format!("{}{}", &exp_tokens[0][..dot_idx], &exp_tokens[0][dot_idx + 1..]);
         Ok((coefficient, exponent))
     }
 }
@@ -88,12 +79,8 @@ pub(crate) fn format_si_prefix(
         let coefficient = format!("{}{}", coefficient, "0".repeat((i - n) as usize),);
         Ok((coefficient, prefix_exponent))
     } else if i > 0 {
-        let coefficient = format!(
-            "{}{}{}",
-            &coefficient[..i as usize],
-            DECIMAL_CHAR,
-            &coefficient[i as usize..]
-        );
+        let coefficient =
+            format!("{}{}{}", &coefficient[..i as usize], DECIMAL_CHAR, &coefficient[i as usize..]);
         Ok((coefficient, prefix_exponent))
     } else {
         // less than 1 yocto
@@ -105,12 +92,8 @@ pub(crate) fn format_si_prefix(
             precision.and(Some(max(0, inner_precision))),
         )?
         .0;
-        let coefficient = format!(
-            "0{}{}{}",
-            DECIMAL_CHAR,
-            "0".repeat(i.unsigned_abs()),
-            coefficient
-        );
+        let coefficient =
+            format!("0{}{}{}", DECIMAL_CHAR, "0".repeat(i.unsigned_abs()), coefficient);
         Ok((coefficient, prefix_exponent))
     }
 }
@@ -188,10 +171,7 @@ pub(crate) fn get_formatted_exp_value(
         "".to_owned()
     };
 
-    format!(
-        "{}{}{}{}",
-        &tokens[0], possible_decimal, format_type, exp_suffix
-    )
+    format!("{}{}{}{}", &tokens[0], possible_decimal, format_type, exp_suffix)
 }
 
 /// Compute the sign prefix to display based on num sign and format spec.

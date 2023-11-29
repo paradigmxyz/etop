@@ -57,17 +57,10 @@ impl BinaryFormat {
     pub fn format<T: AsRef<[u8]>>(&self, data: T) -> Result<String, FormatError> {
         let s = bytes_to_hex(data);
 
-        let (total_length, prefix) = if self.prefix {
-            (s.len() + 2, "0x")
-        } else {
-            (s.len(), "")
-        };
+        let (total_length, prefix) = if self.prefix { (s.len() + 2, "0x") } else { (s.len(), "") };
 
         if total_length < self.min_width {
-            let pad = self
-                .fill_char
-                .to_string()
-                .repeat(self.min_width - total_length);
+            let pad = self.fill_char.to_string().repeat(self.min_width - total_length);
             let zero_padding = self.fill_char == '0';
             match (&self.align, zero_padding) {
                 (BinaryAlign::Left, _) => Ok(format!("{}{}{}", prefix, s, pad)),
@@ -82,9 +75,9 @@ impl BinaryFormat {
             };
             match s.get(0..(self.max_width - 3 - prefix.len())) {
                 Some(s) => Ok(format!("{}{}...", prefix, s)),
-                None => Err(FormatError::InvalidFormat(
-                    "could not take slice of string".to_string(),
-                )),
+                None => {
+                    Err(FormatError::InvalidFormat("could not take slice of string".to_string()))
+                }
             }
         } else {
             Ok(format!("{}{}", prefix, s))
