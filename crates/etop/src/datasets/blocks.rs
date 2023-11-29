@@ -15,7 +15,7 @@ impl DataSpec for Blocks {
     }
 
     fn inputs(&self) -> Vec<String> {
-        vec!["blocks".to_string()]
+        vec!["blocks".to_string(), "transactions".to_string()]
     }
 
     fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError> {
@@ -25,12 +25,37 @@ impl DataSpec for Blocks {
             multithreaded: true,
             maintain_order: true,
         };
-        warehouse
+        let join_args = JoinArgs {
+            how: JoinType::Left,
+            validation: JoinValidation::ManyToMany,
+            suffix: None,
+            slice: None,
+        };
+
+        let txs = warehouse
+            .get_dataset("transactions")?
+            .clone()
+            .lazy()
+            .group_by(["block_number"])
+            .agg([count().alias("n_txs")])
+            .collect()?;
+        let blocks = warehouse
             .get_dataset("blocks")?
             .clone()
             .lazy()
             .with_column(col("base_fee_per_gas") / lit(1e9))
             .sort("block_number", sort)
+            .collect()
+            .map_err(EtopError::PolarsError)?;
+        blocks
+            .clone()
+            .lazy()
+            .join(
+                txs.lazy(),
+                [col("block_number")],
+                [col("block_number")],
+                join_args,
+            )
             .collect()
             .map_err(EtopError::PolarsError)
     }
@@ -39,6 +64,7 @@ impl DataSpec for Blocks {
         [
             "block_number",
             "timestamp",
+            "n_txs",
             "gas_used",
             "base_fee_per_gas",
             "author",
@@ -60,6 +86,9 @@ impl DataSpec for Blocks {
             ColumnFormatShorthand::new()
                 .name("timestamp")
                 .set_format(timestamp_fmt),
+            ColumnFormatShorthand::new()
+                .name("n_txs")
+                .set_format(integer_oom.clone()),
             ColumnFormatShorthand::new()
                 .name("gas_used")
                 .set_format(integer_oom)

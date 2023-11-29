@@ -60,7 +60,16 @@ pub enum Timezone {
 impl NumberFormat {
     /// format number value
     pub fn format<T: Into<f64>>(&self, input: T) -> Result<String, FormatError> {
-        super::interface::number_format(self, input)
+        let s = super::interface::number_format(self, input)?;
+        if s.len() < self.min_width {
+            match self.align {
+                NumberAlign::Left => Ok(format!("{:<width$}", s, width = self.min_width)),
+                NumberAlign::Right => Ok(format!("{:>width$}", s, width = self.min_width)),
+                _ => todo!(),
+            }
+        } else {
+            Ok(s)
+        }
     }
 
     /// format option of binary data

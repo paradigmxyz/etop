@@ -55,7 +55,6 @@ impl DataSpec for Erc20TransfersByErc20 {
                 join_args,
             )
             .collect();
-        println!("{:?}", df);
         df.map_err(EtopError::PolarsError)
     }
 

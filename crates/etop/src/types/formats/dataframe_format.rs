@@ -232,6 +232,17 @@ impl DataFrameFormatFinal {
         let mut spare_room: usize = self.max_render_width
             - column_min_widths.iter().take(n_used_columns).sum::<usize>()
             - self.column_delimiter.chars().count() * ((n_used_columns as i64 - 1).max(0) as usize);
+        // println!("COLUMN_MIN_WIDTHS {:?}", column_min_widths);
+        // println!("TOTAL_MIN_WIDTHS {}", column_min_widths.iter().take(n_used_columns).sum::<usize>());
+        // println!("SPARE_ROOM {}", spare_room);
+        // println!("MAX_RENDER_WIDTH {:?}", self.max_render_width);
+        // println!(
+        //     "MIN_TOTAL_W_DELIM {:?}",
+        //     column_min_widths.iter().take(n_used_columns).sum::<usize>()
+        //         + self.column_delimiter.chars().count()
+        //             * ((n_used_columns as i64 - 1).max(0) as usize)
+        // );
+        // println!();
         for (c, column_format) in self.column_formats.iter().take(n_used_columns).enumerate() {
             let min_width = column_min_widths[c];
             let max_width = column_max_widths[c].min(min_width + spare_room);
@@ -251,6 +262,13 @@ impl DataFrameFormatFinal {
                     column_format.name
                 )))?;
             columns.push(column);
+            // println!("NAME {}", column_format.name);
+            // println!("MAX_WIDTH {}", max_width);
+            // println!("MIN_WIDTH {}", min_width);
+            // println!("SPARE_ROOM {}", spare_room);
+            // println!("USED_WIDTH {}", used_width);
+            // println!("NEW_SPARE_ROOM {}", spare_room - (used_width - min_width));
+            // println!();
             used_widths.push(used_width);
             spare_room -= used_width - min_width;
         }

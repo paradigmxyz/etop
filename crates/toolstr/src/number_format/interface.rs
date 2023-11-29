@@ -75,7 +75,7 @@ pub(crate) fn number_format<T: Into<f64>>(
                 return Ok("big".to_string());
             } else {
                 let (prefix, prevalue) = match input_f64 {
-                    value if value <= 1_000.0 => ("", value),
+                    value if value <= 1_000.0 => return Ok(input_f64.round().to_string()),
                     value if value <= 9_999.0 => ("", value),
                     value if value < 1_000_000.0 => ("K", value / 1_000.0),
                     value if value < 1_000_000_000.0 => ("M", value / 1_000_000.0),
