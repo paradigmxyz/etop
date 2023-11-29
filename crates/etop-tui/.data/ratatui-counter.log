@@ -1,0 +1,183 @@
+2023-10-22T16:59:50.672581Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:51.673940Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:52.696806Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:53.680974Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:54.746968Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:55.765039Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:56.675220Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:57.673844Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:58.674134Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T16:59:59.674197Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:00.679293Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:01.680501Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:02.673676Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:03.673541Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:04.679376Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:05.680538Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:06.682527Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:07.676004Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:08.682168Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:09.680334Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:10.683292Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:11.682824Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:12.673308Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:13.673853Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:14.674085Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:15.673693Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:16.681381Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:17.681876Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:18.679753Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:19.673609Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:20.673182Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:21.682482Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:22.673507Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:23.673666Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:24.674264Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:25.675634Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:26.673921Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:27.685973Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:28.673595Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:29.674339Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:30.673379Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:31.673526Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:32.673573Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:33.673224Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:34.681940Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:35.673523Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:36.673564Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:37.675175Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:38.680166Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:39.684920Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:40.673804Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:41.711692Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:42.673389Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:43.674466Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:44.675662Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:45.682027Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:46.068614Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:46.674451Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:46.745896Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:47.215049Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:47.675867Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:48.236055Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:48.553660Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:48.683141Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:48.719500Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:48.919606Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:00:49.085918Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:49.222676Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:49.361682Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:00:49.417642Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:49.564770Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:49.673687Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:50.166479Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:00:50.597269Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:00:50.674784Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:50.753674Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:00:51.673307Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:51.885938Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:52.183968Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:52.571127Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:52.673751Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:53.433412Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:53.674203Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:53.965599Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:00:54.673530Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:55.673892Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:56.677287Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:57.673591Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:58.673937Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:00:59.673503Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:00.673965Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:00.771286Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:01:01.673857Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:02.147468Z  INFO src/app.rs:79: Got action: EnterInsert    
+2023-10-22T17:01:02.675313Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:03.674449Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:04.235628Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:04.673924Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:05.681895Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:06.181495Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:06.673856Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:07.216012Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:07.673424Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:07.803026Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:08.673792Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:09.679497Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:10.068129Z  INFO src/app.rs:79: Got action: EnterInsert    
+2023-10-22T17:01:10.674679Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:11.019355Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:11.181770Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:11.302717Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:11.484044Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:11.632239Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:11.681450Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:11.785838Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:11.953266Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:12.169016Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:12.674475Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:13.675354Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:13.685301Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:13.819320Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.319210Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.402850Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.488328Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.569456Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.652477Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.675030Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:14.736297Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:14.821460Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:15.329148Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:15.635226Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:15.680895Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:16.662913Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:16.673343Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:17.479701Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:17.673998Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:17.802510Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:18.047021Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:18.269368Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:18.675277Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:19.675651Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:20.455451Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:20.674030Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:21.673727Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:22.683303Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:23.013974Z  INFO src/app.rs:79: Got action: ScheduleDecrement    
+2023-10-22T17:01:23.684117Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:24.673017Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:25.673887Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:26.674402Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:27.673986Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:28.049499Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:28.183593Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:28.333212Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:28.499547Z  INFO src/app.rs:79: Got action: ScheduleIncrement    
+2023-10-22T17:01:28.673631Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:29.674239Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:30.673970Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:31.673727Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:32.673004Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:33.675298Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:34.676001Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:35.464247Z  INFO src/app.rs:79: Got action: EnterInsert    
+2023-10-22T17:01:35.673764Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:36.675794Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:37.672671Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:38.673255Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:39.672654Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:40.674191Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:41.672982Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:42.673750Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:43.682617Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:44.682616Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:45.618555Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:01:45.673488Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:46.680892Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:47.673360Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:48.288134Z  INFO src/app.rs:79: Got action: ToggleShowHelp    
+2023-10-22T17:01:48.681934Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:49.674525Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:50.674085Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:51.673792Z  INFO src/components/home.rs:47: Tick    
+2023-10-22T17:01:51.952159Z  INFO src/app.rs:79: Got action: Quit    

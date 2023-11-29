@@ -1,6 +1,6 @@
 
 [workspace]
-members = ["crates/toolstr", "crates/etop"]
+members = ["crates/etop-cli", "crates/etop-core", "crates/etop-format", "crates/etop-tui"]
 resolver = "2"
 
 [workspace.package]
@@ -12,6 +12,7 @@ repository = "https://github.com/paradigmxyz/etop"
 exclude = [".github/"]
 
 [workspace.dependencies]
+cryo_freeze = { path = "/Users/stormslivkoff/repos/cryo/crates/freeze" }
 polars = { version = "0.35.4", features = [
     "parquet",
     "string_encoding",
@@ -21,4 +22,4 @@ polars = { version = "0.35.4", features = [
     "json",
     "dtype-struct",
 ] }
-
+tokio = { version = "1.32.0", features = ["full"] }
