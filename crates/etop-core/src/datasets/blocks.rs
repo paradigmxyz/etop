@@ -85,11 +85,13 @@ impl DataSpec for Blocks {
             ColumnFormatShorthand::new()
                 .name("gas_used")
                 .set_format(integer_oom)
+                .min_width(5)
                 .newline_underscores(),
             ColumnFormatShorthand::new()
                 .name("base_fee_per_gas")
                 .display_name("base_fee")
                 .set_format(float_oom)
+                .min_width(5)
                 .newline_underscores(),
             ColumnFormatShorthand::new().name("author"),
         ]

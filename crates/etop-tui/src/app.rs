@@ -136,10 +136,16 @@ impl App {
                         if let Some(block_number) = self.data.window.end_block {
                             self.data.window.end_block = Some(block_number + 1);
                         }
+                        if let Some(block_number) = self.data.window.start_block {
+                            self.data.window.start_block = Some(block_number + 1);
+                        }
                     },
                     Action::DecrementWindow => {
                         if let Some(block_number) = self.data.window.end_block {
                             self.data.window.end_block = Some(block_number - 1);
+                        }
+                        if let Some(block_number) = self.data.window.start_block {
+                            self.data.window.start_block = Some(block_number - 1);
                         }
                     },
                     Action::SendQuery(query, block_range) => {
