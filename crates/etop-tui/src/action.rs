@@ -27,11 +27,15 @@ pub enum Action {
     // etop-specific
     IncrementWindow,
     DecrementWindow,
+    LiveWindow,
+    PreviousWindow,
     ScheduleIncrementWindow,
+    BeginBlockSubscription,
+    BlockSeen(u32),
     LoadDataset(String),
     NewWarehouse(DataWarehouse),
     RequestDataset(String),  // dataset name
     SetDataset(String, DataFrame),  // dataset name
-    SendQuery(String, String),  // dataset name, query
-    ReceiveQuery(String, String, Option<DataFrame>), //
+    RequestQuery(String, (u32, u32)),  // dataset name, query
+    ReceiveQuery(String, (u32, u32), DataFrame), //
 }

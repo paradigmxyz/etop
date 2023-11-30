@@ -33,6 +33,10 @@ pub enum EtopError {
     IOError(std::io::Error),
     /// tui error
     TuiError(String),
+    /// connection error
+    ConnectionError(String),
+    /// cryo error
+    CryoError(cryo_freeze::CollectError),
 }
 
 impl From<polars::prelude::PolarsError> for EtopError {

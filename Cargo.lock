@@ -1538,6 +1538,8 @@ name = "etop-cli"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "cryo_freeze",
+ "ethers",
  "etop-core",
  "etop-format",
  "etop-tui",
@@ -1550,6 +1552,7 @@ name = "etop-core"
 version = "0.1.0"
 dependencies = [
  "cryo_freeze",
+ "ethers",
  "etop-format",
  "glob",
  "polars",
@@ -1576,6 +1579,8 @@ dependencies = [
  "crossterm",
  "derive_deref",
  "directories",
+ "ethers",
+ "ethers-core",
  "etop-core",
  "futures",
  "human-panic",

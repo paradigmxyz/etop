@@ -28,12 +28,6 @@ impl DataSpec for Erc20TransfersByErc20 {
     ) -> Result<DataFrame, EtopError> {
         let erc20_transfers = warehouse.get_dataset("erc20_transfers")?;
         let erc20_metadata = warehouse.get_dataset("erc20_metadata")?;
-        // let sort = SortOptions {
-        //     descending: true,
-        //     nulls_last: true,
-        //     multithreaded: true,
-        //     maintain_order: true,
-        // };
         let erc20_transfers =
             crate::filter_by_block_number(erc20_transfers, start_block, end_block)?;
         let df = erc20_transfers
@@ -44,8 +38,12 @@ impl DataSpec for Erc20TransfersByErc20 {
                 count().alias("n_transfers"),
                 col("from_address").n_unique().alias("n_senders"),
                 col("to_address").n_unique().alias("n_receivers"),
+                col("transaction_hash").n_unique().alias("n_txs"),
+                col("value_f64").sum().alias("volume"),
+                col("from_address").mode().sort(true).first().alias("most_common_sender"),
+                col("to_address").mode().sort(true).first().alias("most_common_receiver"),
             ])
-            .sort_by_exprs(vec![col("n_transfers"), col("erc20")], [true], true, false)
+            .sort_by_exprs(vec![col("n_transfers"), col("erc20")], [true], true, true)
             .collect();
         let df = df.map_err(EtopError::PolarsError)?;
         let join_args = JoinArgs {
@@ -58,32 +56,47 @@ impl DataSpec for Erc20TransfersByErc20 {
             .clone()
             .lazy()
             .join(
-                erc20_metadata.lazy().select([col("erc20"), col("symbol")]),
+                erc20_metadata.lazy().select([col("erc20"), col("symbol"), col("decimals")]),
                 [col("erc20")],
                 [col("erc20")],
                 join_args,
             )
+            .with_column(col("volume") / lit(10).pow(col("decimals")))
             .collect();
         df.map_err(EtopError::PolarsError)
     }
 
     fn default_columns(&self) -> Vec<String> {
-        ["symbol", "n_transfers", "n_senders", "n_receivers", "erc20"]
-            .into_iter()
-            .map(|column| column.to_string())
-            .collect()
+        [
+            "symbol",
+            "n_transfers",
+            "n_senders",
+            "n_receivers",
+            "n_txs",
+            "volume",
+            "erc20",
+            "most_common_sender",
+            "most_common_receiver",
+        ]
+        .into_iter()
+        .map(|column| column.to_string())
+        .collect()
     }
 
     fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
+        let oom_float_format = etop_format::NumberFormat::new().float_oom().precision(1);
         vec![
             ColumnFormatShorthand::new().name("symbol").width(9),
             ColumnFormatShorthand::new().name("n_transfers").display_name("n\ntrans\nfers"),
-            // .newline_underscores(),
             ColumnFormatShorthand::new().name("n_senders").display_name("n\nsend\ners"),
-            // .newline_underscores(),
             ColumnFormatShorthand::new().name("n_receivers").display_name("n\nrecei\nvers"),
-            // .newline_underscores(),
-            ColumnFormatShorthand::new().name("erc20").display_name("address"),
+            ColumnFormatShorthand::new().name("n_txs"),
+            ColumnFormatShorthand::new().name("volume").set_format(oom_float_format).min_width(6),
+            ColumnFormatShorthand::new().name("erc20").display_name("erc20 address"),
+            ColumnFormatShorthand::new()
+                .name("most_common_sender")
+                .display_name("most common sender"),
+            ColumnFormatShorthand::new().name("most_common_receiver").display_name("most common receiver"),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

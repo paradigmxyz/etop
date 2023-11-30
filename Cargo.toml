@@ -21,5 +21,6 @@ polars = { version = "0.35.4", features = [
     "binary_encoding",
     "json",
     "dtype-struct",
+    "mode",
 ] }
 tokio = { version = "1.32.0", features = ["full"] }

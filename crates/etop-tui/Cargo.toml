@@ -33,3 +33,5 @@ tracing-subscriber = { version = "0.3.17", features = ["env-filter", "serde"] }
 tui-input = { version = "0.8.0", features = ["serde"] }
 polars = { workspace = true }
 etop-core = { path = "../etop-core" }
+ethers = { version = "2.0.10", features = ["rustls", "ws", "ipc"] }
+ethers-core = "2.0.10"
