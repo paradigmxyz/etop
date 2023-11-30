@@ -1,8 +1,5 @@
 
+# etop
 
-Currently on this tutorial
-https://ratatui.rs/tutorial/json-editor/app.html
+like `htop` or `btop` for Ethereum, the World Computer
 
-
-Resources
-https://github.com/ratatui-org/ratatui-async-template
