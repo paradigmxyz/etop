@@ -265,7 +265,14 @@ impl DataFrameFormatFinal {
         //             * ((n_used_columns as i64 - 1).max(0) as usize)
         // );
         // println!();
+
         for (c, column_format) in self.column_formats.iter().take(n_used_columns).enumerate() {
+            if let (0, _) = df.shape() {
+                used_widths.push(column_min_widths[c]);
+                columns.push(vec![]);
+                continue
+            }
+
             let min_width = column_min_widths[c];
             let max_width = column_max_widths[c].min(min_width + spare_room);
             let column = column_format
@@ -282,6 +289,7 @@ impl DataFrameFormatFinal {
                 .ok_or(FormatError::EmptyData(format!("empty column: {}", column_format.name)))?;
             columns.push(column);
             // println!("NAME {}", column_format.name);
+            // println!("FORMAT {:?}", column_format);
             // println!("MAX_WIDTH {}", max_width);
             // println!("MIN_WIDTH {}", min_width);
             // println!("SPARE_ROOM {}", spare_room);
@@ -299,6 +307,7 @@ impl DataFrameFormatFinal {
             Some(column) => column.len(),
             None => return,
         };
+        // println!("N_DATA_ROWS: {}", n_data_rows);
         for r in 0..n_data_rows {
             let mut row = String::with_capacity(total_width);
             for (c, column) in columns.iter().enumerate() {

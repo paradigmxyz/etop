@@ -1,25 +1,19 @@
+use etop_core::EtopState;
+use crate::{
+    action::Action,
+    tui::{Event, Frame},
+};
 use color_eyre::eyre::Result;
 use crossterm::event::{KeyEvent, MouseEvent};
 use ratatui::layout::Rect;
 use tokio::sync::mpsc::UnboundedSender;
 
-use crate::{
-    action::Action,
-    config::Config,
-    tui::{Event, Frame},
-};
-
-pub mod fps;
+pub mod body;
 pub mod header;
-pub mod home;
 
 pub trait Component {
     #[allow(unused_variables)]
     fn register_action_handler(&mut self, tx: UnboundedSender<Action>) -> Result<()> {
-        Ok(())
-    }
-    #[allow(unused_variables)]
-    fn register_config_handler(&mut self, config: Config) -> Result<()> {
         Ok(())
     }
     fn init(&mut self) -> Result<()> {
@@ -45,5 +39,5 @@ pub trait Component {
     fn update(&mut self, action: Action) -> Result<Option<Action>> {
         Ok(None)
     }
-    fn draw(&mut self, f: &mut Frame<'_>, rect: Rect) -> Result<()>;
+    fn draw(&mut self, f: &mut Frame<'_>, rect: Rect, data: EtopState) -> Result<()>;
 }

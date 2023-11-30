@@ -20,16 +20,15 @@ impl DataSpec for TransactionsByToAddress {
         vec!["transactions".to_string()]
     }
 
-    fn transform(&self, inputs: &DataWarehouse) -> Result<DataFrame, EtopError> {
+    fn transform(
+        &self,
+        inputs: &DataWarehouse,
+        start_block: Option<u32>,
+        end_block: Option<u32>,
+    ) -> Result<DataFrame, EtopError> {
         let txs = inputs.get_dataset("transactions")?;
-        let sort = SortOptions {
-            descending: true,
-            nulls_last: true,
-            multithreaded: true,
-            maintain_order: true,
-        };
-        let df = txs
-            .clone()
+        let txs = crate::filter_by_block_number(txs, start_block, end_block)?;
+        txs.clone()
             .lazy()
             .group_by(["to_address"])
             .agg([
@@ -38,9 +37,9 @@ impl DataSpec for TransactionsByToAddress {
                 col("gas_price").mean().alias("mean_gas_price") / lit(1e9),
                 col("gas_used").mean().alias("mean_gas_used"),
             ])
-            .sort("n_txs", sort)
-            .collect();
-        df.map_err(EtopError::PolarsError)
+            .sort_by_exprs(vec![col("n_txs"), col("to_address")], [true, true], true, false)
+            .collect()
+            .map_err(EtopError::PolarsError)
     }
 
     fn default_columns(&self) -> Vec<String> {
@@ -59,11 +58,13 @@ impl DataSpec for TransactionsByToAddress {
             ColumnFormatShorthand::new()
                 .name("n_txs")
                 .newline_underscores()
-                .set_format(oom_integer_format.clone()),
+                .set_format(oom_integer_format.clone())
+                .min_width(4),
             ColumnFormatShorthand::new()
                 .name("eth_sent")
                 .newline_underscores()
-                .set_format(oom_float_format.clone()),
+                .set_format(oom_float_format.clone())
+                .min_width(6),
             ColumnFormatShorthand::new()
                 .name("mean_gas_price")
                 .newline_underscores()
@@ -71,7 +72,8 @@ impl DataSpec for TransactionsByToAddress {
             ColumnFormatShorthand::new()
                 .name("mean_gas_used")
                 .newline_underscores()
-                .set_format(oom_float_format.clone()),
+                .set_format(oom_float_format.clone())
+                .min_width(6),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

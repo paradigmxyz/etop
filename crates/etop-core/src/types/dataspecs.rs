@@ -15,7 +15,12 @@ pub trait DataSpec {
     fn inputs(&self) -> Vec<String>;
 
     /// transform inputs into the data needed for a view
-    fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError>;
+    fn transform(
+        &self,
+        warehouse: &DataWarehouse,
+        start_block: Option<u32>,
+        end_block: Option<u32>,
+    ) -> Result<DataFrame, EtopError>;
 
     /// default columns
     fn default_columns(&self) -> Vec<String>;

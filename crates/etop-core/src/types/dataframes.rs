@@ -42,3 +42,27 @@ fn load_dataset_from_files(name: &str, data_dir: &str) -> Result<Vec<DataFrame>,
     }
     Ok(dfs)
 }
+
+/// filter by block number
+pub fn filter_by_block_number(
+    df: DataFrame,
+    start_block: Option<u32>,
+    end_block: Option<u32>,
+) -> Result<DataFrame, EtopError> {
+    let res = match (start_block, end_block) {
+        (Some(start_block), Some(end_block)) => df
+            .lazy()
+            .filter(
+                col("block_number").gt_eq(start_block).and(col("block_number").lt_eq(end_block)),
+            )
+            .collect()?,
+        (Some(start_block), None) => {
+            df.lazy().filter(col("block_number").gt_eq(start_block)).collect()?
+        }
+        (None, Some(end_block)) => {
+            df.lazy().filter(col("block_number").lt_eq(end_block)).collect()?
+        }
+        (None, None) => return Ok(df),
+    };
+    Ok(res)
+}

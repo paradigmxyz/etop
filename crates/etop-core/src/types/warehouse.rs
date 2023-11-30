@@ -4,7 +4,7 @@ use polars::prelude::*;
 use std::collections::HashMap;
 
 /// data warehouse
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct DataWarehouse {
     /// collected data
     pub data: HashMap<String, DataFrame>,
@@ -14,7 +14,7 @@ pub struct DataWarehouse {
 }
 
 /// data range
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum DataRange {
     /// block
     Block(BlockChunk),

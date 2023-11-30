@@ -1,27 +1,11 @@
-use std::time::Instant;
-
+use etop_core::EtopState;
+use super::Component;
+use crate::{action::Action, tui::Frame};
 use color_eyre::eyre::Result;
 use ratatui::{prelude::*, widgets::*};
 
-use super::Component;
-use crate::{action::Action, tui::Frame};
-
 #[derive(Debug, Clone, PartialEq)]
-pub enum Ticker {
-    AppTick,
-    RenderTick,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Header {
-    app_start_time: Instant,
-    app_frames: u32,
-    app_fps: f64,
-
-    render_start_time: Instant,
-    render_frames: u32,
-    render_fps: f64,
-}
+pub struct Header {}
 
 impl Default for Header {
     fn default() -> Self {
@@ -31,66 +15,47 @@ impl Default for Header {
 
 impl Header {
     pub fn new() -> Self {
-        Self {
-            app_start_time: Instant::now(),
-            app_frames: 0,
-            app_fps: 0.0,
-            render_start_time: Instant::now(),
-            render_frames: 0,
-            render_fps: 0.0,
-        }
-    }
-
-    fn app_tick(&mut self) -> Result<()> {
-        self.app_frames += 1;
-        let now = Instant::now();
-        let elapsed = (now - self.app_start_time).as_secs_f64();
-        if elapsed >= 1.0 {
-            self.app_fps = self.app_frames as f64 / elapsed;
-            self.app_start_time = now;
-            self.app_frames = 0;
-        }
-        Ok(())
-    }
-
-    fn render_tick(&mut self) -> Result<()> {
-        self.render_frames += 1;
-        let now = Instant::now();
-        let elapsed = (now - self.render_start_time).as_secs_f64();
-        if elapsed >= 1.0 {
-            self.render_fps = self.render_frames as f64 / elapsed;
-            self.render_start_time = now;
-            self.render_frames = 0;
-        }
-        Ok(())
+        Self {}
     }
 }
 
 impl Component for Header {
-    fn update(&mut self, action: Action) -> Result<Option<Action>> {
-        if let Action::Tick = action {
-            self.app_tick()?
-        };
-        if let Action::Render = action {
-            self.render_tick()?
-        };
+    fn update(&mut self, _action: Action) -> Result<Option<Action>> {
         Ok(None)
     }
 
-    fn draw(&mut self, f: &mut Frame<'_>, rect: Rect) -> Result<()> {
+    fn draw(&mut self, f: &mut Frame<'_>, rect: Rect, data: EtopState) -> Result<()> {
         let rects = Layout::default()
             .direction(Direction::Vertical)
-            .constraints(vec![
-                Constraint::Length(1), // first row
-                Constraint::Min(0),
-            ])
+            .constraints(vec![Constraint::Length(1), Constraint::Min(0)])
+            .split(rect);
+        let rect = rects[0];
+        let inner_rects = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
             .split(rect);
 
-        let rect = rects[0];
+        let color = Color::Rgb(0, 255, 0);
 
-        let s = format!("{:.2} fps (app) {:.2} fps (render)", self.app_fps, self.render_fps);
-        let block = Block::default().title(block::Title::from(s.dim()).alignment(Alignment::Left));
-        f.render_widget(block, rect);
+        let s = data.dataset.clone();
+        let style = Style::default().fg(color).bold();
+        let title = block::Title::from(s.dim()).alignment(Alignment::Left);
+        let block = Block::default().title(title).style(style);
+        f.render_widget(block, inner_rects[0]);
+
+        let s = get_block_number_string(data);
+        let style = Style::default().fg(color).bold();
+        let title = block::Title::from(s.dim()).alignment(Alignment::Right);
+        let block = Block::default().title(title).style(style);
+        f.render_widget(block, inner_rects[1]);
+
         Ok(())
+    }
+}
+
+fn get_block_number_string(data: EtopState) -> String {
+    match data.window.end_block {
+        Some(block_number) => format!("block {}", block_number),
+        None => "-".to_string(),
     }
 }

@@ -20,15 +20,22 @@ impl DataSpec for Erc20TransfersByErc20 {
         vec!["erc20_transfers".to_string(), "erc20_metadata".to_string()]
     }
 
-    fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError> {
+    fn transform(
+        &self,
+        warehouse: &DataWarehouse,
+        start_block: Option<u32>,
+        end_block: Option<u32>,
+    ) -> Result<DataFrame, EtopError> {
         let erc20_transfers = warehouse.get_dataset("erc20_transfers")?;
         let erc20_metadata = warehouse.get_dataset("erc20_metadata")?;
-        let sort = SortOptions {
-            descending: true,
-            nulls_last: true,
-            multithreaded: true,
-            maintain_order: true,
-        };
+        // let sort = SortOptions {
+        //     descending: true,
+        //     nulls_last: true,
+        //     multithreaded: true,
+        //     maintain_order: true,
+        // };
+        let erc20_transfers =
+            crate::filter_by_block_number(erc20_transfers, start_block, end_block)?;
         let df = erc20_transfers
             .clone()
             .lazy()
@@ -38,7 +45,7 @@ impl DataSpec for Erc20TransfersByErc20 {
                 col("from_address").n_unique().alias("n_senders"),
                 col("to_address").n_unique().alias("n_receivers"),
             ])
-            .sort("n_transfers", sort)
+            .sort_by_exprs(vec![col("n_transfers"), col("erc20")], [true], true, false)
             .collect();
         let df = df.map_err(EtopError::PolarsError)?;
         let join_args = JoinArgs {

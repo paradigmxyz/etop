@@ -20,7 +20,12 @@ impl DataSpec for Blocks {
         vec!["blocks".to_string(), "transactions".to_string()]
     }
 
-    fn transform(&self, warehouse: &DataWarehouse) -> Result<DataFrame, EtopError> {
+    fn transform(
+        &self,
+        warehouse: &DataWarehouse,
+        start_block: Option<u32>,
+        end_block: Option<u32>,
+    ) -> Result<DataFrame, EtopError> {
         let sort = SortOptions {
             descending: true,
             nulls_last: true,
@@ -49,6 +54,10 @@ impl DataSpec for Blocks {
             .sort("block_number", sort)
             .collect()
             .map_err(EtopError::PolarsError)?;
+
+
+        let blocks = crate::filter_by_block_number(blocks, start_block, end_block)?;
+
         blocks
             .clone()
             .lazy()

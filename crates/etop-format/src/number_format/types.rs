@@ -66,6 +66,14 @@ impl NumberFormat {
                 NumberAlign::Right => Ok(format!("{:>width$}", s, width = self.min_width)),
                 _ => todo!(),
             }
+        } else if s.len() > self.max_width {
+            if self.max_width == 1 {
+                Ok(".".to_string())
+            } else if self.max_width == 2 {
+                Ok("..".to_string())
+            } else {
+                Ok(format!("{}...", &s[0..(self.max_width - 3)]))
+            }
         } else {
             Ok(s)
         }

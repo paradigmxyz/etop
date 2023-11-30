@@ -78,13 +78,29 @@ pub struct DatasetArgs {
     pub columns: Option<Vec<String>>,
 
     /// Window size
-    pub window: Option<u64>,
+    pub window: Option<u32>,
 }
 
 /// Arguments for the `dataframe` subcommand
 #[derive(Parser)]
 pub struct TuiArgs {
-    // /// Program to load
-    // #[clap()]
-    // pub program: Option<String>,
+    /// dataset
+    #[clap()]
+    pub dataset: Option<String>,
+
+    /// block
+    #[clap(short, long)]
+    pub block: Option<u32>,
+
+    /// window size
+    #[clap(long)]
+    pub window: Option<String>,
+
+    /// data directory
+    #[clap(long)]
+    pub data_dir: Option<String>,
+
+    /// rpc provider url
+    #[clap(short, long)]
+    pub rpc: Option<String>,
 }

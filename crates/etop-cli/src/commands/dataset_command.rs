@@ -25,7 +25,7 @@ pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
         .collect::<Result<Vec<_>, _>>();
     let columns = columns?;
 
-    let df = dataspec.transform(&warehouse)?;
+    let df = dataspec.transform(&warehouse, None, None)?;
     let fmt = DataFrameFormat {
         column_formats: Some(columns),
         render_height: Some(render_height - 1),
