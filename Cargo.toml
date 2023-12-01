@@ -25,3 +25,4 @@ polars = { version = "0.35.4", features = [
     "mode",
 ] }
 tokio = { version = "1.32.0", features = ["full"] }
+term_size = "0.3.2"
