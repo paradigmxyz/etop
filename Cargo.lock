@@ -973,8 +973,9 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "cryo_cli"
-version = "0.2.0"
-source = "git+https://github.com/paradigmxyz/cryo?rev=8764f62f0db81d3b7e8949a7086d8b0c3169b389#8764f62f0db81d3b7e8949a7086d8b0c3169b389"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3f7c8edf8d2ce0271aeb422ac4e62925cb28144bfbfe3e8cd7d1b7826003c197"
 dependencies = [
  "anstyle",
  "clap_cryo",
@@ -994,8 +995,9 @@ dependencies = [
 
 [[package]]
 name = "cryo_freeze"
-version = "0.2.0"
-source = "git+https://github.com/paradigmxyz/cryo?rev=8764f62f0db81d3b7e8949a7086d8b0c3169b389#8764f62f0db81d3b7e8949a7086d8b0c3169b389"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "051ff6f9877f4b3fca040f9431050e4d97ac1d30635abc4dafc40453913bdc79"
 dependencies = [
  "async-trait",
  "chrono",
@@ -1021,8 +1023,9 @@ dependencies = [
 
 [[package]]
 name = "cryo_to_df"
-version = "0.2.0"
-source = "git+https://github.com/paradigmxyz/cryo?rev=8764f62f0db81d3b7e8949a7086d8b0c3169b389#8764f62f0db81d3b7e8949a7086d8b0c3169b389"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1592e6866044fdeb4f47015c71b717d5c5479e7816ba89574a3e9507b81dbca"
 dependencies = [
  "indexmap",
  "proc-macro2",

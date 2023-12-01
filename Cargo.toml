@@ -12,8 +12,8 @@ repository = "https://github.com/paradigmxyz/etop"
 exclude = [".github/"]
 
 [workspace.dependencies]
-cryo_freeze = { git = "https://github.com/paradigmxyz/cryo", rev = "8764f62f0db81d3b7e8949a7086d8b0c3169b389", package = "cryo_freeze" }
-cryo_cli = { git = "https://github.com/paradigmxyz/cryo", rev = "8764f62f0db81d3b7e8949a7086d8b0c3169b389", package = "cryo_cli" }
+cryo_freeze = { version = "0.3.0" }
+cryo_cli = { version = "0.3.0" }
 polars = { version = "0.35.4", features = [
     "parquet",
     "string_encoding",
