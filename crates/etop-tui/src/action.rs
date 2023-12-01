@@ -36,5 +36,7 @@ pub enum Action {
     // NewWarehouse(DataWarehouse),
     RequestQuery(etop_core::DatasetQuery),
     ReceiveQuery(etop_core::DatasetQuery, DataFrame),
+    ReceiveQueries(Vec<(etop_core::DatasetQuery, DataFrame)>),
     Log(String),
+    RerenderTable,
 }

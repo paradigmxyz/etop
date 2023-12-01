@@ -37,3 +37,9 @@ cargo install --path crates/etop-cli
 3. Show raw blocks
 `etop blocks`
 
+## Keyboard Shortcuts
+- `]` next block
+- `[` previous block
+- `l` live mode
+- `q` quit
+

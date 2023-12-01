@@ -71,7 +71,7 @@ fn get_block_window_string(data: &EtopState) -> String {
             if start_block == end_block {
                 format!("showing block {}", end_block)
             } else {
-                format!("showing block {} to {}", start_block, end_block)
+                format!("showing blocks {} to {}", start_block, end_block)
             }
         }
         (_, Some(end_block)) => format!("block {}", end_block),

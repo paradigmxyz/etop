@@ -18,7 +18,7 @@ pub enum Commands {
     Dataframe(DataframeArgs),
     /// Print formatted dataset
     Dataset(DatasetArgs),
-    /// Enter TUI
+    /// Start Etop TUI
     Tui(TuiArgs),
 }
 

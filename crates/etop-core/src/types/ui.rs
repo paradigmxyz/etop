@@ -152,15 +152,14 @@ impl EtopState {
                     .unique()?
                     .utf8()?
                     .into_iter()
-                    .filter_map(|x| x)
+                    .flatten()
                     .map(|x| x.to_string())
-                    .into_iter()
                     .collect();
 
                 // compute addresses that are missing
                 let missing =
-                    self.warehouse.compute_missing_addresses(derived_from.to_string(), required);
-                if missing.len() > 0 {
+                    self.warehouse.compute_missing_addresses(dataset.name(), required);
+                if !missing.is_empty() {
                     queries.push(DatasetQuery::Address(dataset.clone(), missing))
                 };
             }
@@ -206,7 +205,6 @@ impl EtopState {
             header_separator_delimiter: "───".to_string(),
             ..Default::default()
         };
-
         Ok(fmt.format(df)?)
     }
 }

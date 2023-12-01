@@ -1701,6 +1701,7 @@ dependencies = [
  "serde_json",
  "signal-hook",
  "strip-ansi-escapes",
+ "term_size",
  "tokio",
  "tokio-util",
  "tracing",

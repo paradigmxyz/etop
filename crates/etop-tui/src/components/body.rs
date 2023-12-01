@@ -1,6 +1,6 @@
 use super::Component;
 use crate::{action::Action, tui::Frame};
-use color_eyre::eyre::{eyre, Result};
+use color_eyre::eyre::Result;
 use etop_core::EtopState;
 use ratatui::{prelude::*, widgets::*};
 
@@ -31,19 +31,9 @@ impl Component for Body {
             .split(rect);
         let rect = rects[1];
 
-        // let color = Color::Rgb(0, 255, 0);
         let color = Color::Gray;
 
-        let s = if data.can_render() {
-            match data.format_window((rect.height + 1).into(), rect.width.into()) {
-                Ok(s) => s,
-                Err(_) => return Err(eyre!("could not format window")),
-            }
-        } else {
-            format!("warehouse has {} entries", data.warehouse.data.len())
-        };
-
-        let s = format!("{}\n\n\n{}", s, data.messages.join("\n"));
+        let s = data.cache_df_render.unwrap_or("".to_string());
 
         let style = Style::default().fg(color);
         let content = Paragraph::new(s).style(style);
