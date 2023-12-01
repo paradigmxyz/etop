@@ -7,6 +7,8 @@ like `htop` for Ethereum
 
 `etop` offers effortless visibility into what's happening on chain
 
+<img width="1117" alt="image" src="https://github.com/paradigmxyz/etop/assets/7907648/1d760abc-e89f-4877-a937-1a6671cc3d72">
+
 
 ## Contents
 1. [Installation](#installation)
