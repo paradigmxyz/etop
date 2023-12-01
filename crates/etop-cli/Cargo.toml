@@ -1,9 +1,12 @@
 [package]
 name = "etop-cli"
-version = "0.1.0"
-edition = "2021"
+description = "etop-cli is cli of etop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [[bin]]
 name = "etop"
 path = "src/main.rs"
