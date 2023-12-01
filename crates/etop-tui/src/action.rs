@@ -24,6 +24,8 @@ pub enum Action {
     ExitProcessing,
     Update,
     // etop-specific
+    IncrementBlock,
+    DecrementBlock,
     IncrementWindow,
     DecrementWindow,
     LiveWindow,

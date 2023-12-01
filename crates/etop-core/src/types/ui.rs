@@ -61,26 +61,36 @@ impl EtopState {
 
     /// increment window
     pub fn increment_window(&mut self, amount: u32) {
+        self.increment_block(amount);
+    }
+
+    /// increment block
+    pub fn increment_block(&mut self, amount: u32) {
         match (self.latest_block, self.window.end_block) {
             (Some(latest_block), Some(end_block)) => {
                 if end_block + amount >= latest_block {
                     self.enable_live_mode();
                 } else {
                     self.window.live = false;
-                    self.window.increment_window(amount);
+                    self.window.increment_block(amount);
                 }
             }
             (_, Some(end_block)) => {
                 self.window.live = false;
-                self.window.increment_window(end_block + amount);
+                self.window.increment_block(end_block + amount);
             }
             _ => {}
         }
     }
 
-    /// decrement window
+    /// decrement block
     pub fn decrement_window(&mut self, amount: u32) {
         self.window.decrement_window(amount)
+    }
+
+    /// decrement block
+    pub fn decrement_block(&mut self, amount: u32) {
+        self.window.decrement_block(amount)
     }
 
     /// set end block

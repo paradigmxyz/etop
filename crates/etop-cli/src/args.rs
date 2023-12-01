@@ -17,7 +17,7 @@ pub struct Cli {
     pub window: Option<String>,
 
     /// data directory
-    #[clap(long)]
+    #[clap(long, hide = true)]
     pub data_dir: Option<String>,
 
     /// rpc provider url

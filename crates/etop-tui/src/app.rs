@@ -95,8 +95,10 @@ impl App {
                         KeyCode::Backspace => action_tx.send(Action::PreviousWindow)?,
                         KeyCode::Char('l') => action_tx.send(Action::LiveWindow)?,
                         KeyCode::Char('q') => action_tx.send(Action::Quit)?,
-                        KeyCode::Char('[') => action_tx.send(Action::DecrementWindow)?,
-                        KeyCode::Char(']') => action_tx.send(Action::IncrementWindow)?,
+                        KeyCode::Char('[') => action_tx.send(Action::DecrementBlock)?,
+                        KeyCode::Char(']') => action_tx.send(Action::IncrementBlock)?,
+                        KeyCode::Char('{') => action_tx.send(Action::DecrementWindow)?,
+                        KeyCode::Char('}') => action_tx.send(Action::IncrementWindow)?,
                         _ => {}
                     },
                     _ => {}
@@ -179,6 +181,15 @@ impl App {
                         if self.data.window.live {
                             let _ = action_tx.send(Action::UpdateData);
                         }
+                    }
+                    Action::IncrementBlock => {
+                        self.data.increment_block(1);
+                        let _ = action_tx.send(Action::UpdateData);
+                    }
+                    Action::DecrementBlock => {
+                        self.data.window.live = false;
+                        self.data.decrement_block(1);
+                        let _ = action_tx.send(Action::UpdateData);
                     }
                     Action::IncrementWindow => {
                         self.data.increment_window(1);

@@ -14,6 +14,12 @@ pub struct Window {
 impl Window {
     /// increment window
     pub fn increment_window(&mut self, amount: u32) {
+        let WindowSize::Block(size) = self.size.clone();
+        self.increment_block(amount * size);
+    }
+
+    /// increment block
+    pub fn increment_block(&mut self, amount: u32) {
         if let Some(block_number) = self.end_block {
             self.set_end_block(block_number + amount)
         }
@@ -21,6 +27,13 @@ impl Window {
 
     /// decrement window
     pub fn decrement_window(&mut self, amount: u32) {
+        self.live = false;
+        let WindowSize::Block(size) = self.size.clone();
+        self.decrement_block(amount * size);
+    }
+
+    /// decrement block
+    pub fn decrement_block(&mut self, amount: u32) {
         self.live = false;
         if let Some(block_number) = self.end_block {
             if amount <= block_number {
