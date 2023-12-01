@@ -39,7 +39,7 @@ cargo install --path crates/etop-cli
 3. Show 10 most recent blocks
 `etop blocks -w 10`
 
-## Keyboard Shortcuts
+#### Keyboard Shortcuts
 - `]` increment block
 - `[` decrement block
 - `}` increment window
@@ -47,7 +47,7 @@ cargo install --path crates/etop-cli
 - `l` snap to live data
 - `q` quit
 
-## Parameters
+#### Parameters
 - `--window`: data window size in number of blocks
 - `--block`: block to start at, by default starts at latest block
 - `--rpc`: rpc endpoint url
