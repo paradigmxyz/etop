@@ -15,16 +15,16 @@ like `htop` for Ethereum
 
 ## Installation
 
+#### Install From Crates.io
+`cargo install etop-cli`
+
+
 #### Install From Source
 ```bash
 git clone https://github.com/paradigmxyz/etop
 cd etop
 cargo install --path crates/etop-cli
 ```
-
-#### Install From Crates.io
-`cargo install etop-cli`
-
 
 ## Example Usage
 
@@ -38,8 +38,15 @@ cargo install --path crates/etop-cli
 `etop blocks`
 
 ## Keyboard Shortcuts
-- `]` next block
-- `[` previous block
-- `l` live mode
+- `]` increment block
+- `[` decrement block
+- `}` increment window
+- `{` decrement window
+- `l` snap to live data
 - `q` quit
+
+## Parameters
+- `--window`: data window size in number of blocks
+- `--block`: block to start at, by default starts at latest block
+- `--rpc`: rpc endpoint url
 
