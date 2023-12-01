@@ -42,18 +42,19 @@ impl DataSpec for TransactionsByToAddress {
             .map_err(EtopError::PolarsError)
     }
 
-    fn default_columns(&self) -> Vec<String> {
-        ["to_address", "n_txs", "eth_sent", "mean_gas_price", "mean_gas_used"]
+    fn default_columns(&self) -> Option<Vec<String>> {
+        let columns = ["to_address", "n_txs", "eth_sent", "mean_gas_price", "mean_gas_used"]
             .iter()
             .map(|s| s.to_string())
-            .collect()
+            .collect();
+        Some(columns)
     }
 
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
+    fn default_column_formats(&self) -> Option<HashMap<String, ColumnFormatShorthand>> {
         let float_format = NumberFormat::new().si().precision(3);
         let oom_integer_format = NumberFormat::new().integer_oom().precision(0);
         let oom_float_format = NumberFormat::new().float_oom().precision(1);
-        vec![
+        let formats = vec![
             ColumnFormatShorthand::new().name("to_address").newline_underscores(),
             ColumnFormatShorthand::new()
                 .name("n_txs")
@@ -77,6 +78,8 @@ impl DataSpec for TransactionsByToAddress {
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))
-        .collect()
+        .collect();
+
+        Some(formats)
     }
 }

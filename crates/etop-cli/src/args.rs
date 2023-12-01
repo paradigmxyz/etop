@@ -13,7 +13,7 @@ pub struct Cli {
     pub block: Option<u32>,
 
     /// window size
-    #[clap(long)]
+    #[clap(short, long)]
     pub window: Option<String>,
 
     /// data directory

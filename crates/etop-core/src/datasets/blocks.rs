@@ -65,19 +65,21 @@ impl DataSpec for Blocks {
             .map_err(EtopError::PolarsError)
     }
 
-    fn default_columns(&self) -> Vec<String> {
-        ["block_number", "timestamp", "n_txs", "gas_used", "base_fee_per_gas", "author"]
-            .iter()
-            .map(|s| s.to_string())
-            .collect()
+    fn default_columns(&self) -> Option<Vec<String>> {
+        let columns =
+            ["block_number", "timestamp", "n_txs", "gas_used", "base_fee_per_gas", "author"]
+                .iter()
+                .map(|s| s.to_string())
+                .collect();
+        Some(columns)
     }
 
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
+    fn default_column_formats(&self) -> Option<HashMap<String, ColumnFormatShorthand>> {
         let integer_oom = etop_format::NumberFormat::new().integer_oom().precision(1);
         let float_oom = etop_format::NumberFormat::new().float_oom().precision(1);
         let timestamp_fmt = etop_format::NumberFormat::new().timestamp();
 
-        vec![
+        let formats = vec![
             ColumnFormatShorthand::new().name("block_number").newline_underscores(),
             ColumnFormatShorthand::new().name("timestamp").set_format(timestamp_fmt),
             ColumnFormatShorthand::new().name("n_txs").set_format(integer_oom.clone()),
@@ -96,6 +98,8 @@ impl DataSpec for Blocks {
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))
-        .collect()
+        .collect();
+
+        Some(formats)
     }
 }

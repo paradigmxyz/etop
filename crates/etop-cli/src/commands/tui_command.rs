@@ -23,12 +23,25 @@ pub(crate) async fn create_etop_state(
     rpc_url: Option<String>,
     data_dir: Option<String>,
 ) -> Result<EtopState, EtopError> {
+    let rpc_source = create_rpc_source(rpc_url).await?;
+
+    let block = match (rpc_source.clone(), block) {
+        (Some(source), None) => Some(
+            source
+                .fetcher
+                .get_block_number()
+                .await
+                .map_err(|_| EtopError::ConnectionError("could not get block number".to_string()))?
+                .as_u32(),
+        ),
+        _ => block,
+    };
+
     // create Window
     let window = create_window(block, window_size)?;
 
     // create data sources
     let file_source = data_dir.clone();
-    let rpc_source = create_rpc_source(rpc_url).await?;
 
     // crate state
     let state = EtopState {

@@ -1,6 +1,7 @@
 use crate::{DataSpec, DataWarehouse, DatasetQuery, EtopError, InputDataset, Window};
 use etop_format::{ColumnFormatShorthand, DataFrameFormat};
 use polars::prelude::*;
+use std::collections::HashMap;
 
 /// ui
 #[derive(Debug, Clone, Default)]
@@ -191,18 +192,41 @@ impl EtopState {
         render_width: usize,
     ) -> Result<String, EtopError> {
         let dataspec = crate::load_dataspec(self.dataset.clone())?;
-        let columns = dataspec.default_columns();
-        let column_formats = dataspec.default_column_formats();
-        let columns: Result<Vec<ColumnFormatShorthand>, EtopError> = columns
-            .iter()
-            .map(|name| {
-                column_formats.get(name).ok_or(EtopError::ColumnMissing(name.to_string())).cloned()
-            })
-            .collect::<Result<Vec<_>, _>>();
-        let columns = columns?;
-
         let df =
             dataspec.transform(&self.warehouse, self.window.start_block, self.window.end_block)?;
+
+        // decide which columns to use
+        let column_names: Vec<String> = if let Some(columns) = dataspec.default_columns() {
+            columns
+        } else {
+            df.schema().get_names().iter().map(|s| s.to_string()).collect()
+        };
+
+        // load column formats
+        let column_formats: HashMap<String, ColumnFormatShorthand> =
+            dataspec.default_column_formats().unwrap_or(HashMap::new());
+
+        let mut columns = Vec::new();
+        for column_name in column_names.into_iter() {
+            if let Some(column_format) = column_formats.get(column_name.as_str()) {
+                columns.push(column_format.clone())
+            } else {
+                let dtype: DataType = df
+                    .schema()
+                    .get(column_name.as_str())
+                    .ok_or(EtopError::ColumnMissing(column_name.to_string()))?
+                    .clone();
+                columns.push(get_default_format(column_name, dtype)?);
+            }
+        }
+        // let columns: Result<Vec<ColumnFormatShorthand>, EtopError> = columns
+        //     .iter()
+        //     .map(|name| {
+        //         column_formats.get(name).ok_or(EtopError::ColumnMissing(name.to_string())).
+        // cloned()     })
+        //     .collect::<Result<Vec<_>, _>>();
+        // let columns = columns?;
+
         let fmt = DataFrameFormat {
             column_formats: Some(columns),
             render_height: Some(render_height - 1),
@@ -215,4 +239,26 @@ impl EtopState {
         };
         Ok(fmt.format(df)?)
     }
+}
+
+fn get_default_format(
+    column_name: String,
+    dtype: DataType,
+) -> Result<ColumnFormatShorthand, EtopError> {
+    let fmt = match dtype {
+        dtype if dtype.is_integer() => ColumnFormatShorthand::new()
+            .name(column_name)
+            .newline_underscores()
+            .set_format(etop_format::NumberFormat::new().integer_oom().precision(1)),
+        dtype if dtype.is_float() => ColumnFormatShorthand::new()
+            .name(column_name)
+            .newline_underscores()
+            .set_format(etop_format::NumberFormat::new().float_oom().precision(1)),
+        DataType::Utf8 => ColumnFormatShorthand::new()
+            .name(column_name)
+            .newline_underscores()
+            .set_format(etop_format::StringFormat::new()),
+        _ => return Err(EtopError::UnsupportedDatatype(format!("{}", dtype))),
+    };
+    Ok(fmt)
 }

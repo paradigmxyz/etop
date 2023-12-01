@@ -75,8 +75,8 @@ impl DataSpec for Erc20TransfersByErc20 {
         df.map_err(EtopError::PolarsError)
     }
 
-    fn default_columns(&self) -> Vec<String> {
-        [
+    fn default_columns(&self) -> Option<Vec<String>> {
+        let columns = [
             "symbol",
             "n_transfers",
             "n_senders",
@@ -89,12 +89,14 @@ impl DataSpec for Erc20TransfersByErc20 {
         ]
         .into_iter()
         .map(|column| column.to_string())
-        .collect()
+        .collect();
+
+        Some(columns)
     }
 
-    fn default_column_formats(&self) -> HashMap<String, ColumnFormatShorthand> {
+    fn default_column_formats(&self) -> Option<HashMap<String, ColumnFormatShorthand>> {
         let oom_float_format = etop_format::NumberFormat::new().float_oom().precision(1);
-        vec![
+        let formats = vec![
             ColumnFormatShorthand::new().name("symbol").width(9),
             ColumnFormatShorthand::new().name("n_transfers").display_name("n\ntrans\nfers"),
             ColumnFormatShorthand::new().name("n_senders").display_name("n\nsend\ners"),
@@ -111,6 +113,8 @@ impl DataSpec for Erc20TransfersByErc20 {
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))
-        .collect()
+        .collect();
+
+        Some(formats)
     }
 }

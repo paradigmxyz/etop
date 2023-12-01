@@ -26,6 +26,8 @@ pub(crate) async fn print_command(args: Cli) -> Result<(), EtopError> {
         etop_state.warehouse.add_dataset(query.dataset(), result)?;
     }
 
+    println!("ETOP_STATE {:?}", etop_state.warehouse);
+
     let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
     let s = etop_state.format_window(render_width, render_height)?;
     println!("{}", s);

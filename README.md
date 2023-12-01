@@ -34,8 +34,8 @@ cargo install --path crates/etop-cli
 2. Show summary of transactions per contraction
 `etop transactions_by_to_address`
 
-3. Show raw blocks
-`etop blocks`
+3. Show 10 most recent blocks
+`etop blocks -w 10`
 
 ## Keyboard Shortcuts
 - `]` increment block
