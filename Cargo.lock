@@ -109,6 +109,21 @@ dependencies = [
 
 [[package]]
 name = "anstream"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0ca84f3628370c59db74ee214b3263d58f9aadd9b4fe7e711fd87dc452b7f163"
+dependencies = [
+ "anstyle",
+ "anstyle-parse",
+ "anstyle-query",
+ "anstyle-wincon 1.0.2",
+ "colorchoice",
+ "is-terminal",
+ "utf8parse",
+]
+
+[[package]]
+name = "anstream"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2ab91ebe16eb252986481c5b62f6098f3b698a45e34b5b98200cf20dd2484a44"
@@ -116,7 +131,7 @@ dependencies = [
  "anstyle",
  "anstyle-parse",
  "anstyle-query",
- "anstyle-wincon",
+ "anstyle-wincon 3.0.1",
  "colorchoice",
  "utf8parse",
 ]
@@ -142,6 +157,16 @@ version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5ca11d4be1bab0c8bc8734a9aa7bf4ee8316d462a08c6ac5052f888fef5b494b"
 dependencies = [
+ "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "anstyle-wincon"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c677ab05e09154296dd37acecd46420c17b9713e8366facafa8fc0885167cf4c"
+dependencies = [
+ "anstyle",
  "windows-sys 0.48.0",
 ]
 
@@ -572,13 +597,36 @@ version = "4.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07cdf1b148b25c1e1f7a42225e30a0d99a615cd4637eae7365548dd4529b95bc"
 dependencies = [
- "anstream",
+ "anstream 0.6.4",
  "anstyle",
  "clap_lex",
  "strsim",
  "terminal_size",
  "unicase",
  "unicode-width",
+]
+
+[[package]]
+name = "clap_builder_cryo"
+version = "4.3.21-cryo"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9e3a8989ce9e79041f7681f82e669c1a06724975fb8f5b7bd60e359e572da76"
+dependencies = [
+ "anstream 0.3.2",
+ "anstyle",
+ "clap_lex_cryo",
+ "strsim",
+]
+
+[[package]]
+name = "clap_cryo"
+version = "4.3.21-cryo"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "053a8216426fdf2f5ce7fa46197e3517adf8b1c0ab96d3dbf73469bc15f34ad6"
+dependencies = [
+ "clap_builder_cryo",
+ "clap_derive_cryo",
+ "once_cell",
 ]
 
 [[package]]
@@ -594,10 +642,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "clap_derive_cryo"
+version = "4.3.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd1cd2cebdb1ec98182edb745382a2b65d6bc254782de26316e4366d83d39988"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.38",
+]
+
+[[package]]
 name = "clap_lex"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "702fc72eb24e5a1e48ce58027a675bc24edd52096d5397d4aea7c6dd9eca0bd1"
+
+[[package]]
+name = "clap_lex_cryo"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "98979652585ac7c8d6267e363229b6a26bc4bf469c69e96442f85830ebc89f45"
 
 [[package]]
 name = "coins-bip32"
@@ -664,6 +730,27 @@ dependencies = [
  "once_cell",
  "owo-colors",
  "tracing-error",
+]
+
+[[package]]
+name = "color-print"
+version = "0.3.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a858372ff14bab9b1b30ea504f2a4bc534582aee3e42ba2d41d2a7baba63d5d"
+dependencies = [
+ "color-print-proc-macro",
+]
+
+[[package]]
+name = "color-print-proc-macro"
+version = "0.3.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57e37866456a721d0a404439a1adae37a31be4e0055590d053dfe6981e05003f"
+dependencies = [
+ "nom",
+ "proc-macro2",
+ "quote",
+ "syn 1.0.109",
 ]
 
 [[package]]
@@ -883,6 +970,26 @@ name = "crunchy"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
+
+[[package]]
+name = "cryo_cli"
+version = "0.2.0"
+dependencies = [
+ "anstyle",
+ "clap_cryo",
+ "color-print",
+ "colored",
+ "cryo_freeze",
+ "ethers",
+ "eyre",
+ "governor",
+ "hex",
+ "polars",
+ "rand",
+ "serde",
+ "serde_json",
+ "tokio",
+]
 
 [[package]]
 name = "cryo_freeze"
@@ -1539,7 +1646,6 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "cryo_freeze",
- "ethers",
  "etop-core",
  "etop-format",
  "etop-tui",
@@ -1551,8 +1657,8 @@ dependencies = [
 name = "etop-core"
 version = "0.1.0"
 dependencies = [
+ "cryo_cli",
  "cryo_freeze",
- "ethers",
  "etop-format",
  "glob",
  "polars",
@@ -2053,7 +2159,7 @@ version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a79a67745be0cb8dd2771f03b24c2f25df98d5471fe7a595d668cfa2e6f843d"
 dependencies = [
- "anstream",
+ "anstream 0.6.4",
  "anstyle",
  "backtrace",
  "os_info",

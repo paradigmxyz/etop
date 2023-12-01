@@ -3,15 +3,42 @@ use crate::{
     DatasetArgs,
     EtopError,
 };
-use etop_core::{load_dataspec, load_warehouse_from_filesystem};
+use etop_core::load_dataspec;
 use etop_format::{ColumnFormatShorthand, DataFrameFormat};
 
-pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
+pub(crate) async fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
+    println!("STARTING UP");
+    let mut etop_state = super::tui_command::create_etop_state(
+        Some(args.dataset.clone()),
+        args.block,
+        args.window,
+        args.rpc,
+        args.data_dir,
+    )
+    .await?;
+    println!("GATHERING QUERIES");
+    let queries = etop_state.create_missing_queries()?;
+    println!("MISSING QUERIES: {:?}", queries);
+    println!("{:?}", etop_state.rpc_source.as_ref().unwrap().fetcher.get_block_number().await);
+    for query in queries.into_iter() {
+        let result = etop_state.query(query.clone()).await?;
+        println!("result: {:?}", result);
+        etop_state.warehouse.add_dataset(query.dataset(), result)?;
+    }
+    let queries = etop_state.create_missing_queries()?;
+    println!("MISSING QUERIES: {:?}", queries);
+    println!("{:?}", etop_state.rpc_source.as_ref().unwrap().fetcher.get_block_number().await);
+    for query in queries.into_iter() {
+        let result = etop_state.query(query.clone()).await?;
+        println!("result: {:?}", result);
+        etop_state.warehouse.add_dataset(query.dataset(), result)?;
+    }
+
     let dataspec = load_dataspec(args.dataset)?;
-    let warehouse = match args.data_dir {
-        Some(data_dir) => load_warehouse_from_filesystem(&*dataspec, data_dir)?,
-        None => return Err(EtopError::ArgumentError("specify --data-dir".to_string())),
-    };
+    // let warehouse = match args.data_dir {
+    //     Some(data_dir) => load_warehouse_from_filesystem(&*dataspec, data_dir)?,
+    //     None => return Err(EtopError::ArgumentError("specify --data-dir".to_string())),
+    // };
 
     let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
 
@@ -25,7 +52,7 @@ pub(crate) fn dataset_command(args: DatasetArgs) -> Result<(), EtopError> {
         .collect::<Result<Vec<_>, _>>();
     let columns = columns?;
 
-    let df = dataspec.transform(&warehouse, None, None)?;
+    let df = dataspec.transform(&etop_state.warehouse, None, None)?;
     let fmt = DataFrameFormat {
         column_formats: Some(columns),
         render_height: Some(render_height - 1),

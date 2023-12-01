@@ -78,7 +78,15 @@ pub struct DatasetArgs {
     pub columns: Option<Vec<String>>,
 
     /// Window size
-    pub window: Option<u32>,
+    pub window: Option<String>,
+
+    /// rpc provider url
+    #[clap(short, long)]
+    pub rpc: Option<String>,
+
+    /// block
+    #[clap(short, long)]
+    pub block: Option<u32>,
 }
 
 /// Arguments for the `dataframe` subcommand

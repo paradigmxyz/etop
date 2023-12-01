@@ -1,4 +1,4 @@
-use crate::{DataSpec, DataWarehouse, EtopError};
+use crate::{DataSpec, DataWarehouse, EtopError, InputDataset};
 use etop_format::ColumnFormatShorthand;
 use polars::prelude::*;
 use std::collections::HashMap;
@@ -16,8 +16,8 @@ impl DataSpec for Blocks {
         "blocks".to_string()
     }
 
-    fn inputs(&self) -> Vec<String> {
-        vec!["blocks".to_string(), "transactions".to_string()]
+    fn inputs(&self) -> Vec<InputDataset> {
+        vec![InputDataset::Raw("blocks".into()), InputDataset::Raw("transactions".into())]
     }
 
     fn transform(
@@ -54,7 +54,6 @@ impl DataSpec for Blocks {
             .sort("block_number", sort)
             .collect()
             .map_err(EtopError::PolarsError)?;
-
 
         let blocks = crate::filter_by_block_number(blocks, start_block, end_block)?;
 

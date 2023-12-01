@@ -1,13 +1,11 @@
-use etop_core::EtopState;
 use super::Component;
 use crate::{action::Action, tui::Frame};
-use color_eyre::eyre::Result;
-use color_eyre::eyre::eyre;
+use color_eyre::eyre::{eyre, Result};
+use etop_core::EtopState;
 use ratatui::{prelude::*, widgets::*};
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Body {
-}
+pub struct Body {}
 
 impl Default for Body {
     fn default() -> Self {
@@ -45,6 +43,8 @@ impl Component for Body {
             format!("warehouse has {} entries", data.warehouse.data.len())
         };
 
+        let s = format!("{}\n\n\n{}", s, data.messages.join("\n"));
+
         let style = Style::default().fg(color);
         let content = Paragraph::new(s).style(style);
         f.render_widget(content, rect);
@@ -52,4 +52,3 @@ impl Component for Body {
         Ok(())
     }
 }
-

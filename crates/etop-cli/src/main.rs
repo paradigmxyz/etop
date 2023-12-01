@@ -23,7 +23,7 @@ pub(crate) async fn run_cli() -> Result<(), EtopError> {
     match Cli::parse().command {
         Commands::Number(args) => number_command::number_command(args),
         Commands::Dataframe(args) => dataframe_command::dataframe_command(args),
-        Commands::Dataset(args) => dataset_command::dataset_command(args),
+        Commands::Dataset(args) => dataset_command::dataset_command(args).await,
         Commands::Tui(args) => tui_command::tui_command(args).await,
     }
 }

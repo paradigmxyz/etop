@@ -1,4 +1,4 @@
-use crate::{DataSpec, DataWarehouse, EtopError};
+use crate::{AddressQueryArgument, DataSpec, DataWarehouse, EtopError, InputDataset};
 use etop_format::ColumnFormatShorthand;
 use polars::prelude::*;
 use std::collections::HashMap;
@@ -16,8 +16,17 @@ impl DataSpec for Erc20TransfersByErc20 {
         "erc20s".into()
     }
 
-    fn inputs(&self) -> Vec<String> {
-        vec!["erc20_transfers".to_string(), "erc20_metadata".to_string()]
+    fn inputs(&self) -> Vec<InputDataset> {
+        vec![
+            InputDataset::Raw("erc20_transfers".into()),
+            InputDataset::Derived {
+                dataset: "erc20_metadata".into(),
+                dataset_column: "erc20".into(),
+                derived_from: "erc20_transfers".into(),
+                derived_from_column: "erc20".to_string(),
+                arg: AddressQueryArgument::Contract,
+            },
+        ]
     }
 
     fn transform(
@@ -96,7 +105,9 @@ impl DataSpec for Erc20TransfersByErc20 {
             ColumnFormatShorthand::new()
                 .name("most_common_sender")
                 .display_name("most common sender"),
-            ColumnFormatShorthand::new().name("most_common_receiver").display_name("most common receiver"),
+            ColumnFormatShorthand::new()
+                .name("most_common_receiver")
+                .display_name("most common receiver"),
         ]
         .into_iter()
         .map(|column| (column.name.clone(), column))

@@ -1,6 +1,5 @@
 use color_eyre::eyre::Result;
-use crossterm::event::KeyCode;
-use crossterm::event::KeyEvent;
+use crossterm::event::{KeyCode, KeyEvent};
 use etop_core::{EtopState, Window, WindowSize};
 use ratatui::prelude::Rect;
 use serde::{Deserialize, Serialize};
@@ -79,7 +78,9 @@ impl App {
         }
 
         //  initialize
-        action_tx.clone().send(Action::LoadDataset(self.data.dataset.clone()))?;
+        // action_tx.clone().send(Action::LoadDataset(self.data.dataset.clone()))?;
+        action_tx.clone().send(Action::UpdateData)?;
+        self.data.messages.push("SETTING UP".into());
         if self.data.rpc_source.is_some() {
             action_tx.clone().send(Action::BeginBlockSubscription)?;
         }
@@ -115,6 +116,8 @@ impl App {
                     _ => log::debug!("{action:?}"),
                 }
                 match action.clone() {
+                    //
+                    // // etop setup
                     Action::BeginBlockSubscription => {
                         let action_tx = action_tx.clone();
                         let data = self.data.clone();
@@ -124,33 +127,61 @@ impl App {
                                 None => return,
                             };
                             loop {
-                                if let Ok(latest_block) = rpc_source.fetcher.get_block_number().await {
-                                    let _result = action_tx
-                                        .send(Action::BlockSeen(latest_block.as_u32()));
+                                if let Ok(latest_block) =
+                                    rpc_source.fetcher.get_block_number().await
+                                {
+                                    let _result =
+                                        action_tx.send(Action::BlockSeen(latest_block.as_u32()));
                                 };
                                 tokio::time::sleep(Duration::from_secs(1)).await;
                             }
                         });
                     }
-                    Action::LoadDataset(_dataset) => {
+                    Action::UpdateData => {
                         let action_tx = action_tx.clone();
                         let data = self.data.clone();
-                        tokio::spawn(async move {
-                            let data_dir = data.file_source.data_dir;
-                            let dataspec = etop_core::load_dataspec(data.dataset);
-                            if let (Some(data_dir), Ok(dataspec)) = (data_dir, dataspec) {
-                                if let Ok(warehouse) =
-                                    etop_core::load_warehouse_from_filesystem(&*dataspec, data_dir)
-                                {
-                                    let _result = action_tx.send(Action::NewWarehouse(warehouse));
+                        let queries = self.data.create_missing_queries().unwrap();
+                        self.data.messages.push(format!("QUERIES: {:?}", queries));
+                        if let Ok(queries) = self.data.create_missing_queries() {
+                            self.data.messages.push(format!("{:?}", queries));
+                            tokio::spawn(async move {
+                                for query in queries.into_iter() {
+                                    if let Ok(df) = data.query(query.clone()).await {
+                                        let _result = action_tx.send(Action::ReceiveQuery(query, df));
+                                    }
                                 }
-                            };
-                        });
+                            });
+                        } else {
+                        //     self.data.messages.push("NO QUERIES".into());
+                        //     self.data.messages.push(format!("DATASET: {:?}", self.data.dataset));
+                        //     self.data.messages.push(format!("WINDOW: {:?}", self.data.window));
+                        //     self.data.messages.push(format!("WAREHOUSE: {:?}", self.data.warehouse));
+                        //     // let name = self.data.dataspec().unwrap().name();
+                        //     // self.data.messages.push(format!("DATASPEC: {:?}", name));
+                        //     // self.data.messages.push(format!("INPUTS: {:?}", self.data.dataspec().unwrap().inputs()));
+                        //     // let missing_blocks = self.data.warehouse.compute_missing_blocks(name, (18009555, 18009555));
+                        //     // self.data.messages.push(format!("MISSING_BLOCKS: {:?}", missing_blocks));
+                        };
                     }
-                    Action::NewWarehouse(warehouse) => self.data.warehouse = warehouse,
-                    Action::BlockSeen(seen_block) => {
-                        self.data.see_block(seen_block)
-                    },
+                    // Action::LoadDataset(_dataset) => {
+                    //     let action_tx = action_tx.clone();
+                    //     let data = self.data.clone();
+                    //     tokio::spawn(async move {
+                    //         let dataspec = etop_core::load_dataspec(data.dataset);
+                    //         if let (Some(data_dir), Ok(dataspec)) = (data.file_source, dataspec) {
+                    //             if let Ok(warehouse) =
+                    //                 etop_core::load_warehouse_from_filesystem(&*dataspec, data_dir)
+                    //             {
+                    //                 let _result = action_tx.send(Action::NewWarehouse(warehouse));
+                    //             }
+                    //         };
+                    //     });
+                    // }
+                    // Action::NewWarehouse(warehouse) => self.data.warehouse = warehouse,
+                    //
+                    // // etop data updates
+                    Action::Log(message) => self.data.messages.push(message),
+                    Action::BlockSeen(seen_block) => self.data.see_block(seen_block),
                     Action::IncrementWindow => {
                         self.data.increment_window(1);
                     }
@@ -160,18 +191,21 @@ impl App {
                     Action::LiveWindow => {
                         self.data.enable_live_mode();
                     }
-                    Action::RequestQuery(query, block_range) => {
+                    Action::RequestQuery(query) => {
                         let action_tx = action_tx.clone();
                         let data = self.data.clone();
                         tokio::spawn(async move {
-                            if let Ok(df) = data.query(query.clone(), block_range).await {
-                                let _result = action_tx.send(Action::ReceiveQuery(query, block_range, df));
+                            if let Ok(df) = data.query(query.clone()).await {
+                                let _result = action_tx.send(Action::ReceiveQuery(query, df));
                             };
                         });
                     }
-                    Action::ReceiveQuery(query, _block_range, df) => {
-                        let result = self.data.warehouse.add_dataset(query, df);
+                    Action::ReceiveQuery(query, df) => {
+                        self.data.messages.push(format!("received result for {}", query.clone().dataset().name()));
+                        let _result = self.data.warehouse.add_dataset(query.dataset(), df);
                     }
+                    //
+                    // // low-level controls
                     Action::Tick => {
                         self.last_tick_key_events.drain(..);
                     }

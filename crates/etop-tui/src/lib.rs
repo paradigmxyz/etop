@@ -12,11 +12,11 @@ pub mod config;
 pub mod tui;
 pub mod utils;
 
-use color_eyre::eyre::Result;
 use crate::{
     app::App,
     utils::{initialize_logging, initialize_panic_handler},
 };
+use color_eyre::eyre::Result;
 use etop_core::EtopState;
 
 pub async fn tokio_main(data: Option<EtopState>) -> Result<()> {

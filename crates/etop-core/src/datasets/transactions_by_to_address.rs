@@ -1,4 +1,4 @@
-use crate::{DataSpec, DataWarehouse, EtopError};
+use crate::{DataSpec, DataWarehouse, EtopError, InputDataset};
 use etop_format::{ColumnFormatShorthand, NumberFormat};
 use polars::prelude::*;
 use std::collections::HashMap;
@@ -16,8 +16,8 @@ impl DataSpec for TransactionsByToAddress {
         "to_addresses".into()
     }
 
-    fn inputs(&self) -> Vec<String> {
-        vec!["transactions".to_string()]
+    fn inputs(&self) -> Vec<InputDataset> {
+        vec![InputDataset::Raw("transactions".into())]
     }
 
     fn transform(

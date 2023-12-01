@@ -11,6 +11,8 @@ pub enum EtopError {
     CouldNotReadFile(String),
     /// invalid format
     InvalidFormat(String),
+    /// invalid specification
+    InvalidSpecification(String),
     /// polars error
     PolarsError(polars::prelude::PolarsError),
     /// columns missing
@@ -37,6 +39,8 @@ pub enum EtopError {
     ConnectionError(String),
     /// cryo error
     CryoError(cryo_freeze::CollectError),
+    /// cryo parse error
+    CryoParseError(cryo_freeze::ParseError),
 }
 
 impl From<polars::prelude::PolarsError> for EtopError {

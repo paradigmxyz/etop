@@ -13,6 +13,7 @@ exclude = [".github/"]
 
 [workspace.dependencies]
 cryo_freeze = { path = "/Users/stormslivkoff/repos/cryo/crates/freeze" }
+cryo_cli = { path = "/Users/stormslivkoff/repos/cryo/crates/cli" }
 polars = { version = "0.35.4", features = [
     "parquet",
     "string_encoding",

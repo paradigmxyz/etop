@@ -1,7 +1,7 @@
-use etop_core::EtopState;
 use super::Component;
 use crate::{action::Action, tui::Frame};
 use color_eyre::eyre::Result;
+use etop_core::EtopState;
 use ratatui::{prelude::*, widgets::*};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -73,7 +73,7 @@ fn get_block_window_string(data: &EtopState) -> String {
             } else {
                 format!("showing block {} to {}", start_block, end_block)
             }
-        },
+        }
         (_, Some(end_block)) => format!("block {}", end_block),
         (_, None) => "-".to_string(),
     }

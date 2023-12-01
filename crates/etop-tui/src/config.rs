@@ -10,7 +10,6 @@
 //     Deserialize,
 // };
 
-
 // use crate::{action::Action, app::Mode};
 
 // const CONFIG: &str = include_str!("../.config/config.json5");
@@ -291,8 +290,8 @@
 //             .into_iter()
 //             .map(|(mode, inner_map)| {
 //                 let converted_inner_map =
-//                     inner_map.into_iter().map(|(str, style)| (str, parse_style(&style))).collect();
-//                 (mode, converted_inner_map)
+//                     inner_map.into_iter().map(|(str, style)| (str,
+// parse_style(&style))).collect();                 (mode, converted_inner_map)
 //             })
 //             .collect();
 

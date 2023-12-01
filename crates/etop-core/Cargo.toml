@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 cryo_freeze = { workspace = true }
+cryo_cli = { workspace = true }
 glob = "0.3.1"
 polars = { workspace = true }
 etop-format = { version = "0.1.0", path = "../etop-format" }
-ethers = { version = "2.0.10", features = ["rustls", "ws", "ipc"] }

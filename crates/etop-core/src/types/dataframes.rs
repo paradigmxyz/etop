@@ -1,4 +1,4 @@
-use crate::{DataSpec, DataWarehouse, EtopError};
+use crate::{DataSpec, DataWarehouse, EtopError, InputDataset};
 use polars::prelude::*;
 use std::{fs::File, path::Path};
 
@@ -31,7 +31,11 @@ pub fn load_warehouse_from_filesystem(
     Ok(warehouse)
 }
 
-fn load_dataset_from_files(name: &str, data_dir: &str) -> Result<Vec<DataFrame>, EtopError> {
+fn load_dataset_from_files(
+    dataset: &InputDataset,
+    data_dir: &str,
+) -> Result<Vec<DataFrame>, EtopError> {
+    let name = dataset.name();
     let pattern = format!("{}/{}/*__{}__*", data_dir, name, name);
     let paths = glob::glob(&pattern)?;
     let paths: Vec<_> = paths.collect();

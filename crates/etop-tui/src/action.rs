@@ -1,5 +1,4 @@
 use polars::prelude::*;
-use etop_core::DataWarehouse;
 
 // #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[derive(Debug, Clone)]
@@ -32,10 +31,10 @@ pub enum Action {
     ScheduleIncrementWindow,
     BeginBlockSubscription,
     BlockSeen(u32),
-    LoadDataset(String),
-    NewWarehouse(DataWarehouse),
-    RequestDataset(String),  // dataset name
-    SetDataset(String, DataFrame),  // dataset name
-    RequestQuery(String, (u32, u32)),  // dataset name, query
-    ReceiveQuery(String, (u32, u32), DataFrame), //
+    UpdateData,
+    // LoadDataset(String),
+    // NewWarehouse(DataWarehouse),
+    RequestQuery(etop_core::DatasetQuery),
+    ReceiveQuery(etop_core::DatasetQuery, DataFrame),
+    Log(String),
 }

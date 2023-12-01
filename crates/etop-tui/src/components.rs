@@ -1,10 +1,10 @@
-use etop_core::EtopState;
 use crate::{
     action::Action,
     tui::{Event, Frame},
 };
 use color_eyre::eyre::Result;
 use crossterm::event::{KeyEvent, MouseEvent};
+use etop_core::EtopState;
 use ratatui::layout::Rect;
 use tokio::sync::mpsc::UnboundedSender;
 
