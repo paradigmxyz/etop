@@ -29,7 +29,7 @@ impl InputDataset {
     pub fn name(&self) -> String {
         match self {
             InputDataset::Raw(name) => name.to_string(),
-            InputDataset::Derived {dataset, ..} => dataset.to_string(),
+            InputDataset::Derived { dataset, .. } => dataset.to_string(),
         }
     }
 }

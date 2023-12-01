@@ -54,7 +54,6 @@ impl DataWarehouse {
             }
         };
 
-
         // update dataframes
         let new_df = match self.data.get(name.as_str()) {
             Some(old_df) => old_df.clone().vstack(&df.clone()).map_err(EtopError::PolarsError)?,

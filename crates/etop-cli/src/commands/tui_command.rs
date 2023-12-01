@@ -4,13 +4,8 @@ use etop_core::{EtopError, EtopState, Window, WindowSize};
 const DEFAULT_DATASET: &str = "transactions_by_to_address";
 
 pub(crate) async fn tui_command(args: Cli) -> Result<(), EtopError> {
-    let etop_state = create_etop_state(
-        args.dataset,
-        args.block,
-        args.window,
-        args.rpc,
-        args.data_dir,
-    ).await?;
+    let etop_state =
+        create_etop_state(args.dataset, args.block, args.window, args.rpc, args.data_dir).await?;
 
     // run main function
     etop_tui::tokio_main(Some(etop_state))
@@ -28,7 +23,6 @@ pub(crate) async fn create_etop_state(
     rpc_url: Option<String>,
     data_dir: Option<String>,
 ) -> Result<EtopState, EtopError> {
-
     // create Window
     let window = create_window(block, window_size)?;
 

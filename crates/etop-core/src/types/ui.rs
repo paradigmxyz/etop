@@ -21,7 +21,6 @@ pub struct EtopState {
     pub rpc_source: Option<std::sync::Arc<cryo_freeze::Source>>,
     //
     // cache fields
-    //
     /// current df
     pub cache_df: Option<DataFrame>,
     /// current table
@@ -157,8 +156,7 @@ impl EtopState {
                     .collect();
 
                 // compute addresses that are missing
-                let missing =
-                    self.warehouse.compute_missing_addresses(dataset.name(), required);
+                let missing = self.warehouse.compute_missing_addresses(dataset.name(), required);
                 if !missing.is_empty() {
                     queries.push(DatasetQuery::Address(dataset.clone(), missing))
                 };

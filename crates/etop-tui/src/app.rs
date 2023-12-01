@@ -152,7 +152,8 @@ impl App {
                             tokio::spawn(async move {
                                 for query in queries.into_iter() {
                                     if let Ok(df) = data.query(query.clone()).await {
-                                        let _result = action_tx.send(Action::ReceiveQuery(query, df));
+                                        let _result =
+                                            action_tx.send(Action::ReceiveQuery(query, df));
                                     }
                                 }
                             });
@@ -162,8 +163,10 @@ impl App {
                         // won't do it
                         if queries.is_empty() {
                             // cache a rendering of new data
-                            let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
-                            if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
+                            let (render_width, render_height) =
+                                term_size::dimensions().unwrap_or((80, 20));
+                            if let Ok(s) = self.data.format_window(render_height + 1, render_width)
+                            {
                                 self.data.cache_df_render = Some(s);
                             }
                         }
@@ -176,7 +179,7 @@ impl App {
                         if self.data.window.live {
                             let _ = action_tx.send(Action::UpdateData);
                         }
-                    },
+                    }
                     Action::IncrementWindow => {
                         self.data.increment_window(1);
                         let _ = action_tx.send(Action::UpdateData);
@@ -203,7 +206,8 @@ impl App {
                         let _result = self.data.warehouse.add_dataset(query.dataset(), df);
 
                         // cache a rendering of new data
-                        let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
+                        let (render_width, render_height) =
+                            term_size::dimensions().unwrap_or((80, 20));
                         if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
                             self.data.cache_df_render = Some(s);
                         }
@@ -211,15 +215,17 @@ impl App {
                         let _ = action_tx.send(Action::UpdateData);
                     }
                     Action::RerenderTable => {
-                        let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
+                        let (render_width, render_height) =
+                            term_size::dimensions().unwrap_or((80, 20));
                         if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
                             self.data.cache_df_render = Some(s);
                         }
-                    },
+                    }
                     // Action::ReceiveQueries(results) => {
                     //     for (query, df) in results.into_iter() {
-                    //         self.data.messages.push(format!("received result for {}", query.clone().dataset().name()));
-                    //         let _result = self.data.warehouse.add_dataset(query.dataset(), df);
+                    //         self.data.messages.push(format!("received result for {}",
+                    // query.clone().dataset().name()));         let _result =
+                    // self.data.warehouse.add_dataset(query.dataset(), df);
                     //     }
                     // }
                     //
@@ -231,8 +237,8 @@ impl App {
                     Action::Suspend => self.should_suspend = true,
                     Action::Resume => self.should_suspend = false,
                     Action::Resize(w, h) => {
-
-                        let (render_width, render_height) = term_size::dimensions().unwrap_or((80, 20));
+                        let (render_width, render_height) =
+                            term_size::dimensions().unwrap_or((80, 20));
                         if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
                             self.data.cache_df_render = Some(s);
                         }
