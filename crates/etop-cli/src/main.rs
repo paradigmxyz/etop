@@ -9,9 +9,9 @@
 mod args;
 mod commands;
 
-pub use args::{Cli, Commands, DataframeArgs, DatasetArgs, NumberArgs, TuiArgs};
+pub use args::Cli;
 use clap::Parser;
-use commands::{dataframe_command, dataset_command, number_command, tui_command};
+use commands::{print_command, tui_command};
 pub use etop_core::EtopError;
 
 #[tokio::main]
@@ -20,10 +20,10 @@ async fn main() -> Result<(), EtopError> {
 }
 
 pub(crate) async fn run_cli() -> Result<(), EtopError> {
-    match Cli::parse().command {
-        Commands::Number(args) => number_command::number_command(args),
-        Commands::Dataframe(args) => dataframe_command::dataframe_command(args),
-        Commands::Dataset(args) => dataset_command::print_command(args).await,
-        Commands::Tui(args) => tui_command::tui_command(args).await,
+    let args = Cli::parse();
+    if args.print {
+        print_command::print_command(args).await
+    } else {
+        tui_command::tui_command(args).await
     }
 }

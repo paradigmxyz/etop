@@ -12,7 +12,6 @@ path = "src/main.rs"
 clap = { version = "4.4.8", features = ["derive"] }
 term_size = "0.3.2"
 tokio = { workspace = true }
-etop-format = { version = "0.1.0", path = "../etop-format" }
 etop-core = { version = "0.1.0", path = "../etop-core" }
 etop-tui = { version = "0.1.0", path = "../etop-tui" }
 cryo_freeze = { workspace = true }

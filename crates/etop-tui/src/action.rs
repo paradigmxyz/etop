@@ -27,6 +27,7 @@ pub enum Action {
     IncrementWindow,
     DecrementWindow,
     LiveWindow,
+    CheckBlockSet,
     PreviousWindow,
     ScheduleIncrementWindow,
     BeginBlockSubscription,

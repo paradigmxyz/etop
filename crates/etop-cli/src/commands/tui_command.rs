@@ -1,9 +1,9 @@
-use crate::TuiArgs;
+use crate::Cli;
 use etop_core::{EtopError, EtopState, Window, WindowSize};
 
 const DEFAULT_DATASET: &str = "transactions_by_to_address";
 
-pub(crate) async fn tui_command(args: TuiArgs) -> Result<(), EtopError> {
+pub(crate) async fn tui_command(args: Cli) -> Result<(), EtopError> {
     let etop_state = create_etop_state(
         args.dataset,
         args.block,

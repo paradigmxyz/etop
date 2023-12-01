@@ -131,10 +131,18 @@ impl App {
                                 {
                                     let _result =
                                         action_tx.send(Action::BlockSeen(latest_block.as_u32()));
+                                    if data.window.end_block.is_none() {
+                                        let _ = action_tx.send(Action::CheckBlockSet);
+                                    }
                                 };
                                 tokio::time::sleep(Duration::from_secs(1)).await;
                             }
                         });
+                    }
+                    Action::CheckBlockSet => {
+                        if self.data.window.end_block.is_none() {
+                            let _ = action_tx.send(Action::LiveWindow);
+                        }
                     }
                     Action::UpdateData => {
                         let action_tx = action_tx.clone();
@@ -174,6 +182,7 @@ impl App {
                         let _ = action_tx.send(Action::UpdateData);
                     }
                     Action::DecrementWindow => {
+                        self.data.window.live = false;
                         self.data.decrement_window(1);
                         let _ = action_tx.send(Action::UpdateData);
                     }

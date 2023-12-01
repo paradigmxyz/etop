@@ -1647,7 +1647,6 @@ dependencies = [
  "clap",
  "cryo_freeze",
  "etop-core",
- "etop-format",
  "etop-tui",
  "term_size",
  "tokio",

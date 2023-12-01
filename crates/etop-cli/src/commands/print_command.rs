@@ -1,8 +1,8 @@
-use crate::{DatasetArgs, EtopError};
+use crate::{Cli, EtopError};
 
-pub(crate) async fn print_command(args: DatasetArgs) -> Result<(), EtopError> {
+pub(crate) async fn print_command(args: Cli) -> Result<(), EtopError> {
     let mut etop_state = super::tui_command::create_etop_state(
-        Some(args.dataset.clone()),
+        args.dataset,
         args.block,
         args.window,
         args.rpc,
