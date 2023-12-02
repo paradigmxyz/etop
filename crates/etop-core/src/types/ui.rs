@@ -214,7 +214,7 @@ impl EtopState {
                 }
             }
             Scroll::Down => {
-                if self.start_row <= df.height() - render_height + 1 {
+                if self.start_row < df.height() - 1 {
                     self.start_row += 1;
                 }
             }
