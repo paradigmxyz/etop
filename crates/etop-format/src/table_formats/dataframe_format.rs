@@ -329,7 +329,7 @@ impl DataFrameFormatFinal {
     pub(crate) fn format(&self, df: DataFrame) -> Result<String, FormatError> {
         // clip
         let n_data_rows = self.n_data_rows();
-        let df = df.clone().slice(self.start_row as i64, n_data_rows + self.start_row);
+        let df = df.clone().slice(self.start_row as i64, n_data_rows);
 
         // render columns
         let (used_widths, columns) = self.render_columns(df)?;
