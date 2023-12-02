@@ -21,7 +21,7 @@ pub struct Cli {
     pub data_dir: Option<String>,
 
     /// rpc provider url
-    #[clap(short, long)]
+    #[clap(short, long, default_value = Some("http://localhost:8545"))]
     pub rpc: Option<String>,
 
     /// print formatted data without interactive interface
