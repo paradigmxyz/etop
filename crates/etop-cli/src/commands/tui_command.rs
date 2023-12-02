@@ -2,6 +2,7 @@ use crate::Cli;
 use etop_core::{EtopError, EtopState, Window, WindowSize};
 
 const DEFAULT_DATASET: &str = "transactions_by_to_address";
+const DEFAULT_RPC_URL: &str = "https://ethereum.publicnode.com";
 
 pub(crate) async fn tui_command(args: Cli) -> Result<(), EtopError> {
     let etop_state =
@@ -81,13 +82,9 @@ async fn create_rpc_source(
 }
 
 fn parse_rpc_url(rpc_url: Option<String>) -> Option<String> {
-    let mut url = match rpc_url {
-        Some(url) => url.clone(),
-        _ => match std::env::var("ETH_RPC_URL") {
-            Ok(url) => url,
-            Err(_e) => return None,
-        },
-    };
+    let mut url = rpc_url
+        .or_else(|| std::env::var("ETH_RPC_URL").ok())
+        .unwrap_or_else(|| DEFAULT_RPC_URL.to_string());
     if !url.starts_with("http") {
         url = "http://".to_string() + url.as_str();
     };
