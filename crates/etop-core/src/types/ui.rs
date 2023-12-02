@@ -14,6 +14,8 @@ pub struct EtopState {
     pub other_window: Option<Window>,
     /// dataset being displayed
     pub dataset: String,
+    /// start row of current window
+    pub start_row: usize,
     /// warehouse
     pub warehouse: DataWarehouse,
     /// file source (data directory)
@@ -178,6 +180,16 @@ impl EtopState {
     }
 }
 
+/// Scroll directions
+pub enum Scroll {
+    /// scroll up
+    Up,
+    /// scroll down
+    Down,
+    /// no scroll
+    None,
+}
+
 // render options
 impl EtopState {
     /// whether any data is available to render in current window
@@ -187,13 +199,27 @@ impl EtopState {
 
     /// format data of current window
     pub fn format_window(
-        &self,
+        &mut self,
         render_height: usize,
         render_width: usize,
+        scroll: Scroll,
     ) -> Result<String, EtopError> {
         let dataspec = crate::load_dataspec(self.dataset.clone())?;
         let df =
             dataspec.transform(&self.warehouse, self.window.start_block, self.window.end_block)?;
+        match scroll {
+            Scroll::Up => {
+                if self.start_row > 0 {
+                    self.start_row -= 1;
+                }
+            }
+            Scroll::Down => {
+                if self.start_row <= df.height() - render_height + 1 {
+                    self.start_row += 1;
+                }
+            }
+            Scroll::None => {}
+        }
 
         // decide which columns to use
         let column_names: Vec<String> = if let Some(columns) = dataspec.default_columns() {
@@ -231,6 +257,7 @@ impl EtopState {
             column_formats: Some(columns),
             render_height: Some(render_height - 1),
             max_render_width: Some(render_width),
+            start_row: Some(self.start_row),
 
             include_header_separator_row: true,
             column_delimiter: "   ".to_string(),

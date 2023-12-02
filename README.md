@@ -46,6 +46,8 @@ cargo install --path crates/etop-cli
 - `{` decrement window
 - `l` snap to live data
 - `q` quit
+- `j` scroll down
+- `k` scroll up
 
 #### Parameters
 - `--window`: data window size in number of blocks
