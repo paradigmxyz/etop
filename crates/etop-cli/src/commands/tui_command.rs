@@ -8,7 +8,7 @@ pub(crate) async fn tui_command(args: Cli) -> Result<(), EtopError> {
         create_etop_state(args.dataset, args.block, args.window, args.rpc, args.data_dir).await?;
 
     // run main function
-    etop_tui::tokio_main(Some(etop_state))
+    etop_tui::tokio_main(Some(etop_state), args.poll)
         .await
         .map_err(|e| EtopError::TuiError(format!("{:?}", e)))
         .ok();
