@@ -127,7 +127,7 @@ impl App {
                     //
                     // // etop setup
                     Action::BeginBlockSubscription => {
-                        let dataa = self.poll_rate.clone();
+                        let poll_rate = self.poll_rate.clone();
                         let action_tx = action_tx.clone();
                         let data = self.data.clone();
                         tokio::spawn(async move {
@@ -145,7 +145,7 @@ impl App {
                                         let _ = action_tx.send(Action::CheckBlockSet);
                                     }
                                 };
-                                tokio::time::sleep(Duration::from_secs_f64(dataa)).await;
+                                tokio::time::sleep(Duration::from_secs_f64(poll_rate)).await;
                             }
                         });
                     }
