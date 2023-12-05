@@ -2,7 +2,7 @@ use crate::Cli;
 use etop_core::{EtopError, EtopState, Window, WindowSize};
 
 const DEFAULT_DATASET: &str = "transactions_by_to_address";
-const DEFAULT_RPC_URL: &str = "https://ethereum.publicnode.com";
+const DEFAULT_RPC_URL: &str = "https://eth.llamarpc.com";
 
 pub(crate) async fn tui_command(args: Cli) -> Result<(), EtopError> {
     let etop_state =
