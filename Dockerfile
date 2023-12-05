@@ -14,7 +14,7 @@ COPY . .
 
 RUN cargo build --release --locked \
     && mkdir -p /output \
-    && mv target/release/etop /output/  # Updated binary name here
+    && mv target/release/etop /output/  
 
 
 FROM debian:bookworm-slim
