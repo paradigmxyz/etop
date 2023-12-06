@@ -1,6 +1,6 @@
 use color_eyre::eyre::Result;
 use crossterm::event::{KeyCode, KeyEvent};
-use etop_core::{EtopState, Window, WindowSize};
+use etop_core::{EtopState, Window, WindowSize, Scroll};
 use ratatui::prelude::Rect;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
@@ -106,6 +106,8 @@ impl App {
                         KeyCode::Char(']') => action_tx.send(Action::IncrementBlock)?,
                         KeyCode::Char('{') => action_tx.send(Action::DecrementWindow)?,
                         KeyCode::Char('}') => action_tx.send(Action::IncrementWindow)?,
+                        KeyCode::Char('j') => action_tx.send(Action::ScrollDown)?,
+                        KeyCode::Char('k') => action_tx.send(Action::ScrollUp)?,
                         _ => {}
                     },
                     _ => {}
@@ -175,7 +177,7 @@ impl App {
                             // cache a rendering of new data
                             let (render_width, render_height) =
                                 term_size::dimensions().unwrap_or((80, 20));
-                            if let Ok(s) = self.data.format_window(render_height + 1, render_width)
+                            if let Ok(s) = self.data.format_window(render_height + 1, render_width, Scroll::None)
                             {
                                 self.data.cache_df_render = Some(s);
                             }
@@ -193,6 +195,20 @@ impl App {
                     Action::IncrementBlock => {
                         self.data.increment_block(1);
                         let _ = action_tx.send(Action::UpdateData);
+                    }
+                    Action::ScrollUp => {
+                        let (render_width, render_height) =
+                            term_size::dimensions().unwrap_or((80, 20));
+                        if let Ok(s) = self.data.format_window(render_height + 1, render_width, Scroll::Up) {
+                            self.data.cache_df_render = Some(s);
+                        }
+                    }
+                    Action::ScrollDown => {
+                        let (render_width, render_height) =
+                            term_size::dimensions().unwrap_or((80, 20));
+                        if let Ok(s) = self.data.format_window(render_height + 1, render_width, Scroll::Down) {
+                            self.data.cache_df_render = Some(s);
+                        }
                     }
                     Action::DecrementBlock => {
                         self.data.window.live = false;
@@ -227,7 +243,7 @@ impl App {
                         // cache a rendering of new data
                         let (render_width, render_height) =
                             term_size::dimensions().unwrap_or((80, 20));
-                        if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
+                        if let Ok(s) = self.data.format_window(render_height + 1, render_width, Scroll::None) {
                             self.data.cache_df_render = Some(s);
                         }
 
@@ -236,7 +252,7 @@ impl App {
                     Action::RerenderTable => {
                         let (render_width, render_height) =
                             term_size::dimensions().unwrap_or((80, 20));
-                        if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
+                        if let Ok(s) = self.data.format_window(render_height + 1, render_width, Scroll::None) {
                             self.data.cache_df_render = Some(s);
                         }
                     }
@@ -258,7 +274,7 @@ impl App {
                     Action::Resize(w, h) => {
                         let (render_width, render_height) =
                             term_size::dimensions().unwrap_or((80, 20));
-                        if let Ok(s) = self.data.format_window(render_height + 1, render_width) {
+                        if let Ok(s) = self.data.format_window(render_height + 1, render_width, Scroll::None) {
                             self.data.cache_df_render = Some(s);
                         }
 
