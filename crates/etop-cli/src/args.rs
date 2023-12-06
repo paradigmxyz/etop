@@ -27,4 +27,8 @@ pub struct Cli {
     /// print formatted data without interactive interface
     #[clap(short, long)]
     pub print: bool,
+
+    /// Set the polling rate in seconds
+    #[clap(long, default_value_t = 1.0)]
+    pub poll: f64,
 }
