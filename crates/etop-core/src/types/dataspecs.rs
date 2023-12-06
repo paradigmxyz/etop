@@ -75,6 +75,7 @@ pub fn load_dataspec(name: String) -> Result<Box<dyn DataSpec>, EtopError> {
         "blocks" => Ok(Box::new(datasets::Blocks)),
         "erc20_transfers_by_erc20" => Ok(Box::new(datasets::Erc20TransfersByErc20)),
         "transactions_by_to_address" => Ok(Box::new(datasets::TransactionsByToAddress)),
+        "erc721_tranfers_by_erc721" => Ok(Box::new(datasets::Erc721TransfersByErc721)),
         // _ => Err(EtopError::UnknownData(format!("invalid dataset: {}", name))),
         name => Ok(Box::new(datasets::CryoDataset { name: name.to_string() })),
     }
