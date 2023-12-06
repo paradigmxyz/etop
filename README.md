@@ -51,4 +51,5 @@ cargo install --path crates/etop-cli
 - `--window`: data window size in number of blocks
 - `--block`: block to start at, by default starts at latest block
 - `--rpc`: rpc endpoint url
+- `--poll`: polling interval, by default 1.0.
 
