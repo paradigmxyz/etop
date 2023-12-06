@@ -18,12 +18,13 @@ use crate::{
 use color_eyre::eyre::Result;
 use etop_core::EtopState;
 
-pub async fn tokio_main(data: Option<EtopState>) -> Result<()> {
+pub async fn tokio_main(data: Option<EtopState>, poll_rate: f64) -> Result<()> {
     initialize_logging()?;
     initialize_panic_handler()?;
+
     let tick_rate = 1.0;
     let frame_rate = 10.0;
-    let mut app = App::new(tick_rate, frame_rate, data)?;
+    let mut app = App::new(tick_rate, frame_rate, data, poll_rate)?;
     app.run().await?;
     Ok(())
 }

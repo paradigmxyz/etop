@@ -27,10 +27,16 @@ pub struct App {
     pub mode: Mode,
     pub last_tick_key_events: Vec<KeyEvent>,
     pub data: EtopState,
+    pub poll_rate: f64,
 }
 
 impl App {
-    pub fn new(tick_rate: f64, frame_rate: f64, data: Option<EtopState>) -> Result<Self> {
+    pub fn new(
+        tick_rate: f64,
+        frame_rate: f64,
+        data: Option<EtopState>,
+        poll_rate: f64,
+    ) -> Result<Self> {
         let header = Header::new();
         let body = Body::new();
 
@@ -58,6 +64,7 @@ impl App {
             mode: Mode::Home,
             last_tick_key_events: Vec::new(),
             data,
+            poll_rate,
         })
     }
 
@@ -120,6 +127,7 @@ impl App {
                     //
                     // // etop setup
                     Action::BeginBlockSubscription => {
+                        let poll_rate = self.poll_rate.clone();
                         let action_tx = action_tx.clone();
                         let data = self.data.clone();
                         tokio::spawn(async move {
@@ -137,7 +145,7 @@ impl App {
                                         let _ = action_tx.send(Action::CheckBlockSet);
                                     }
                                 };
-                                tokio::time::sleep(Duration::from_secs(1)).await;
+                                tokio::time::sleep(Duration::from_secs_f64(poll_rate)).await;
                             }
                         });
                     }
@@ -295,7 +303,7 @@ impl App {
                 tui.enter()?;
             } else if self.should_quit {
                 tui.stop()?;
-                break;
+                break
             }
         }
         tui.exit()?;
