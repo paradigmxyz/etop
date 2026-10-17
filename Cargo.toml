@@ -7,7 +7,6 @@ resolver = "2"
 version = "0.1.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/paradigmxyz/etop"
 repository = "https://github.com/paradigmxyz/etop"
 exclude = [".github/"]
 

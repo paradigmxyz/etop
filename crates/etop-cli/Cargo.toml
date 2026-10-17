@@ -4,7 +4,6 @@ description = "etop-cli is cli of etop"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-homepage.workspace = true
 repository.workspace = true
 
 [[bin]]
