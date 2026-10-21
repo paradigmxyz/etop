@@ -26,6 +26,8 @@ pub struct DataFrameFormat {
     pub render_height: Option<usize>,
     /// max render width
     pub max_render_width: Option<usize>,
+    /// start now
+    pub start_row: Option<usize>,
 }
 
 impl Default for DataFrameFormat {
@@ -41,6 +43,7 @@ impl Default for DataFrameFormat {
             include_summary_separator_row: false,
             render_height: None,
             max_render_width: None,
+            start_row: None,
         }
     }
 }
@@ -68,6 +71,8 @@ pub struct DataFrameFormatFinal {
     pub render_height: usize,
     /// max render width
     pub max_render_width: usize,
+    /// start now
+    pub start_row: usize,
 }
 
 impl DataFrameFormat {
@@ -128,6 +133,7 @@ impl DataFrameFormat {
             include_summary_row: self.include_summary_row,
             include_summary_separator_row: self.include_summary_separator_row,
             render_height: self.render_height.unwrap_or(DEFAULT_TABLE_HEIGHT),
+            start_row: self.start_row.unwrap_or(0),
             max_render_width,
         };
         Ok(fmt)
@@ -323,7 +329,7 @@ impl DataFrameFormatFinal {
     pub(crate) fn format(&self, df: DataFrame) -> Result<String, FormatError> {
         // clip
         let n_data_rows = self.n_data_rows();
-        let df = df.clone().slice(0, n_data_rows);
+        let df = df.clone().slice(self.start_row as i64, n_data_rows);
 
         // render columns
         let (used_widths, columns) = self.render_columns(df)?;

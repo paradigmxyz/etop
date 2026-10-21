@@ -17,6 +17,8 @@ pub enum Action {
     ScheduleDecrement,
     Increment(usize),
     Decrement(usize),
+    ScrollUp,
+    ScrollDown,
     CompleteInput(String),
     EnterNormal,
     EnterInsert,
